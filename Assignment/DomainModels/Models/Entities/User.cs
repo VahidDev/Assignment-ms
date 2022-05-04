@@ -1,177 +1,262 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
     public class User : IdentityUser<int>
     {
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime DeletedDate { get; set; }
-        public bool IsDeleted { get; set; }
+        [Column("id")]
+        [JsonProperty("id")]
+        public override int Id { get => base.Id; set => base.Id = value; }
+        [Column("first_name")]
         [JsonProperty("first_name")]
         public string FirstName { get; set; }
+        [Column("last_name")]
         [JsonProperty("last_name")]
         public string LastName { get; set; }
+        [Column("picture")]
         [JsonProperty("picture")]
         public string Picture { get; set; }
+        [Column("phone")]
         [JsonProperty("phone")]
         public string Phone { get; set; }
+        [Column("email")]
         [JsonProperty("email")]
         public override string Email {get;set;}
+        [Column("nationality")]
         [JsonProperty("nationality")]
         public byte Nationality { get; set; }
+        [Column("_country_issued")]
         [JsonProperty("_country_issued")]
         public byte CountryIssued { get; set; }
+        [Column("gender_for_accreditation")]
         [JsonProperty("gender_for_accreditation")]
         public string GenderForAccreditation { get; set; }
+        [Column("dob")]
         [JsonProperty("dob")]
         public DateTime Dob { get; set; }
+        [Column("current_occupation")]
         [JsonProperty("current_occupation")]
         public string CurrentOccupation { get; set; }
-         [JsonProperty("id_document_type")]
-        public string IdDocumentType { get; set; }
-         [JsonProperty("qid_number")]
+        public IdDocumentType IdDocumentType { get; set; }
+        [Column("qid_number")]
+        [JsonProperty("qid_number")]
         public string QidNumber { get; set; }
-         [JsonProperty("id_document_expiry_date_q22")]
+        [Column("id_document_expiry_date_q22")]
+        [JsonProperty("id_document_expiry_date_q22")]
         public DateTime IdDocumentExpiryDateQ22 { get; set; }
-         [JsonProperty("passport_number")]
+        [Column("passport_number")]
+        [JsonProperty("passport_number")]
         public string PassportNumber { get; set; }
-         [JsonProperty("id_document_expiry_date")]
+        [Column("id_document_expiry_date")]
+        [JsonProperty("id_document_expiry_date")]
         public DateTime IdDocumentExpiryDate { get; set; }
-         [JsonProperty("id_document_country_of_issue")]
+        [Column("id_document_country_of_issue")]
+        [JsonProperty("id_document_country_of_issue")]
         public DateTime IdDocumentCountryOfIssue { get; set; }
-         [JsonProperty("passport_expiry_date")]
+        [Column("passport_expiry_date")]
+        [JsonProperty("passport_expiry_date")]
         public DateTime PassportExpiryDate { get; set; }
-         [JsonProperty("passport_type")]
-        public string PassportType { get; set; }
-         [JsonProperty("qatari_driving_license")]
+        public PassportType PassportType { get; set; }
+        [Column("qatari_driving_license")]
+        [JsonProperty("qatari_driving_license")]
         public bool QatariDrivingLicense { get; set; }
-         [JsonProperty("driving_license_type")]
-        public string DrivingLicenseType { get; set; }
-         [JsonProperty("country")]
+        public DrivingLicenseType DrivingLicenseType { get; set; }
+        [Column("country")]
+        [JsonProperty("country")]
         public byte Country { get; set; }
-         [JsonProperty("international_accommodation_preference")]
-        public string InternationalAccommodationPreference { get; set; }
-         [JsonProperty("medical_conditions")]
+
+        public InternationalAccommodationPreference 
+            InternationalAccommodationPreference { get; set; }
+        [Column("medical_conditions")]
+        [JsonProperty("medical_conditions")]
         public string MedicalConditions { get; set; }
-         [JsonProperty("disability_yes_no")]
+        [Column("disability_yes_no")]
+        [JsonProperty("disability_yes_no")]
         public bool DisabilityYesNo { get; set; }
-         [JsonProperty("disability_type")]
+        [Column("disability_type")]
+        [JsonProperty("disability_type")]
         public string DisabilityType { get; set; }
-         [JsonProperty("disability_others")]
+        [Column("disability_others")]
+        [JsonProperty("disability_others")]
         public string DisabilityOthers { get; set; }
-         [JsonProperty("social_worker_caregiver_support")]
+        [Column("social_worker_caregiver_support")]
+        [JsonProperty("social_worker_caregiver_support")]
         public string SocialWorkerCaregiverSupport { get; set; }
-         [JsonProperty("dietary_requirement_identification")]
+        [Column("dietary_requirement_identification")]
+        [JsonProperty("dietary_requirement_identification")]
         public string DietaryRequirementIdentification { get; set; }
-         [JsonProperty("special_dietary_options")]
+        [Column("special_dietary_options")]
+        [JsonProperty("special_dietary_options")]
         public string SpecialDietaryOptions { get; set; }
-         [JsonProperty("alergies_other")]
+        [Column("alergies_other")]
+        [JsonProperty("alergies_other")]
         public string AlergiesOther { get; set; }
-         [JsonProperty("covid-19_vaccinated")]
+        [Column("covid-19_vaccinated")]
+        [JsonProperty("covid-19_vaccinated")]
         public string Covid19Vaccinated { get; set; }
-         [JsonProperty("vaccine_type_multi-select")]
+        [Column("vaccine_type_multi")]
+        [JsonProperty("vaccine_type_multi-select")]
         public string VaccineTypeMultiSelect { get; set; }
-         [JsonProperty("final_vaccine_dose_date")]
+        [Column("final_vaccine_dose_date")]
+        [JsonProperty("final_vaccine_dose_date")]
         public string FinalVaccineDoseDate { get; set; }
-         [JsonProperty("education_onechoice")]
+        [Column("education_onechoice")]
+        [JsonProperty("education_onechoice")]
         public string EducationOnechoice { get; set; }
-         [JsonProperty("area_of_study")]
+        [Column("area_of_study")]
+        [JsonProperty("area_of_study")]
         public string AreaOfStudy { get; set; }
-         [JsonProperty("english_fluency_level")]
+        [Column("english_fluency_level")]
+        [JsonProperty("english_fluency_level")]
         public string EnglishFluencyLevel { get; set; }
-         [JsonProperty("arabic_fluency_level")]
+        [Column("arabic_fluency_level")]
+        [JsonProperty("arabic_fluency_level")]
         public string ArabicFluencyLevel { get; set; }
-         [JsonProperty("additional_language_1")]
+        [Column("additional_language_1")]
+        [JsonProperty("additional_language_1")]
         public string AdditionalLanguage1 { get; set; }
-         [JsonProperty("additional_language_1_fluency_level")]
+        [Column("additional_language_1_fluency_level")]
+        [JsonProperty("additional_language_1_fluency_level")]
         public string AdditionalLanguage1FluencyLevel { get; set; }
-         [JsonProperty("additional_language_2")]
+        [Column("additional_language_2")]
+        [JsonProperty("additional_language_2")]
         public string AdditionalLanguage2 { get; set; }
-         [JsonProperty("additional_language_2_fluency_level")]
+        [Column("additional_language_2_fluency_level")]
+        [JsonProperty("additional_language_2_fluency_level")]
         public string AdditionalLanguage2FluencyLevel { get; set; }
-         [JsonProperty("additional_language_3")]
+        [Column("additional_language_3")]
+        [JsonProperty("additional_language_3")]
         public string AdditionalLanguage3 { get; set; }
-         [JsonProperty("additional_language_3_fluency_level")]
+        [Column("additional_language_3_fluency_level")]
+        [JsonProperty("additional_language_3_fluency_level")]
         public string AdditionalLanguage3FluencyLevel { get; set; }
-         [JsonProperty("additional_language_4")]
+        [Column("additional_language_4")]
+        [JsonProperty("additional_language_4")]
         public string AdditionalLanguage4 { get; set; }
-         [JsonProperty("additional_language_4_fluency_level")]
+        [Column("additional_language_4_fluency_level")]
+        [JsonProperty("additional_language_4_fluency_level")]
         public string AdditionalLanguage4FluencyLevel { get; set; }
-         [JsonProperty("languages_other")]
+        [Column("languages_other")]
+        [JsonProperty("languages_other")]
         public string LanguagesOther { get; set; }
-         [JsonProperty("interpretation_and_translation_experience")]
+        [Column("interpretation_and_translation_experience")]
+        [JsonProperty("interpretation_and_translation_experience")]
         public string InterpretationAndTranslationExperience { get; set; }
-         [JsonProperty("certified_translator_language")]
+        [Column("certified_translator_language")]
+        [JsonProperty("certified_translator_language")]
         public string CertifiedTranslatorLanguage { get; set; }
-         [JsonProperty("describe_your_it_skills")]
+        [Column("describe_your_it_skills")]
+        [JsonProperty("describe_your_it_skills")]
         public string DescribeYourItSkills { get; set; }
-         [JsonProperty("skill_1")]
+        [Column("skill_1")]
+        [JsonProperty("skill_1")]
         public string Skill1 { get; set; }
-         [JsonProperty("skill_2")]
+        [Column("skill_2")]
+        [JsonProperty("skill_2")]
         public string Skill2 { get; set; }
-         [JsonProperty("skill_3")]
+        [Column("skill_3")]
+        [JsonProperty("skill_3")]
         public string Skill3 { get; set; }
-         [JsonProperty("skill_4")]
+        [Column("skill_4")]
+        [JsonProperty("skill_4")]
         public string Skill4 { get; set; }
-         [JsonProperty("skill_5")]
+        [Column("skill_5")]
+        [JsonProperty("skill_5")]
         public string Skill5 { get; set; }
-         [JsonProperty("skill_6")]
+        [Column("skill_6")]
+        [JsonProperty("skill_6")]
         public string Skill6 { get; set; }
-         [JsonProperty("previous_volunteering_experience")]
+        [Column("previous_volunteering_experience")]
+        [JsonProperty("previous_volunteering_experience")]
         public string PreviousVolunteeringExperience { get; set; }
-         [JsonProperty("volunteer_experience")]
+        [Column("volunteer_experience")]
+        [JsonProperty("volunteer_experience")]
         public string VolunteerExperience { get; set; }
-         [JsonProperty("other_role")]
+        [Column("other_role")]
+        [JsonProperty("other_role")]
         public string OtherRole { get; set; }
-         [JsonProperty("events_type_participations")]
+        [Column("events_type_participations")]
+        [JsonProperty("events_type_participations")]
         public string EventsTypeParticipations { get; set; }
-         [JsonProperty("other_event_type")]
+        [Column("other_event_type")]
+        [JsonProperty("other_event_type")]
         public string OtherEventType { get; set; }
-         [JsonProperty("volunteer_hours_yearly")]
+        [Column("volunteer_hours_yearly")]
+        [JsonProperty("volunteer_hours_yearly")]
         public string VolunteerHoursYearly { get; set; }
-         [JsonProperty("preferred_functional_area")]
+        [Column("preferred_functional_area")]
+        [JsonProperty("preferred_functional_area")]
         public string PreferredFunctionalArea { get; set; }
-         [JsonProperty("fwc_are_you_interested_in_a_leadership_role")]
+        [Column("fwc_are_you_interested_in_a_leadership_role")]
+        [JsonProperty("fwc_are_you_interested_in_a_leadership_role")]
         public string FwcAreYouInterestedInALeadershipRole { get; set; }
-         [JsonProperty("fwc_leadership_experience")]
+        [Column("fwc_leadership_experience")]
+        [JsonProperty("fwc_leadership_experience")]
         public string FwcLeadershipExperience { get; set; }
-         [JsonProperty("work_experience")]
+        [Column("work_experience")]
+        [JsonProperty("work_experience")]
         public string WorkExperience { get; set; }
-         [JsonProperty("ceremonies_yes_no")]
+        [Column("ceremonies_yes_no")]
+        [JsonProperty("ceremonies_yes_no")]
         public bool CeremoniesYesNo { get; set; }
-         [JsonProperty("cast_yes_no")]
+        [Column("cast_yes_no")]
+        [JsonProperty("cast_yes_no")]
         public bool CastYesNo { get; set; }
-         [JsonProperty("cast_options")]
+        [Column("cast_options")]
+        [JsonProperty("cast_options")]
         public string CastOptions { get; set; }
-         [JsonProperty("motivation_to_volunteer_at_fwc")]
+        [Column("motivation_to_volunteer_at_fwc")]
+        [JsonProperty("motivation_to_volunteer_at_fwc")]
         public string MotivationToVolunteerAtFwc { get; set; }
-         [JsonProperty("leave_or_arrange")]
+        [Column("leave_or_arrange")]
+        [JsonProperty("leave_or_arrange")]
         public string LeaveOrArrange { get; set; }
-         [JsonProperty("local__international_volunteer")]
+        [Column("local__international_volunteer")]
+        [JsonProperty("local__international_volunteer")]
         public string LocalInternationalVolunteer { get; set; }
-         [JsonProperty("language_path_-_english__arabic")]
+        [Column("language_path_-_english__arabic")]
+        [JsonProperty("language_path_-_english__arabic")]
         public string LanguagePathEnglishArabic { get; set; }
-         [JsonProperty("fwc_availability_pre_tournament_stage_one")]
+        [Column("fwc_availability_pre_tournament_stage_one")]
+        [JsonProperty("fwc_availability_pre_tournament_stage_one")]
         public string FwcAvailabilityPreTournamentStageOne { get; set; }
-         [JsonProperty("fwc_availability_pre_tournament_stage_two")]
+        [Column("fwc_availability_pre_tournament_stage_two")]
+        [JsonProperty("fwc_availability_pre_tournament_stage_two")]
         public string FwcAvailabilityPreTournamentStageTwo { get; set; }
-         [JsonProperty("availability_during_tournament")]
+        [Column("availability_during_tournament")]
+        [JsonProperty("availability_during_tournament")]
         public string AvailabilityDuringTournament { get; set; }
-         [JsonProperty("daily_availability_shift_morning")]
+        [Column("daily_availability_shift_morning")]
+        [JsonProperty("daily_availability_shift_morning")]
         public string daily_availability_shift_morning { get; set; }
-         [JsonProperty("daily_availability_shift_morning")]
+        [Column("daily_availability_shift_morning")]
+        [JsonProperty("daily_availability_shift_morning")]
         public string DailyAvailabilityShiftAfternoon { get; set; }
-         [JsonProperty("daily_availability_shift_night")]
+        [Column("daily_availability_shift_night")]
+        [JsonProperty("daily_availability_shift_night")]
         public string DailyAvailabilityShiftNight { get; set; }
-         [JsonProperty("daily_availability_shift_overnight")]
+        [Column("daily_availability_shift_overnight")]
+        [JsonProperty("daily_availability_shift_overnight")]
         public string DailyAvailabilityShiftOvernight { get; set; }
-         [JsonProperty("candidate_under_18")]
+        [Column("candidate_under_18")]
+        [JsonProperty("candidate_under_18")]
         public string CandidateUnder18 { get; set; }
-         [JsonProperty("special_groups_international")]
+        [Column("special_groups_international")]
+        [JsonProperty("special_groups_international")]
         public string SpecialGroupsInternational { get; set; }
-         [JsonProperty("municipality_address")]
+        [Column("phone")]
+        [JsonProperty("municipality_address")]
         public string MunicipalityAddress { get; set; }
+        [Column("created_date")]
+        public DateTime CreatedDate { get; set; }= DateTime.Now;
+        [Column("deleted_date")]
+        public DateTime DeletedDate { get; set; }
+        [Column("updated_date")]
+        public DateTime UpdatedDate { get; set; }
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; }
     }
 }

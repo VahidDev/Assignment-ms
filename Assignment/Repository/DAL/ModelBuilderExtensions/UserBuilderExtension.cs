@@ -21,7 +21,7 @@ namespace Repository.DAL.ModelBuilderExtensions
                 .Ignore(u => u.NormalizedEmail)
                 .Ignore(u => u.NormalizedUserName)
                 .Ignore(u => u.PhoneNumberConfirmed);
-            builder.Entity<User>(builder => builder.ToTable("Users"));
+            builder.Entity<User>(builder => builder.ToTable("users"));
             return builder;
         }
     }
