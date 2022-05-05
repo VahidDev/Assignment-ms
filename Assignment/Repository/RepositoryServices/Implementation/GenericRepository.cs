@@ -68,7 +68,7 @@ namespace Repository.RepositoryServices.Implementation
                 T item = await dbSet
                     .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
                 item.IsDeleted = true;
-                item.DeletedDate = DateTime.Now;
+                item.DeletedAt = DateTime.UtcNow;
                 return true;
             }
             catch (Exception)

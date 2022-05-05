@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Constants\" />
+    <Folder Include="DataSeeding\DefaultEntityGenerators\" />
   </ItemGroup>
 
 </Project>
