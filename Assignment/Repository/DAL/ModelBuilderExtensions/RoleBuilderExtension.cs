@@ -8,8 +8,11 @@ namespace Repository.DAL.ModelBuilderExtensions
         {
             builder.Entity<IdentityRole<int>>()
                .Ignore(r => r.ConcurrencyStamp)
-               .Ignore(r => r.NormalizedName);
-            builder.Entity<IdentityRole<int>>(builder => builder.ToTable("Roles"));
+               .Ignore(r => r.NormalizedName)
+               .Property(r=>r.Id).HasColumnName("id");
+            builder.Entity<IdentityRole<int>>()
+                .Property(r => r.Name).HasColumnName("name");
+            builder.Entity<IdentityRole<int>>(builder => builder.ToTable("roles"));
             return builder;
         }
     }

@@ -39,3 +39,4 @@ C:\Users\User\OneDrive\Desktop\Assignment\Assignment\Assignment\bin\Debug\net6.0
 C:\Users\User\OneDrive\Desktop\Assignment\Assignment\Assignment\bin\Debug\net6.0\Repository.pdb
 C:\Users\User\OneDrive\Desktop\Assignment\Assignment\Assignment\bin\Debug\net6.0\DomainModels.pdb
 C:\Users\User\OneDrive\Desktop\Assignment\Assignment\Assignment\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\User\OneDrive\Desktop\Assignment\Assignment\Assignment\bin\Debug\net6.0\Newtonsoft.Json.dll

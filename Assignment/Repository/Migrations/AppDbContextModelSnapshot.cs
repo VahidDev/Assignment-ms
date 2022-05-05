@@ -22,602 +22,802 @@ namespace Repository.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DomainModels.Models.Entities.DrivingLicenseType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("driving_license_types");
+                });
+
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalArea", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FunctionalAreas");
+                    b.ToTable("functional_areas");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.IdDocumentType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("id_document_types");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.InternationalAccommodationPreference", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("international_accommodation_preferences");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
-                    b.ToTable("JobTitles");
+                    b.ToTable("job_titles");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("locations");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.PassportType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("passport_types");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("FunctionalAreaId")
-                        .HasColumnType("integer");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
-                    b.Property<int?>("JobTitleId")
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("LocationId")
+                    b.Property<int?>("job_title_id")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("VenueId")
+                    b.Property<int?>("location_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("venue_id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FunctionalAreaId");
+                    b.HasIndex("functional_area_id");
 
-                    b.HasIndex("JobTitleId");
+                    b.HasIndex("job_title_id");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("location_id");
 
-                    b.HasIndex("VenueId");
+                    b.HasIndex("venue_id");
 
-                    b.ToTable("RoleOffers");
+                    b.ToTable("role_offers");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AdditionalLanguage1")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_1");
 
                     b.Property<string>("AdditionalLanguage1FluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_1_fluency_level");
 
                     b.Property<string>("AdditionalLanguage2")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_2");
 
                     b.Property<string>("AdditionalLanguage2FluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_2_fluency_level");
 
                     b.Property<string>("AdditionalLanguage3")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_3");
 
                     b.Property<string>("AdditionalLanguage3FluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_3_fluency_level");
 
                     b.Property<string>("AdditionalLanguage4")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_4");
 
                     b.Property<string>("AdditionalLanguage4FluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("additional_language_4_fluency_level");
 
                     b.Property<string>("AlergiesOther")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("alergies_other");
 
                     b.Property<string>("ArabicFluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("arabic_fluency_level");
 
                     b.Property<string>("AreaOfStudy")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("area_of_study");
 
                     b.Property<string>("AvailabilityDuringTournament")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("availability_during_tournament");
 
                     b.Property<string>("CandidateUnder18")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("candidate_under_18");
 
                     b.Property<string>("CastOptions")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cast_options");
 
                     b.Property<bool>("CastYesNo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("cast_yes_no");
 
                     b.Property<bool>("CeremoniesYesNo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("ceremonies_yes_no");
 
                     b.Property<string>("CertifiedTranslatorLanguage")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("certified_translator_language");
 
                     b.Property<byte>("Country")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("country");
 
                     b.Property<byte>("CountryIssued")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("_country_issued");
 
                     b.Property<string>("Covid19Vaccinated")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("covid-19_vaccinated");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<string>("CurrentOccupation")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("current_occupation");
 
                     b.Property<string>("DailyAvailabilityShiftAfternoon")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("daily_availability_shift_morning");
 
                     b.Property<string>("DailyAvailabilityShiftNight")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("daily_availability_shift_night");
 
                     b.Property<string>("DailyAvailabilityShiftOvernight")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("daily_availability_shift_overnight");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<string>("DescribeYourItSkills")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("describe_your_it_skills");
 
                     b.Property<string>("DietaryRequirementIdentification")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("dietary_requirement_identification");
 
                     b.Property<string>("DisabilityOthers")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("disability_others");
 
                     b.Property<string>("DisabilityType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("disability_type");
 
                     b.Property<bool>("DisabilityYesNo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("disability_yes_no");
 
                     b.Property<DateTime>("Dob")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("dob");
 
-                    b.Property<string>("DrivingLicenseType")
-                        .HasColumnType("text");
+                    b.Property<int?>("DrivingLicenseTypeId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("EducationOnechoice")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("education_onechoice");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<string>("EnglishFluencyLevel")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("english_fluency_level");
 
                     b.Property<string>("EventsTypeParticipations")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("events_type_participations");
 
                     b.Property<string>("FinalVaccineDoseDate")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("final_vaccine_dose_date");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
 
                     b.Property<string>("FwcAreYouInterestedInALeadershipRole")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("fwc_are_you_interested_in_a_leadership_role");
 
                     b.Property<string>("FwcAvailabilityPreTournamentStageOne")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("fwc_availability_pre_tournament_stage_one");
 
                     b.Property<string>("FwcAvailabilityPreTournamentStageTwo")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("fwc_availability_pre_tournament_stage_two");
 
                     b.Property<string>("FwcLeadershipExperience")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("fwc_leadership_experience");
 
                     b.Property<string>("GenderForAccreditation")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("gender_for_accreditation");
 
                     b.Property<DateTime>("IdDocumentCountryOfIssue")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("id_document_country_of_issue");
 
                     b.Property<DateTime>("IdDocumentExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("id_document_expiry_date");
 
                     b.Property<DateTime>("IdDocumentExpiryDateQ22")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("id_document_expiry_date_q22");
 
-                    b.Property<string>("IdDocumentType")
-                        .HasColumnType("text");
+                    b.Property<int?>("IdDocumentTypeId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("InternationalAccommodationPreference")
-                        .HasColumnType("text");
+                    b.Property<int?>("InternationalAccommodationPreferenceId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("InterpretationAndTranslationExperience")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("interpretation_and_translation_experience");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("LanguagePathEnglishArabic")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("language_path_-_english__arabic");
 
                     b.Property<string>("LanguagesOther")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("languages_other");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("LeaveOrArrange")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("leave_or_arrange");
 
                     b.Property<string>("LocalInternationalVolunteer")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("local__international_volunteer");
 
                     b.Property<string>("MedicalConditions")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("medical_conditions");
 
                     b.Property<string>("MotivationToVolunteerAtFwc")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("motivation_to_volunteer_at_fwc");
 
                     b.Property<string>("MunicipalityAddress")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
                     b.Property<byte>("Nationality")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("nationality");
 
                     b.Property<string>("OtherEventType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("other_event_type");
 
                     b.Property<string>("OtherRole")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("other_role");
 
                     b.Property<DateTime>("PassportExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("passport_expiry_date");
 
                     b.Property<string>("PassportNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("passport_number");
 
-                    b.Property<string>("PassportType")
-                        .HasColumnType("text");
+                    b.Property<int?>("PassportTypeId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
                     b.Property<string>("Picture")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("picture");
 
                     b.Property<string>("PreferredFunctionalArea")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("preferred_functional_area");
 
                     b.Property<string>("PreviousVolunteeringExperience")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("previous_volunteering_experience");
 
                     b.Property<bool>("QatariDrivingLicense")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("qatari_driving_license");
 
                     b.Property<string>("QidNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("qid_number");
 
                     b.Property<string>("Skill1")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_1");
 
                     b.Property<string>("Skill2")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_2");
 
                     b.Property<string>("Skill3")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_3");
 
                     b.Property<string>("Skill4")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_4");
 
                     b.Property<string>("Skill5")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_5");
 
                     b.Property<string>("Skill6")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("skill_6");
 
                     b.Property<string>("SocialWorkerCaregiverSupport")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("social_worker_caregiver_support");
 
                     b.Property<string>("SpecialDietaryOptions")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("special_dietary_options");
 
                     b.Property<string>("SpecialGroupsInternational")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("special_groups_international");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
 
                     b.Property<string>("VaccineTypeMultiSelect")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("vaccine_type_multi");
 
                     b.Property<string>("VolunteerExperience")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("volunteer_experience");
 
                     b.Property<string>("VolunteerHoursYearly")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("volunteer_hours_yearly");
 
                     b.Property<string>("WorkExperience")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("work_experience");
 
                     b.Property<string>("daily_availability_shift_morning")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("daily_availability_shift_morning");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.HasIndex("DrivingLicenseTypeId");
+
+                    b.HasIndex("IdDocumentTypeId");
+
+                    b.HasIndex("InternationalAccommodationPreferenceId");
+
+                    b.HasIndex("PassportTypeId");
+
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Venues");
+                    b.ToTable("venues");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("user_roles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
                         .WithMany()
-                        .HasForeignKey("FunctionalAreaId");
+                        .HasForeignKey("functional_area_id");
 
-                    b.HasOne("DomainModels.Models.Entities.JobTitle", null)
+                    b.HasOne("DomainModels.Models.Entities.JobTitle", "JobTitle")
                         .WithMany("RoleOffers")
-                        .HasForeignKey("JobTitleId");
+                        .HasForeignKey("job_title_id");
 
                     b.HasOne("DomainModels.Models.Entities.Location", "Location")
                         .WithMany("RoleOffers")
-                        .HasForeignKey("LocationId");
+                        .HasForeignKey("location_id");
 
                     b.HasOne("DomainModels.Models.Entities.Venue", "Venue")
                         .WithMany("RoleOffers")
-                        .HasForeignKey("VenueId");
+                        .HasForeignKey("venue_id");
 
                     b.Navigation("FunctionalArea");
+
+                    b.Navigation("JobTitle");
 
                     b.Navigation("Location");
 
                     b.Navigation("Venue");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.User", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.HasOne("DomainModels.Models.Entities.DrivingLicenseType", "DrivingLicenseType")
+                        .WithMany("Users")
+                        .HasForeignKey("DrivingLicenseTypeId");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
-                {
-                    b.HasOne("DomainModels.Models.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.HasOne("DomainModels.Models.Entities.IdDocumentType", "IdDocumentType")
+                        .WithMany("Users")
+                        .HasForeignKey("IdDocumentTypeId");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
-                {
-                    b.HasOne("DomainModels.Models.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("DomainModels.Models.Entities.InternationalAccommodationPreference", "InternationalAccommodationPreference")
+                        .WithMany("Users")
+                        .HasForeignKey("InternationalAccommodationPreferenceId");
+
+                    b.HasOne("DomainModels.Models.Entities.PassportType", "PassportType")
+                        .WithMany("Users")
+                        .HasForeignKey("PassportTypeId");
+
+                    b.Navigation("DrivingLicenseType");
+
+                    b.Navigation("IdDocumentType");
+
+                    b.Navigation("InternationalAccommodationPreference");
+
+                    b.Navigation("PassportType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -635,13 +835,19 @@ namespace Repository.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.DrivingLicenseType", b =>
                 {
-                    b.HasOne("DomainModels.Models.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.IdDocumentType", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.InternationalAccommodationPreference", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
@@ -652,6 +858,11 @@ namespace Repository.Migrations
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
                 {
                     b.Navigation("RoleOffers");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.PassportType", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>
