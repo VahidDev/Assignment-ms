@@ -12,8 +12,8 @@ namespace Assignment.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetALlAsync()
+        [HttpGet("GetAllRoleOffers")]
+        public async Task<IActionResult> GetALlRoleOffersAsync()
         {
             try
             {
@@ -21,7 +21,19 @@ namespace Assignment.Controllers
             }
             catch (Exception)
             {
-                return Ok("Something bad happened");
+                return Ok("Something went wront");
+            }
+        }
+        [HttpGet("GetRoleOffer")]
+        public async Task<IActionResult> GetRoleOfferAsync([FromRoute]int id)
+        {
+            try
+            {
+                return Ok(await _unitOfWork.RoleOfferRepository.FindByIdAsync(id));
+            }
+            catch (Exception)
+            {
+                return Ok("Something went wrong");
             }
         }
     }
