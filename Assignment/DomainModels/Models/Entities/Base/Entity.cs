@@ -11,12 +11,15 @@ namespace DomainModels.Models.Entities.Base
         [Column("id")]
         [JsonProperty("id")]
         public int Id { get; set; }
-        [Column("created_date")]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        [Column("deleted_date")]
-        public DateTime DeletedDate { get; set; }
-        [Column("updated_date")]
-        public DateTime UpdatedDate { get; set; }
+        [Column("created_at", TypeName = "timestamp")]
+        [JsonProperty("created_date")]
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        [Column("deleted_at", TypeName = "timestamp")]
+        [JsonProperty("deleted_date")]
+        public DateTime? DeletedAt { get; set; }
+        [Column("updated_at", TypeName = "timestamp")]
+        [JsonProperty("updated_date")]
+        public DateTime? UpdatedAt { get; set; }
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
     }

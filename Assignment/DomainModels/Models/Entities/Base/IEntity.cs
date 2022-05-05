@@ -6,7 +6,8 @@ namespace DomainModels.Models.Entities.Base
     {
         public int Id { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime DeletedDate { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

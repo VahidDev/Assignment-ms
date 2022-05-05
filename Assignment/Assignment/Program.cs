@@ -1,9 +1,6 @@
-using Assignment.DataSeeding;
 using Assignment.Utilities.Startup;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Repository.DAL;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -24,7 +21,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.Seed();
+//app.Seed();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.DAL.ModelBuilderExtensions
 {
-    public static class UserRolesBuilderExtension
+    public static class UserRoleBuilderExtension
     {
         public static ModelBuilder BuildUserRolesTable(this ModelBuilder builder)
         {
