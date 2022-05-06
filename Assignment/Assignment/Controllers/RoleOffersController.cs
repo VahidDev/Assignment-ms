@@ -24,8 +24,8 @@ namespace Assignment.Controllers
                 return Ok("Something went wront");
             }
         }
-        [HttpGet("GetRoleOffer")]
-        public async Task<IActionResult> GetRoleOfferAsync([FromRoute]int id)
+        [HttpGet("GetRoleOffer/{id}")]
+        public async Task<IActionResult> GetRoleOfferAsync(int id)
         {
             try
             {

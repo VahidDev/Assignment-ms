@@ -1,13 +1,10 @@
 ﻿using DomainModels.Models.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
-using Repository.DAL.ModelBuilderExtensions;
 namespace Repository.DAL
 {
-    public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+    public class AppDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
 
@@ -21,20 +18,13 @@ namespace Repository.DAL
         {
             base.OnModelCreating(builder);
             builder.Ignore<Volunteer>();
-            builder.BuildUsersTable();
-            builder.BuildRolesTable();
-            builder.BuildUserRolesTable();
-            builder.BuildUserTokensTable();
-            builder.BuildRoleClaimsTable();
-            builder.BuildUserLoginsTable();
-            builder.BuildUserClaimsTable();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options
             .UseNpgsql(_configuration.GetConnectionString("Default"), builder =>
             {
                 builder.MigrationsAssembly(nameof(Repository));
-                builder.MigrationsHistoryTable("__ef_migrations_history");
+                builder.MigrationsHistoryTable("__ef_assignment_migrations_history");
             }).ReplaceService<IHistoryRepository, EfMigrationsHistory>();
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
