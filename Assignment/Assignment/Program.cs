@@ -1,12 +1,13 @@
 using Assignment.Utilities.Startup;
-using Repository.DAL;
+using Repository.Mapper;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.AddAppDbContext(builder.Configuration);
 builder.AddRepository();
 WebApplication app = builder.Build();
 

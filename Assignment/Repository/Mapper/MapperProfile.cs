@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using DomainModels.Dtos;
+using DomainModels.Models.Entities;
 
 namespace Repository.Mapper
 {
-    internal class MapperProfile : Profile
+    public class MapperProfile : Profile
     {
         public MapperProfile()
         {
-
+            CreateMap<Venue, VenueDto>().ReverseMap();
+            CreateMap<JobTitle, JobTitleDto>().ReverseMap();
+            CreateMap<Location, LocationDto>().ReverseMap();
+            CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
+            CreateMap<FunctionalArea, FunctionalAreaDto>().ReverseMap();
         }
     }
 }

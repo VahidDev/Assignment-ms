@@ -39,55 +39,27 @@ namespace Repository.RepositoryServices.Implementation
 
         public virtual async Task<bool> AddAsync(T entity)
         {
-            try
-            {
-                await dbSet.AddAsync(entity);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await dbSet.AddAsync(entity);
+            return true;
         }
         public virtual async Task<bool> AddRangeAsync(IEnumerable<T> entities)
         {
-            try
-            {
-                await dbSet.AddRangeAsync(entities);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await dbSet.AddRangeAsync(entities);
+            return true;
         }
         public virtual async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                T item = await dbSet
-                    .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
-                item.IsDeleted = true;
-                item.DeletedAt = DateTime.UtcNow;
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            T item = await dbSet
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+            item.IsDeleted = true;
+            item.DeletedAt = DateTime.UtcNow;
+            return true;
         }
 
         public virtual bool Update(T entity)
         {
-            try
-            {
-                dbSet.Update(entity);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            dbSet.Update(entity);
+            return true;
         }
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression)
         {
