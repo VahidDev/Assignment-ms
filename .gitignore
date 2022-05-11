@@ -211,6 +211,9 @@ project.lock.json
 *.user
 _ReSharper.*
 bin
+bin/
+*.obj
+obj/
 obj
 packages
 #####
