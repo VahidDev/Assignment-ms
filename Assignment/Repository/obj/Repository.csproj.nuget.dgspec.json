@@ -49,9 +49,9 @@
               "target": "Package",
               "version": "[5.0.16, )"
             },
-            "Newtonsoft.Json": {
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[13.0.1, )"
+              "version": "[5.0.17, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

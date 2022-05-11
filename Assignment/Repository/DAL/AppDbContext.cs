@@ -18,5 +18,6 @@ namespace Repository.DAL
         public DbSet<Location> Locations { get; set; }
         public DbSet<RoleOffer> RoleOffers { get; set; }
         public DbSet<FunctionalArea> FunctionalAreas { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
     }
 }

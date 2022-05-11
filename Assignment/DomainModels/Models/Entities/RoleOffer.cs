@@ -1,4 +1,5 @@
 ﻿using DomainModels.Models.Entities.Base;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
@@ -14,5 +15,6 @@ namespace DomainModels.Models.Entities
         public Location Location { get; set; }
         [ForeignKey("job_title_id")]
         public JobTitle JobTitle { get; set; }
+        public ICollection<Volunteer> Volunteers { get; set; }
     }
 }
