@@ -34,7 +34,7 @@ namespace Repository.RepositoryServices.Implementation
 
         public virtual async Task<T> FindByIdAsync(int id)
         {
-            return await dbSet.FindAsync(id);
+            return await dbSet.FirstOrDefaultAsync(t=>t.Id==id&&!t.IsDeleted);
         }
 
         public virtual async Task<bool> AddAsync(T entity)
@@ -52,7 +52,7 @@ namespace Repository.RepositoryServices.Implementation
             T item = await dbSet
                 .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             item.IsDeleted = true;
-            item.DeletedAt = DateTime.UtcNow;
+            item.DeletedAt = DateTime.Now;
             dbSet.Update(item);
             return true;
         }
@@ -64,7 +64,7 @@ namespace Repository.RepositoryServices.Implementation
                 T item = await dbSet
               .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
                 item.IsDeleted = true;
-                item.DeletedAt = DateTime.UtcNow;
+                item.DeletedAt = DateTime.Now;
                 items.Add(item);
             }
             dbSet.UpdateRange(items);

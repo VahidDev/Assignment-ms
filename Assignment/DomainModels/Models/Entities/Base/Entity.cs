@@ -13,7 +13,7 @@ namespace DomainModels.Models.Entities.Base
         public int Id { get; set; }
         [Column("created_at", TypeName = "timestamp")]
         [JsonProperty("created_date")]
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         [Column("deleted_at", TypeName = "timestamp")]
         [JsonProperty("deleted_date")]
         public DateTime? DeletedAt { get; set; }

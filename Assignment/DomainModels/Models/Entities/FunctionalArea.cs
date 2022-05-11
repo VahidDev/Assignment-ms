@@ -1,5 +1,6 @@
 ﻿using DomainModels.Models.Entities.Base;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DomainModels.Models.Entities
 {

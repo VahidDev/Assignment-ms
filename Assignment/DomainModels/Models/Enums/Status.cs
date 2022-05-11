@@ -1,9 +1,14 @@
-﻿namespace DomainModels.Models.Enums
+﻿using NpgsqlTypes;
+
+namespace DomainModels.Models.Enums
 {
-    public enum Status
+    public enum Statusenum
     {
+        [PgName("Assign")]
         Assigned,
+        [PgName("Waitlist")]
         Waitlisted,
+        [PgName("Free")]
         Free
     }
 }
