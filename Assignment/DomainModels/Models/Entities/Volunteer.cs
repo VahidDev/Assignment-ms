@@ -1,4 +1,5 @@
 ﻿using DomainModels.Models.Entities.Base;
+using DomainModels.Models.Enums;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,6 +9,10 @@ namespace DomainModels.Models.Entities
     [Table("volunteers")]
     public class Volunteer:Entity
     {
+        [ForeignKey("role_offer_id")]
+        public int? RoleOfferId { get; set; }
+        [Column("status", TypeName = "character varying")]
+        public Status Status { get; set; }
         [Column("first_name", TypeName = "character varying")]
         [JsonProperty("first_name")]
         public string FirstName { get; set; }

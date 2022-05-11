@@ -53,12 +53,32 @@ namespace Repository.RepositoryServices.Implementation
                 .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             item.IsDeleted = true;
             item.DeletedAt = DateTime.UtcNow;
+            dbSet.Update(item);
+            return true;
+        }
+        public virtual async Task<bool> DeleteRangeAsync(IEnumerable<int> ids)
+        {
+            ICollection<T>items=new List<T>();
+            foreach (int id in ids)
+            {
+                T item = await dbSet
+              .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+                item.IsDeleted = true;
+                item.DeletedAt = DateTime.UtcNow;
+                items.Add(item);
+            }
+            dbSet.UpdateRange(items);
             return true;
         }
 
         public virtual bool Update(T entity)
         {
             dbSet.Update(entity);
+            return true;
+        }
+        public virtual bool UpdateRange(IEnumerable<T> entities)
+        {
+            dbSet.UpdateRange(entities);
             return true;
         }
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression)

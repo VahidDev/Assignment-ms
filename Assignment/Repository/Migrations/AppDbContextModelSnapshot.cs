@@ -57,7 +57,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_areas");
+                    b.ToTable("functional_areas", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
@@ -95,7 +95,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("job_titles");
+                    b.ToTable("job_titles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
@@ -133,7 +133,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("locations");
+                    b.ToTable("locations", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
@@ -183,7 +183,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("venue_id");
 
-                    b.ToTable("role_offers");
+                    b.ToTable("role_offers", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>
@@ -221,7 +221,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("venues");
+                    b.ToTable("venues", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>

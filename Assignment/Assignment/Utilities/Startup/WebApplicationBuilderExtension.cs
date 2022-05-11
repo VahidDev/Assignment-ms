@@ -1,4 +1,6 @@
-﻿using DomainModels.Models.Entities;
+﻿using Assignment.Services.Abstraction;
+using Assignment.Services.Implementation;
+using DomainModels.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Repository.DAL;
@@ -26,6 +28,12 @@ namespace Assignment.Utilities.Startup
                     builder.MigrationsHistoryTable("__ef_assignment_migrations_history");
                 }).ReplaceService<IHistoryRepository, EfMigrationsHistory>();
                 });
+            return builder;
+        }
+        public static WebApplicationBuilder AddCustomServices(this WebApplicationBuilder builder)
+        {
+            builder.Services
+                .AddScoped<IAssignmentServices, AssignmentServices>();
             return builder;
         }
     }

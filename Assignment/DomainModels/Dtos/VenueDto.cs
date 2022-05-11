@@ -1,8 +1,9 @@
-﻿namespace DomainModels.Dtos
+﻿using DomainModels.Dtos.Base;
+
+namespace DomainModels.Dtos
 {
-    public class VenueDto
+    public class VenueDto : BaseDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
     }
