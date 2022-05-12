@@ -22,45 +22,6 @@ namespace Repository.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DomainModels.Models.Entities.Assignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("updated_at");
-
-                    b.Property<int>("VolunteerId")
-                        .HasColumnType("integer")
-                        .HasColumnName("volunteer_id");
-
-                    b.Property<int?>("role_offer_id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("role_offer_id");
-
-                    b.ToTable("assignment");
-                });
-
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalArea", b =>
                 {
                     b.Property<int>("Id")
@@ -263,15 +224,6 @@ namespace Repository.Migrations
                     b.ToTable("venues");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.Assignment", b =>
-                {
-                    b.HasOne("DomainModels.Models.Entities.RoleOffer", "RoleOffer")
-                        .WithMany("Assignments")
-                        .HasForeignKey("role_offer_id");
-
-                    b.Navigation("RoleOffer");
-                });
-
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
@@ -307,11 +259,6 @@ namespace Repository.Migrations
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
                 {
                     b.Navigation("RoleOffers");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
-                {
-                    b.Navigation("Assignments");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>

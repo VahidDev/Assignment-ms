@@ -1,7 +1,5 @@
 ﻿using Assignment.Services.Abstraction;
 using Assignment.Services.Implementation;
-using Assignment.Utilities.ServicesUtilities.AssignmentUtilities.Abstraction;
-using Assignment.Utilities.ServicesUtilities.AssignmentUtilities.Implementation;
 using DomainModels.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -36,8 +34,7 @@ namespace Assignment.Utilities.Startup
         {
             builder.Services
                 .AddScoped<IAssignmentServices, AssignmentServices>();
-            builder.Services
-                .AddScoped<IAssignmentUtilities, AssignmentUtilities>();
+
             return builder;
         }
     }

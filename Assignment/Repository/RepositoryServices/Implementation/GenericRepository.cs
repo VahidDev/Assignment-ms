@@ -32,11 +32,15 @@ namespace Repository.RepositoryServices.Implementation
             return await dbSet.Where(t => !t.IsDeleted).ToListAsync();
         }
 
-        public virtual async Task<T> FindByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await dbSet.FirstOrDefaultAsync(t=>t.Id==id&&!t.IsDeleted);
         }
-
+        public virtual async Task<T> GetByIdAsNoTrackingAsync(int id)
+        {
+            return await dbSet.AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+        }
         public virtual async Task<bool> AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);

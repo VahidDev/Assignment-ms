@@ -12,6 +12,7 @@ namespace Repository.Mapper
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
             CreateMap<Location, LocationDto>().ReverseMap();
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
+            CreateMap<Volunteer, VolunteerDto>().ReverseMap();
             CreateMap<FunctionalArea, FunctionalAreaDto>().ReverseMap();
         }
     }

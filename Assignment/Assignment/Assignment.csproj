@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Constants\" />
+    <Folder Include="Utilities\ServicesUtilities\" />
   </ItemGroup>
 
 </Project>

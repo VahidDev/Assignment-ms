@@ -1,5 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using AutoMapper;
 using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +8,9 @@ namespace Assignment.Controllers
     [ApiController]
     public class AssignmentsController:ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IAssignmentServices _assignmentServices;
-        public AssignmentsController(IMapper mapper,IAssignmentServices assignmentServices)
+        public AssignmentsController(IAssignmentServices assignmentServices)
         {
-            _mapper = mapper;
             _assignmentServices= assignmentServices;
         }
         [HttpPost("AssignOrWaitList")]

@@ -26,7 +26,7 @@ namespace Assignment.Controllers
         [HttpGet("GetRoleOffer/{id}")]
         public async Task<IActionResult> GetRoleOfferAsync(int id)
         {
-            RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository.FindByIdAsync(id);
+            RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository.GetByIdAsync(id);
             if (roleOffer == null) return NotFound();
             return Ok(_mapper.Map<RoleOfferDto>(roleOffer));
         }

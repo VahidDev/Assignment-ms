@@ -16,6 +16,5 @@ namespace DomainModels.Models.Entities
         [ForeignKey("job_title_id")]
         public JobTitle JobTitle { get; set; }
         public ICollection<Volunteer> Volunteers { get; set; }
-        public ICollection<Assignment> Assignments { get; set; }
     }
 }

@@ -9,7 +9,8 @@ namespace Repository.RepositoryServices.Abstraction
     public interface IGenericRepository<T> where T : class, IEntity
     {
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> FindByIdAsync(int id);
+        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsNoTrackingAsync(int id);
         Task<bool> AddAsync(T entity);
         Task<bool> AddRangeAsync(IEnumerable<T> entities);
         Task<bool> DeleteAsync(int id);
