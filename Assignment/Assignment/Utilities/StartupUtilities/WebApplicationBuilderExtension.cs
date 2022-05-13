@@ -34,6 +34,11 @@ namespace Assignment.Utilities.Startup
         {
             builder.Services
                 .AddScoped<IAssignmentServices, AssignmentServices>();
+            builder.Services
+                .AddScoped<IRoleOfferServices, RoleOfferServices>();
+            builder.Services
+                .AddScoped<IFileServices, FileServices>();
+
             return builder;
         }
     }

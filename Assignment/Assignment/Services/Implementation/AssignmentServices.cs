@@ -1,88 +1,67 @@
 ﻿using Assignment.Services.Abstraction;
+using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using DomainModels.Models.Enums;
 using Repository.RepositoryServices.Abstraction;
-using Entities= DomainModels.Models.Entities;
 namespace Assignment.Services.Implementation
 {
-    public class AssignmentServices : IAssignmentServices
+    internal class AssignmentServices : IAssignmentServices
     {
         private readonly IUnitOfWork _unitOfWork;
-        public AssignmentServices(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public AssignmentServices(IUnitOfWork unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper=mapper;
         }
         public async Task<bool> AssignOrWaitlistAsync(ICollection<VolunteerDto> volunteerDtos)
         {
-            ICollection<Volunteer> volunteers=new List<Volunteer>();
-            ICollection<Entities.Assignment> assignments=new List<Entities.Assignment>();
+            List<Volunteer> volunteers =new ();
             foreach (VolunteerDto volunteerDto in volunteerDtos)
             {
-                Volunteer dbVolunteer = await _unitOfWork.VolunteerRepository
-                        .FindByIdAsync(volunteerDto.Id);
-                RoleOffer dbRoleOffer = await _unitOfWork.RoleOfferRepository
-                    .FindByIdAsync(volunteerDto.RoleOfferId);
-                if (dbVolunteer == null || dbRoleOffer == null) return false;
+                // Check if the volunteer and role offer exists
+                if (!await _unitOfWork.VolunteerRepository
+                    .AnyAsync(v => v.Id == volunteerDto.Id) 
+                    || !await _unitOfWork.RoleOfferRepository
+                    .AnyAsync(r => r.Id == volunteerDto.RoleOfferId)) 
+                    return false;
 
-                dbVolunteer.Status = volunteerDto.Status;
-                dbVolunteer.RoleOfferId = volunteerDto.RoleOfferId;
-
-                if (volunteerDto.Status == Status.Assigned)
-                {
-                    assignments.Add
-                        (new Entities.Assignment {VolunteerId= volunteerDto.Id,RoleOffer =dbRoleOffer});
-                }
-                volunteers.Add(dbVolunteer);
+                Volunteer updatedVolunteer =_mapper.Map<Volunteer>(volunteerDto);
+                updatedVolunteer.UpdatedAt = DateTime.Now;
+                volunteers.Add(updatedVolunteer);
             }
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
-
-            if(assignments.Count > 0)
-                await _unitOfWork.AssignmentRepository.AddRangeAsync(assignments);
 
             await _unitOfWork.CompleteAsync();
             return true;
         }
         public async Task<bool> ChangeToAnyStatusAsync(ICollection<VolunteerDto> volunteerDtos)
         {
-            ICollection<Volunteer> volunteers = new List<Volunteer>();
-            ICollection<Entities.Assignment> addedAssignments = new List<Entities.Assignment>();
-            ICollection<int> deletedAssignmentIds = new List<int>();
+            List<Volunteer> volunteers = new ();
 
             foreach (VolunteerDto volunteerDto in volunteerDtos)
             {
                 Volunteer dbVolunteer = await _unitOfWork.VolunteerRepository
-                       .FindByIdAsync(volunteerDto.Id);
+                       .GetByIdAsNoTrackingAsync(volunteerDto.Id);
 
                 if (dbVolunteer == null || dbVolunteer.RoleOfferId== null) return false;
+                // Check if the role offer exists
+                if (!await _unitOfWork.RoleOfferRepository
+                    .AnyAsync(r => r.Id == (int)dbVolunteer.RoleOfferId))
+                    return false;
 
-                RoleOffer dbRoleOffer = await _unitOfWork.RoleOfferRepository
-                    .FindByIdAsync((int)dbVolunteer.RoleOfferId);
+                Volunteer updatedVolunteer = _mapper.Map<Volunteer>(volunteerDto);
+                updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
+                updatedVolunteer.UpdatedAt = DateTime.Now;
 
-                if (dbRoleOffer == null) return false;
-
-                dbVolunteer.Status = volunteerDto.Status;
-
-                if (volunteerDto.Status == Status.Assigned)
+                if (volunteerDto.Status == Statusenum.Free)
                 {
-                    addedAssignments.Add
-                       (new Entities.Assignment { VolunteerId = volunteerDto.Id, RoleOffer = dbRoleOffer });
+                    updatedVolunteer.RoleOfferId = null;
                 }
-                else if(volunteerDto.Status == Status.Free)
-                {
-                    dbVolunteer.RoleOfferId = null;
-                    deletedAssignmentIds.Add((await _unitOfWork.AssignmentRepository
-                        .FindByIdAsync(volunteerDto.Id)).Id);
-                }
-                volunteers.Add(dbVolunteer);
+                volunteers.Add(updatedVolunteer);
             }
-
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
-            if (addedAssignments.Count > 0)
-                await _unitOfWork.AssignmentRepository.AddRangeAsync(addedAssignments);
-
-            if (deletedAssignmentIds.Count > 0)
-                await _unitOfWork.AssignmentRepository.DeleteRangeAsync(deletedAssignmentIds);
 
             await _unitOfWork.CompleteAsync();
             return true;

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.DAL;
 using Repository.RepositoryServices.Abstraction;
+using Repository.Utilities.GenericRepositoryUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +28,28 @@ namespace Repository.RepositoryServices.Implementation
             _querable = context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync
+            (IEnumerable<string> includingItems = null)
         {
-            return await dbSet.Where(t => !t.IsDeleted).ToListAsync();
+            _querable=_querable.IncludeItemsIfExist(includingItems);
+            return await _querable.Where(t => !t.IsDeleted).ToListAsync();
         }
-
-        public virtual async Task<T> FindByIdAsync(int id)
+        public IEnumerable<T> GetAllAsNoTracking
+            (Expression<Func<T, bool>> predicate = null, 
+            IEnumerable<string> includingItems = null)
         {
-            return await dbSet.FindAsync(id);
+            _querable = _querable.IncludeItemsIfExist(includingItems);
+            return _querable.Where(predicate).AsNoTracking();
         }
-
+        public virtual async Task<T> GetByIdAsync(int id)
+        {
+            return await dbSet.FirstOrDefaultAsync(t=>t.Id==id&&!t.IsDeleted);
+        }
+        public virtual async Task<T> GetByIdAsNoTrackingAsync(int id)
+        {
+            return await dbSet.AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+        }
         public virtual async Task<bool> AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
@@ -52,7 +65,7 @@ namespace Repository.RepositoryServices.Implementation
             T item = await dbSet
                 .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             item.IsDeleted = true;
-            item.DeletedAt = DateTime.UtcNow;
+            item.DeletedAt = DateTime.Now;
             dbSet.Update(item);
             return true;
         }
@@ -64,7 +77,7 @@ namespace Repository.RepositoryServices.Implementation
                 T item = await dbSet
               .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
                 item.IsDeleted = true;
-                item.DeletedAt = DateTime.UtcNow;
+                item.DeletedAt = DateTime.Now;
                 items.Add(item);
             }
             dbSet.UpdateRange(items);
@@ -79,11 +92,14 @@ namespace Repository.RepositoryServices.Implementation
         public virtual bool UpdateRange(IEnumerable<T> entities)
         {
             dbSet.UpdateRange(entities);
+            
             return true;
         }
-        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FirstOrDefaultAsync
+            (Expression<Func<T, bool>> expression, IEnumerable<string> includingItems = null)
         {
-            return await dbSet.FirstOrDefaultAsync(expression);
+            _querable = _querable.IncludeItemsIfExist(includingItems);
+            return await _querable.FirstOrDefaultAsync(expression);
         }
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression = null)
         {
@@ -96,13 +112,7 @@ namespace Repository.RepositoryServices.Implementation
         public virtual async Task<IEnumerable<T>> FindAllAsync
             (Expression<Func<T, bool>> predicate, IEnumerable<string> includingItems = null)
         {
-            if (includingItems != null)
-            {
-                foreach (string item in includingItems)
-                {
-                    _querable.Include(item);
-                }
-            }
+            _querable = _querable.IncludeItemsIfExist(includingItems);
             return await _querable.Where(predicate).ToListAsync();
         }
 

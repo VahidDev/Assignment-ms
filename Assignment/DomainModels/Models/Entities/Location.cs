@@ -1,5 +1,6 @@
 ﻿using DomainModels.Models.Entities.Base;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
@@ -8,6 +9,7 @@ namespace DomainModels.Models.Entities
     public class Location : Entity
     {
         [Column("name")]
+        [Display(Name= "Entity")]
         public string Name { get; set; }
         [Column("code")]
         public string Code { get; set; }
