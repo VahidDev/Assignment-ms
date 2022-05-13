@@ -14,7 +14,6 @@ namespace Repository.DAL
         {
             // UnComment this section when migrating
             //builder.Ignore<Volunteer>();
-
             //when creating custom enums
             //builder.HasPostgresEnum<Statusenum>();
             base.OnModelCreating(builder);

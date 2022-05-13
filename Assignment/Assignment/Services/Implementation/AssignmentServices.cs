@@ -6,7 +6,7 @@ using DomainModels.Models.Enums;
 using Repository.RepositoryServices.Abstraction;
 namespace Assignment.Services.Implementation
 {
-    public class AssignmentServices : IAssignmentServices
+    internal class AssignmentServices : IAssignmentServices
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
