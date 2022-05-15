@@ -41,9 +41,11 @@ namespace Repository.RepositoryServices.Implementation
             _querable = _querable.IncludeItemsIfExist(includingItems);
             return _querable.Where(predicate).AsNoTracking();
         }
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync
+            (int id, IEnumerable<string> includingItems = null)
         {
-            return await dbSet.FirstOrDefaultAsync(t=>t.Id==id&&!t.IsDeleted);
+            _querable= _querable.IncludeItemsIfExist(includingItems);
+            return await _querable.FirstOrDefaultAsync(t=>t.Id==id&&!t.IsDeleted);
         }
         public virtual async Task<T> GetByIdAsNoTrackingAsync(int id)
         {
@@ -92,7 +94,6 @@ namespace Repository.RepositoryServices.Implementation
         public virtual bool UpdateRange(IEnumerable<T> entities)
         {
             dbSet.UpdateRange(entities);
-            
             return true;
         }
         public async Task<T> FirstOrDefaultAsync

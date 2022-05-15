@@ -1,7 +1,9 @@
-﻿namespace DomainModels.Dtos.Base
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DomainModels.Dtos.Base
 {
     public interface IBaseDto
     {
-        int Id { get; set; }
+        int? Id { get; set; }
     }
 }

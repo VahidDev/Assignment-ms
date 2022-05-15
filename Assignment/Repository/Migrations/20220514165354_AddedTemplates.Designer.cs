@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Repository.DAL;
@@ -11,9 +12,10 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220514165354_AddedTemplates")]
+    partial class AddedTemplates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,6 +53,9 @@ namespace Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("requirement");
 
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
@@ -59,12 +64,9 @@ namespace Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("value");
 
-                    b.Property<int?>("template_id")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("template_id");
+                    b.HasIndex("TemplateId");
 
                     b.ToTable("filter");
                 });
@@ -201,16 +203,14 @@ namespace Repository.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<int>("Headcount")
-                        .HasColumnType("integer")
-                        .HasColumnName("headcount");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
                     b.Property<int>("RoleOfferId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_offer_id");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
@@ -317,7 +317,7 @@ namespace Repository.Migrations
                 {
                     b.HasOne("DomainModels.Models.Entities.Template", "Template")
                         .WithMany("Filters")
-                        .HasForeignKey("template_id");
+                        .HasForeignKey("TemplateId");
 
                     b.Navigation("Template");
                 });

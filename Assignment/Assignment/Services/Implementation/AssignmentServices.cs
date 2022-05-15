@@ -36,14 +36,15 @@ namespace Assignment.Services.Implementation
             await _unitOfWork.CompleteAsync();
             return true;
         }
-        public async Task<bool> ChangeToAnyStatusAsync(ICollection<VolunteerDto> volunteerDtos)
+        public async Task<bool> ChangeToAnyStatusAsync
+            (ICollection<VolunteerChangeToAnyStatusDto> volunteerDtos)
         {
             List<Volunteer> volunteers = new ();
 
-            foreach (VolunteerDto volunteerDto in volunteerDtos)
+            foreach (VolunteerChangeToAnyStatusDto volunteerDto in volunteerDtos)
             {
                 Volunteer dbVolunteer = await _unitOfWork.VolunteerRepository
-                       .GetByIdAsNoTrackingAsync(volunteerDto.Id);
+                       .GetByIdAsNoTrackingAsync((int)volunteerDto.Id);
 
                 if (dbVolunteer == null || dbVolunteer.RoleOfferId== null) return false;
                 // Check if the role offer exists

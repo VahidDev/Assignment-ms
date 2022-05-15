@@ -38,7 +38,8 @@ namespace Assignment.Utilities.Startup
                 .AddScoped<IRoleOfferServices, RoleOfferServices>();
             builder.Services
                 .AddScoped<IFileServices, FileServices>();
-
+            builder.Services
+                .AddScoped<ITemplateServices, TemplateServices>();
             return builder;
         }
     }

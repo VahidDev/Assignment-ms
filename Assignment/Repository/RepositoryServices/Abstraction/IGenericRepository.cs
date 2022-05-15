@@ -11,7 +11,7 @@ namespace Repository.RepositoryServices.Abstraction
         Task<IEnumerable<T>> GetAllAsync(IEnumerable<string> includingItems = null);
         IEnumerable<T> GetAllAsNoTracking(Expression<Func<T, bool>> predicate = null,
             IEnumerable<string> includingItems = null);
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(int id, IEnumerable<string> includingItems = null);
         Task<T> GetByIdAsNoTrackingAsync(int id);
         Task<bool> AddAsync(T entity);
         Task<bool> AddRangeAsync(IEnumerable<T> entities);

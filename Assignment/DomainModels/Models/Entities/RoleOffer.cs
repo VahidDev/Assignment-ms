@@ -22,9 +22,10 @@ namespace DomainModels.Models.Entities
         public JobTitle JobTitle { get; set; }
         public ICollection<Volunteer> Volunteers { get; set; }
         [Display(Name = "Role ID")]
+        [Column("role_offer_id")]
         public int RoleOfferId { get; set; }
         [Display(Name = "Headcount")]
-
+        [Column("headcount")]
         public int Headcount { get; set; }
     }
 }

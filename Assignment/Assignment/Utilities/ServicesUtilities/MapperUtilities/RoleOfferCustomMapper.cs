@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using DomainModels.Models.Entities;
+using System;
 
 namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
 {
     public static class RoleOfferCustomMapper
     {
-        public static void MapDbRoleOfferIdsToExcelRoleOfferIds
+        public static void MapDbRoleOfferToExcelRoleOfferId
             (ref RoleOffer dbRoleOffer,RoleOffer newExcelRoleOffer, IMapper mapper)
         {
             int dbRoleOfferId = dbRoleOffer.Id;

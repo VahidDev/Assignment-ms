@@ -29,11 +29,11 @@ namespace Assignment.Services.Implementation
                     $"{file.ContentType}");
             }
             // Get All RoleOffers from excel file
-            ICollection<RoleOffer> roleOffers = _fileServices
+            ICollection<RoleOffer> excelRoleOffers = _fileServices
                 .ReadCollectionFromExcelFile<RoleOffer>(file);
 
             // the array of roleOffer ids given from the excel helps to filter db
-            int[] roleOfferIds=roleOffers.Select(r=>r.RoleOfferId).ToArray();
+            int[] roleOfferIds= excelRoleOffers.Select(r=>r.RoleOfferId).ToArray();
 
             // filter db by given roleOffer ids from excel
             List<RoleOffer> dbRoleOffers = _unitOfWork.RoleOfferRepository
@@ -43,21 +43,21 @@ namespace Assignment.Services.Implementation
                     { nameof(Venue), nameof(Location), nameof(JobTitle)
                     ,nameof(FunctionalArea) }).ToList();
 
-            List<RoleOffer> roleOfferList=new();
-            foreach (RoleOffer newExcelRoleOffer in roleOffers)
+            List<RoleOffer> list=new();
+            foreach (RoleOffer newExcelRoleOffer in excelRoleOffers)
             {
-                RoleOffer? dbRoleOffer =dbRoleOffers.FirstOrDefault(r => !r.IsDeleted 
-                    && r.RoleOfferId == newExcelRoleOffer.RoleOfferId);
+                RoleOffer? dbRoleOffer = dbRoleOffers
+                    .FirstOrDefault(r => r.RoleOfferId == newExcelRoleOffer.RoleOfferId);
                 if (dbRoleOffer != null)
                 {
                     // if it exists in db then we update
                     RoleOfferCustomMapper
-                        .MapDbRoleOfferIdsToExcelRoleOfferIds
+                        .MapDbRoleOfferToExcelRoleOfferId
                         (ref dbRoleOffer, newExcelRoleOffer, _mapper);
                 }
-                roleOfferList.Add(newExcelRoleOffer);
+                list.Add(newExcelRoleOffer);
             }
-            _unitOfWork.RoleOfferRepository.UpdateRange(roleOfferList);
+            _unitOfWork.RoleOfferRepository.UpdateRange(list);
             await _unitOfWork.CompleteAsync();
             return "true";
         }

@@ -11,12 +11,14 @@ namespace Repository.RepositoryServices.Implementation
         private readonly ILogger _logger;
         public IRoleOfferRepository RoleOfferRepository { get; private set; }
         public IVolunteerRepository VolunteerRepository { get; private set; }
+        public ITemplateRepository TemplateRepository { get; private set; }
         public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("logs");
             RoleOfferRepository = new RoleOfferRepository(context, _logger);
             VolunteerRepository = new VolunteerRepository(context, _logger);
+            TemplateRepository = new TemplateRepository(context, _logger);
         }
         public async Task CompleteAsync()
         {

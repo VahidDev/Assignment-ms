@@ -22,9 +22,8 @@ namespace Assignment.Controllers
         }
         [HttpPost("ChangeToAnyStatus")]
         public async Task<IActionResult> ChangeToAnyStatusAsync
-            ([FromBody] ICollection<VolunteerDto> volunteers)
+            ([FromBody] ICollection<VolunteerChangeToAnyStatusDto> volunteers)
         {
-
             return Ok(volunteers.Count == 0 ? false
                 : await _assignmentServices.ChangeToAnyStatusAsync(volunteers));
         }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Repository.DAL;
@@ -11,9 +12,10 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220514165737_ChangedColumnNameOfTemplateIdInFilter")]
+    partial class ChangedColumnNameOfTemplateIdInFilter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,16 +203,14 @@ namespace Repository.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<int>("Headcount")
-                        .HasColumnType("integer")
-                        .HasColumnName("headcount");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
                     b.Property<int>("RoleOfferId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_offer_id");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
