@@ -1,10 +1,13 @@
 ﻿using DomainModels.Dtos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Services.Abstraction
 {
     public interface IAssignmentServices
     {
-        Task<bool> AssignOrWaitlistAsync(ICollection<VolunteerDto> volunteers); 
-        Task<bool> ChangeToAnyStatusAsync(ICollection<VolunteerChangeToAnyStatusDto> volunteers); 
+        Task<JsonResult> AssignOrWaitlistAsync
+            (ICollection<AssignOrWaitlistVolunteerDto> volunteers); 
+        Task<JsonResult> ChangeToAnyStatusAsync
+            (ICollection<VolunteerChangeToAnyStatusDto> volunteers); 
     }
 }

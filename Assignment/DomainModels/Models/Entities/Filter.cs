@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
-    [Table("filter")]
+    [Table("filters")]
     public class Filter:Entity
     {
         [Column("requirement")]

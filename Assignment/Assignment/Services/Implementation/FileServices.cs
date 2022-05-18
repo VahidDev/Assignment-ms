@@ -30,14 +30,10 @@ namespace Assignment.Services.Implementation
 
                 // all the needed props are storoed in this dict
                 // Needed props have Display Attribute
-                Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict = new();
-                foreach (PropertyInfo prop in props)
-                {
-                    string? name = prop.GetCustomAttribute<DisplayAttribute>()?.Name;
-                    if (name == null)
-                        continue;
-                    displayAttributeNameAndPropDict.Add(name, prop);
-                }
+                Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict 
+                    = DisplayAttributeAndPropDictGenerator
+                    .CreateDict(props, new Dictionary<string, PropertyInfo>());
+               
                 int startingRow = 1;
                 int startingColumn = 1;
                 int headerRowNumber = 0;
@@ -72,15 +68,19 @@ namespace Assignment.Services.Implementation
                             ||ws.Cells[headerRowNumber, j].Value==null)
                             continue;
 
-                        string headerCellValue = ws.Cells[headerRowNumber, j].Value.ToString();
+                        string headerCellValue = ws.Cells[headerRowNumber, j].Value.ToString()??"";
                         if (!displayAttributeNameAndPropDict
                             .ContainsKey(headerCellValue)) continue;
                         //ws.Cells[i, j].Value is the current cell value
                         propNameAndValueDict.Add(headerCellValue, ws.Cells[i, j].Value);
                     }
+                    if (propNameAndValueDict.Count == 0)
+                    {
+                        return list;
+                    }
                     T parentObj = Activator.CreateInstance<T>();
-                    List<PropertyInfo> allProprs = parentObj
-                        .GetType().GetProperties().ToList();
+                    List<PropertyInfo> allProprs =typeof(T).GetProperties()
+                        .ToList();
                     foreach (PropertyInfo prop in allProprs)
                     {
                         // ignore if prop doesn't have DisplayAttribute
@@ -88,15 +88,16 @@ namespace Assignment.Services.Implementation
                             continue;
                         if (prop.IsInNamespace(nameof(DomainModels)))
                         {
+                            if(parentObj!=null)
                             prop.CreateCustomObjectAndSetToProperty
-                                  (propNameAndValueDict, parentObj);
+                                    (propNameAndValueDict, parentObj);
                         }
                         else
                         {
                             prop.SetPropertyValue<T>(parentObj
                                 ,propNameAndValueDict
                                 .FirstOrDefault(p => p.Key == 
-                                prop.GetCustomAttribute<DisplayAttribute>().Name).Value);
+                                prop.GetCustomAttribute<DisplayAttribute>()?.Name).Value);
                         }
                     }
                     propNameAndValueDict.Clear();

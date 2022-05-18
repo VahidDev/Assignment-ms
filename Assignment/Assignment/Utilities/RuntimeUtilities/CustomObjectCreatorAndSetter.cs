@@ -8,8 +8,9 @@ namespace Assignment.Utilities.RuntimeUtilities
           (this PropertyInfo propertyInfo, Dictionary<string, object> propNameAndValueDict,
           object parentObj)
         {
+            object? newObj = Activator.CreateInstance(propertyInfo.PropertyType);
             object customObj = propertyInfo
-                               .CreateCustomObject(propNameAndValueDict, parentObj);
+                               .CreateCustomObject(propNameAndValueDict, newObj);
             propertyInfo?.SetValue(parentObj,
                 Convert.ChangeType(customObj, propertyInfo.PropertyType), null);
         }

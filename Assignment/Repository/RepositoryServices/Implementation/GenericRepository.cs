@@ -34,12 +34,12 @@ namespace Repository.RepositoryServices.Implementation
             _querable=_querable.IncludeItemsIfExist(includingItems);
             return await _querable.Where(t => !t.IsDeleted).ToListAsync();
         }
-        public IEnumerable<T> GetAllAsNoTracking
-            (Expression<Func<T, bool>> predicate = null, 
+        public async Task<IEnumerable<T>> GetAllAsNoTrackingAsync
+            (Expression<Func<T, bool>> predicate, 
             IEnumerable<string> includingItems = null)
         {
             _querable = _querable.IncludeItemsIfExist(includingItems);
-            return _querable.Where(predicate).AsNoTracking();
+            return await _querable.Where(predicate).AsNoTracking().ToListAsync();
         }
         public virtual async Task<T> GetByIdAsync
             (int id, IEnumerable<string> includingItems = null)
@@ -62,12 +62,9 @@ namespace Repository.RepositoryServices.Implementation
             await dbSet.AddRangeAsync(entities);
             return true;
         }
-        public virtual async Task<bool> DeleteAsync(int id)
+        public virtual bool Delete(T item)
         {
-            T item = await dbSet
-                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             item.IsDeleted = true;
-            item.DeletedAt = DateTime.Now;
             dbSet.Update(item);
             return true;
         }
@@ -77,9 +74,9 @@ namespace Repository.RepositoryServices.Implementation
             foreach (int id in ids)
             {
                 T item = await dbSet
-              .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+                    .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+                if(item==null)return false;
                 item.IsDeleted = true;
-                item.DeletedAt = DateTime.Now;
                 items.Add(item);
             }
             dbSet.UpdateRange(items);
@@ -102,6 +99,12 @@ namespace Repository.RepositoryServices.Implementation
             _querable = _querable.IncludeItemsIfExist(includingItems);
             return await _querable.FirstOrDefaultAsync(expression);
         }
+        public async Task<T> FirstOrDefaultAsNoTrackingAsync
+           (Expression<Func<T, bool>> expression, IEnumerable<string> includingItems = null)
+        {
+            _querable = _querable.IncludeItemsIfExist(includingItems);
+            return await _querable.AsNoTracking().FirstOrDefaultAsync(expression);
+        }
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression = null)
         {
             if (expression != null)
@@ -117,5 +120,10 @@ namespace Repository.RepositoryServices.Implementation
             return await _querable.Where(predicate).ToListAsync();
         }
 
+        public bool RemoveRangePermanently(ICollection<T>items)
+        {
+            dbSet.RemoveRange(items);
+            return true;
+        }
     }
 }

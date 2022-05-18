@@ -10,12 +10,15 @@ namespace Repository.Mapper
         {
             CreateMap<Venue, VenueDto>().ReverseMap();
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
-            CreateMap<Location, LocationDto>().ReverseMap();
+            CreateMap<RoleOffer,GetRoleOffersDto>().ReverseMap();
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
-            CreateMap<Volunteer, VolunteerDto>().ReverseMap();
+            CreateMap<ExcelEntity,ExcelEntityDto>().ReverseMap();
+            CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap();
             CreateMap<Filter, CreateFilterDto>().ReverseMap();
+            CreateMap<Filter, GetFilterDto>().ReverseMap();
             CreateMap<Filter, UpdateFilterDto>().ReverseMap(); 
             CreateMap<Template, UpdateTemplateDto>().ReverseMap(); 
+            CreateMap<Template, GetTemplateDto>().ReverseMap(); 
             CreateMap<Template, CreateTemplateDto>().ReverseMap(); 
             CreateMap<FunctionalArea, FunctionalAreaDto>().ReverseMap();
             CreateMap<Volunteer, VolunteerChangeToAnyStatusDto>().ReverseMap();

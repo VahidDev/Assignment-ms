@@ -1,4 +1,5 @@
-﻿using Assignment.Services.Abstraction;
+﻿using Assignment.Factory;
+using Assignment.Services.Abstraction;
 using Assignment.Services.Implementation;
 using DomainModels.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ namespace Assignment.Utilities.Startup
                     builder.MigrationsAssembly(nameof(Repository));
                     builder.MigrationsHistoryTable("__ef_assignment_migrations_history");
                 }).ReplaceService<IHistoryRepository, EfMigrationsHistory>();
-                });
+                },ServiceLifetime.Scoped);
             return builder;
         }
         public static WebApplicationBuilder AddCustomServices(this WebApplicationBuilder builder)
@@ -40,6 +41,8 @@ namespace Assignment.Utilities.Startup
                 .AddScoped<IFileServices, FileServices>();
             builder.Services
                 .AddScoped<ITemplateServices, TemplateServices>();
+            builder.Services
+               .AddScoped<IJsonFactory, JsonFactory>();
             return builder;
         }
     }

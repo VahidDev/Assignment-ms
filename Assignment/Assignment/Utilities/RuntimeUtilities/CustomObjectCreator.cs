@@ -7,10 +7,8 @@ namespace Assignment.Utilities.RuntimeUtilities
     {
         public static object CreateCustomObject
            (this PropertyInfo propertyInfo, Dictionary<string, object> propValueDict,
-           object parentObj)
+           object item)
         {
-            object? item = Activator.CreateInstance(propertyInfo.PropertyType);
-
             IReadOnlyCollection<PropertyInfo> props = item.GetType().GetProperties();
 
             foreach (PropertyInfo prop in props)
@@ -20,9 +18,10 @@ namespace Assignment.Utilities.RuntimeUtilities
                     continue;
                 if (prop.IsInNamespace(nameof(DomainModels)))
                 {
-                    object customObj = prop.CreateCustomObject(propValueDict, parentObj);
-                    prop?.SetValue(customObj,
-                        Convert.ChangeType(parentObj, prop.PropertyType), null);
+                    object? newItem = Activator.CreateInstance(prop.PropertyType);
+                    object customObj = prop.CreateCustomObject(propValueDict, newItem);
+                    prop?.SetValue(item,
+                        Convert.ChangeType(customObj, prop.PropertyType), null);
                 }
                 else
                 {

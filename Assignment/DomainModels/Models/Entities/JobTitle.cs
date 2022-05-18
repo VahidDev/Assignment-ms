@@ -13,7 +13,14 @@ namespace DomainModels.Models.Entities
         public string Name { get; set; }
         [Column("code")]
         public string Code { get; set; }
+        [Display(Name = "JT ID")]
+        [Column("job_title_id")]
+        public int ExcelJTId { get; set; }
+        public ICollection<Venue> Venues { get; set; }
+        public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        
+        public ICollection<FunctionalAreaJobTitles> FunctionalAreaJobTitles { get; set; }
+        public ICollection<JobTitleVenues> JobTitleVenues { get; set; }
+
     }
 }

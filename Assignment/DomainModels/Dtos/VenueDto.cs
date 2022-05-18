@@ -1,4 +1,5 @@
 ﻿using DomainModels.Dtos.Base;
+using System.Collections.Generic;
 
 namespace DomainModels.Dtos
 {
@@ -6,5 +7,6 @@ namespace DomainModels.Dtos
     {
         public string Name { get; set; }
         public string Code { get; set; }
+        public ICollection<RoleOfferDto> RoleOffers { get; set; }
     }
 }

@@ -15,17 +15,15 @@ namespace Assignment.Controllers
         }
         [HttpPost("AssignOrWaitList")]
         public async Task<IActionResult> AssignOrWaitListAsync
-            ([FromBody]ICollection<VolunteerDto>volunteers)
+            ([FromBody]ICollection<AssignOrWaitlistVolunteerDto>volunteers)
         {
-            return Ok(volunteers.Count == 0 ? false
-                : await _assignmentServices.AssignOrWaitlistAsync(volunteers));
+            return Ok(await _assignmentServices.AssignOrWaitlistAsync(volunteers));
         }
         [HttpPost("ChangeToAnyStatus")]
         public async Task<IActionResult> ChangeToAnyStatusAsync
             ([FromBody] ICollection<VolunteerChangeToAnyStatusDto> volunteers)
         {
-            return Ok(volunteers.Count == 0 ? false
-                : await _assignmentServices.ChangeToAnyStatusAsync(volunteers));
+            return Ok(await _assignmentServices.ChangeToAnyStatusAsync(volunteers));
         }
     }
 }

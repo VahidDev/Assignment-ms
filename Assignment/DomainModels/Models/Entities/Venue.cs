@@ -13,6 +13,11 @@ namespace DomainModels.Models.Entities
         public string Name { get; set; }
         [Column("code")]
         public string Code { get; set; }
+        [Display(Name = "Venue ID")]
+        [Column("venue_id")]
+        public int ExcelVId { get; set; }
+        public ICollection<JobTitle> JobTitles { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
+        public ICollection<JobTitleVenues> JobTitleVenues { get; set; }
     }
 }

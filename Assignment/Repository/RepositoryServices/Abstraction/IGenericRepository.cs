@@ -9,20 +9,23 @@ namespace Repository.RepositoryServices.Abstraction
     public interface IGenericRepository<T> where T : class, IEntity
     {
         Task<IEnumerable<T>> GetAllAsync(IEnumerable<string> includingItems = null);
-        IEnumerable<T> GetAllAsNoTracking(Expression<Func<T, bool>> predicate = null,
+        Task<IEnumerable<T>> GetAllAsNoTrackingAsync(Expression<Func<T, bool>> predicate = null,
             IEnumerable<string> includingItems = null);
         Task<T> GetByIdAsync(int id, IEnumerable<string> includingItems = null);
         Task<T> GetByIdAsNoTrackingAsync(int id);
         Task<bool> AddAsync(T entity);
         Task<bool> AddRangeAsync(IEnumerable<T> entities);
-        Task<bool> DeleteAsync(int id);
+        bool Delete(T item);
         Task<bool> DeleteRangeAsync(IEnumerable<int>ids);
         bool Update(T entity);
+        bool RemoveRangePermanently(ICollection<T> items);
         bool UpdateRange(IEnumerable<T> entity);
         Task<T> FirstOrDefaultAsync
             (Expression<Func<T, bool>> expression, IEnumerable<string> includingItems = null);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression = null);
         Task<IEnumerable<T>> FindAllAsync
             (Expression<Func<T, bool>> predicate, IEnumerable<string> includingItems = null);
+        public Task<T> FirstOrDefaultAsNoTrackingAsync
+          (Expression<Func<T, bool>> expression, IEnumerable<string> includingItems = null);
     }
 }

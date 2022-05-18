@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
 {
-    public class VolunteerDto:BaseDto
+    public class AssignOrWaitlistVolunteerDto:BaseDto
     {
         [Required]
         [JsonProperty("role_offer_id")]

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
-    [Table("template")]
+    [Table("templates")]
     public class Template:Entity
     {
         [Column("name")]
