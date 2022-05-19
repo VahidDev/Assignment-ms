@@ -30,8 +30,7 @@ namespace Assignment.Services.Implementation
             await _unitOfWork.TemplateRepository
                 .AddAsync(_mapper.Map<Template>(templateDto));
             await _unitOfWork.CompleteAsync();
-            return _jsonFactory.CreateJson(StatusCodes.Status201Created,
-                await _unitOfWork.TemplateRepository.GetAllAsync());
+            return _jsonFactory.CreateJson(StatusCodes.Status201Created);
         }
 
         public async Task<JsonResult> DeleteAsync(int id)

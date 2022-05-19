@@ -12,6 +12,7 @@ namespace Repository.Mapper
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
             CreateMap<RoleOffer,GetRoleOffersDto>().ReverseMap();
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
+            CreateMap<RoleOfferDto,NestedRoleOfferDto>().ReverseMap();
             CreateMap<ExcelEntity,ExcelEntityDto>().ReverseMap();
             CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap();
             CreateMap<Filter, CreateFilterDto>().ReverseMap();

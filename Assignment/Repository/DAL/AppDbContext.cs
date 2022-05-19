@@ -29,6 +29,13 @@ namespace Repository.DAL
             (bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
 
+            foreach (var entity in ChangeTracker.Entries<Entity>())
+            {
+                if (entity.Entity.Id > 0)
+                {
+                    entity.State = EntityState.Modified;
+                }
+            }
             //foreach (var entity in ChangeTracker.Entries<Entity>())
             //{
             //    if (entity.State == EntityState.Modified && !entity.Entity.IsDeleted)

@@ -9,7 +9,6 @@ using DomainModels.Models.Entities;
 using DomainModels.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Repository.RepositoryServices.Abstraction;
-using System.Linq;
 
 namespace Assignment.Services.Implementation
 {
@@ -33,7 +32,41 @@ namespace Assignment.Services.Implementation
             List<ExcelEntityDto> entities=_mapper.Map<List<ExcelEntityDto>>
                 ((await _unitOfWork.ExcelEntityRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted)).ToList());
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK, entities);
+            ICollection<RoleOfferDto> roleOffers = _mapper
+               .Map<ICollection<RoleOfferDto>>(await _unitOfWork.RoleOfferRepository
+               .GetAllAsNoTrackingIncludingItemsAsync(e => !e.IsDeleted));
+            List<ExcelEntityDto> entitiesToSend = new();
+
+            foreach (ExcelEntityDto excelEntity in entities)
+            {
+                ExcelEntityDto entity = excelEntity;
+                foreach (FunctionalAreaDto functionalArea in entity.FunctionalAreas)
+                {
+                    foreach (JobTitleDto jobTitle in functionalArea.JobTitles)
+                    {
+                        List<VenueDto> venues = new();
+                        foreach (VenueDto venue in jobTitle.Venues)
+                        {
+                            NestedRoleOfferDto roleOffer =
+                                _mapper.Map<NestedRoleOfferDto>(roleOffers
+                                .FirstOrDefault(r => r.Venue.Id == venue.Id
+                             && r.ExcelEntity.Id == excelEntity.Id
+                             && r.JobTitle.Id == jobTitle.Id
+                             && r.FunctionalArea.Id == functionalArea.Id));
+                            if (roleOffer==null)
+                                continue;
+                            venue.RoleOffer = roleOffer;
+                            venues.Add(venue);
+                        }
+                        jobTitle.Venues = venues;
+                    }
+                    
+                }
+                entitiesToSend.Add(entity);
+            }
+
+
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK, entitiesToSend);
         }
 
         public async Task<JsonResult> GetALlRoleOffersAsync()
@@ -100,7 +133,6 @@ namespace Assignment.Services.Implementation
                         .MapDbRoleOfferToExcelRoleOfferId
                         (ref dbRoleOffer, newExcelRoleOffer, _mapper,dbVenue,dbJobTitle
                         ,dbExcelEntity,dbFunctionalArea);
-                    
                 }
                 else
                 {
@@ -187,16 +219,19 @@ namespace Assignment.Services.Implementation
 
             List<Venue> sameVenues = updatedOrAddedRoleOffers.
               Select(r => r.Venue)
-              .DistinctBy(r => r.ExcelVId).ToList();
+              .DistinctBy(r => r.ExcelVId)
+              .ToList();
             List<FunctionalArea> sameFunctionalAreas = updatedOrAddedRoleOffers.
                 Select(r => r.FunctionalArea)
                 .DistinctBy(r => r.ExcelFAId).ToList();
             List<ExcelEntity> sameExcelEntity = updatedOrAddedRoleOffers.
                             Select(r => r.ExcelEntity)
-                            .DistinctBy(r => r.ExcelEId).ToList();
+                            .DistinctBy(r => r.ExcelEId)
+                            .ToList();
             List<JobTitle> sameJobTitles = updatedOrAddedRoleOffers.
                             Select(r => r.JobTitle)
-                            .DistinctBy(r => r.ExcelJTId).ToList();
+                            .DistinctBy(r => r.ExcelJTId)
+                            .ToList();
 
             List<ExcelEntity> excelEntities = new();
             List<int> roleOfferIds = new();
