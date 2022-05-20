@@ -19,7 +19,7 @@ namespace Repository.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // UnComment this section when migrating
-            builder.Ignore<Volunteer>();
+            //builder.Ignore<Volunteer>();
             //when creating custom enums
             //builder.HasPostgresEnum<Statusenum>();
             base.OnModelCreating(builder);
@@ -69,5 +69,7 @@ namespace Repository.DAL
         public DbSet<Template> Templates { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<FunctionalAreaType> FunctionalAreaTypes { get; set; }
+        public DbSet<FunctionalRequirement> FunctionalRequirements { get; set; }
+        public DbSet<Requirement> Requirements { get; set; }
     }
 }

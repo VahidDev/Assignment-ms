@@ -12,6 +12,7 @@ namespace Repository.RepositoryServices.Abstraction
         public IFunctionalAreaTypeRepository FunctionalAreaTypeRepository { get;}
         public ILocationRepository LocationRepository { get;}
         public IFilterRepository FilterRepository { get;}
+        public IFunctionalRequirementRepository FunctionalRequirementRepository { get;}
         Task CompleteAsync();
         void Dispose();
     }
