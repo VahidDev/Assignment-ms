@@ -70,7 +70,7 @@ namespace Assignment.Services.Implementation
 
                         string headerCellValue = ws.Cells[headerRowNumber, j].Value.ToString()??"";
                         if (!displayAttributeNameAndPropDict
-                            .ContainsKey(headerCellValue)) continue;
+                            .ContainsKey(headerCellValue.Trim().ToLower())) continue;
                         //ws.Cells[i, j].Value is the current cell value
                         propNameAndValueDict.Add(headerCellValue, ws.Cells[i, j].Value);
                     }
@@ -96,8 +96,9 @@ namespace Assignment.Services.Implementation
                         {
                             prop.SetPropertyValue<T>(parentObj
                                 ,propNameAndValueDict
-                                .FirstOrDefault(p => p.Key == 
-                                prop.GetCustomAttribute<DisplayAttribute>()?.Name).Value);
+                                .FirstOrDefault(p => p.Key.Trim().ToLower() == 
+                                prop.GetCustomAttribute<DisplayAttribute>()?
+                                .Name?.Trim().ToLower()).Value);
                         }
                     }
                     propNameAndValueDict.Clear();

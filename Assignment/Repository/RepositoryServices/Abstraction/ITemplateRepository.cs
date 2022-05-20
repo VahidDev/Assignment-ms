@@ -7,8 +7,7 @@ namespace Repository.RepositoryServices.Abstraction
 {
     public interface ITemplateRepository:IGenericRepository<Template>
     {
-        Task<Template> GetTemplatesWithFiltersAsync
+        Task<Template> GetTemplatesWithFiltersAsNoTrackingAsync
             (Expression<Func<Template,bool>>expression);
-        public Task<bool> UpdateWithFiltersAsync(Template updatedTemplate);
     }
 }

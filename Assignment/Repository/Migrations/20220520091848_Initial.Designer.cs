@@ -12,8 +12,8 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220520042442_AddedFunctionalRequirement")]
-    partial class AddedFunctionalRequirement
+    [Migration("20220520091848_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -202,11 +202,18 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<int>("RoleOfferId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_offer_id");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleOfferId")
+                        .IsUnique();
 
                     b.ToTable("functional_requirements");
                 });
@@ -301,7 +308,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("venues");
+                    b.ToTable("locations");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>
@@ -376,6 +383,10 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<int>("LevelOfConfidence")
+                        .HasColumnType("integer")
+                        .HasColumnName("level_of_confidence");
+
                     b.Property<int>("RoleOfferId")
                         .HasColumnType("integer")
                         .HasColumnName("role_offer_id");
@@ -387,6 +398,10 @@ namespace Repository.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
+
+                    b.Property<int>("WaitListCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("waitlist_count");
 
                     b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");
@@ -494,6 +509,17 @@ namespace Repository.Migrations
                     b.Navigation("FunctionalAreaType");
                 });
 
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalRequirement", b =>
+                {
+                    b.HasOne("DomainModels.Models.Entities.RoleOffer", "RoleOffer")
+                        .WithOne("FunctionalRequirement")
+                        .HasForeignKey("DomainModels.Models.Entities.FunctionalRequirement", "RoleOfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoleOffer");
+                });
+
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.JobTitle", "JobTitle")
@@ -584,6 +610,11 @@ namespace Repository.Migrations
                     b.Navigation("JobTitleVenues");
 
                     b.Navigation("RoleOffers");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
+                {
+                    b.Navigation("FunctionalRequirement");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>

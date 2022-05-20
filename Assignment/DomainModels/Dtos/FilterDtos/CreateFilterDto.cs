@@ -9,6 +9,6 @@ namespace DomainModels.Dtos
         [Required]
         public string Operator { get; set; }
         [Required]
-        public string Value { get; set; }
+        public object[] Value { get; set; }
     }
 }

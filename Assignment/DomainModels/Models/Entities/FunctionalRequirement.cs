@@ -10,5 +10,8 @@ namespace DomainModels.Models.Entities
         public ICollection<Requirement> Requirements { get; set; }
         [Column("excel_functional_requirement_id")]
         public int ExcelFunctionalRequirementId { get; set; }
+        public RoleOffer RoleOffer { get; set; }
+        [Column("role_offer_id")]
+        public int RoleOfferId { get; set; }
     }
 }

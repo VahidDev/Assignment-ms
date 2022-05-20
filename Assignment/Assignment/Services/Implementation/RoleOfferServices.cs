@@ -36,6 +36,8 @@ namespace Assignment.Services.Implementation
             ICollection<RoleOfferDto> roleOffers = _mapper
                .Map<ICollection<RoleOfferDto>>(await _unitOfWork.RoleOfferRepository
                .GetAllAsNoTrackingIncludingItemsAsync(e => !e.IsDeleted));
+
+
             List<FunctionalAreaTypeDto> entitiesToSend = new();
 
             foreach (FunctionalAreaTypeDto excelEntity in entities)

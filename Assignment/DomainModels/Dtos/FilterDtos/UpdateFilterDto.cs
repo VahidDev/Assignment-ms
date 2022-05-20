@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace DomainModels.Dtos
 {
     public class UpdateFilterDto
@@ -6,6 +8,6 @@ namespace DomainModels.Dtos
         public int? Id { get; set; }
         public string Requirement { get; set; }
         public string Operator { get; set; }
-        public string Value { get; set; }
+        public object[] Value { get; set; }
     }
 }

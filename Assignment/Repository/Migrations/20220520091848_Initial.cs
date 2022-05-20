@@ -64,6 +64,24 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "locations",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: true),
+                    RoleOfferLocationCode = table.Column<string>(name: "Role Offer - Location Code", type: "text", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_locations", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "templates",
                 columns: table => new
                 {
@@ -78,24 +96,6 @@ namespace Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_templates", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "venues",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    RoleOfferLocationCode = table.Column<string>(name: "Role Offer - Location Code", type: "text", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_venues", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,6 +147,74 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "job_title_venues",
+                columns: table => new
+                {
+                    job_title_id = table.Column<int>(type: "integer", nullable: false),
+                    location_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_job_title_venues", x => new { x.job_title_id, x.location_id });
+                    table.ForeignKey(
+                        name: "FK_job_title_venues_job_titles_job_title_id",
+                        column: x => x.job_title_id,
+                        principalTable: "job_titles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_job_title_venues_locations_location_id",
+                        column: x => x.location_id,
+                        principalTable: "locations",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "role_offers",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    functional_area_type_id = table.Column<int>(type: "integer", nullable: true),
+                    functional_area_id = table.Column<int>(type: "integer", nullable: true),
+                    job_title_id = table.Column<int>(type: "integer", nullable: true),
+                    location_id = table.Column<int>(type: "integer", nullable: true),
+                    role_offer_id = table.Column<int>(type: "integer", nullable: false),
+                    total_demand = table.Column<int>(type: "integer", nullable: false),
+                    level_of_confidence = table.Column<int>(type: "integer", nullable: false),
+                    waitlist_count = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_role_offers", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_role_offers_functional_area_types_functional_area_type_id",
+                        column: x => x.functional_area_type_id,
+                        principalTable: "functional_area_types",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_role_offers_functional_areas_functional_area_id",
+                        column: x => x.functional_area_id,
+                        principalTable: "functional_areas",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_role_offers_job_titles_job_title_id",
+                        column: x => x.job_title_id,
+                        principalTable: "job_titles",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_role_offers_locations_location_id",
+                        column: x => x.location_id,
+                        principalTable: "locations",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "filters",
                 columns: table => new
                 {
@@ -172,41 +240,13 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "job_title_venues",
-                columns: table => new
-                {
-                    job_title_id = table.Column<int>(type: "integer", nullable: false),
-                    location_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_job_title_venues", x => new { x.job_title_id, x.location_id });
-                    table.ForeignKey(
-                        name: "FK_job_title_venues_job_titles_job_title_id",
-                        column: x => x.job_title_id,
-                        principalTable: "job_titles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_job_title_venues_venues_location_id",
-                        column: x => x.location_id,
-                        principalTable: "venues",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "role_offers",
+                name: "functional_requirements",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    functional_area_type_id = table.Column<int>(type: "integer", nullable: true),
-                    functional_area_id = table.Column<int>(type: "integer", nullable: true),
-                    job_title_id = table.Column<int>(type: "integer", nullable: true),
-                    location_id = table.Column<int>(type: "integer", nullable: true),
+                    excel_functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
                     role_offer_id = table.Column<int>(type: "integer", nullable: false),
-                    total_demand = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -214,26 +254,38 @@ namespace Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_role_offers", x => x.id);
+                    table.PrimaryKey("PK_functional_requirements", x => x.id);
                     table.ForeignKey(
-                        name: "FK_role_offers_functional_area_types_functional_area_type_id",
-                        column: x => x.functional_area_type_id,
-                        principalTable: "functional_area_types",
-                        principalColumn: "id");
+                        name: "FK_functional_requirements_role_offers_role_offer_id",
+                        column: x => x.role_offer_id,
+                        principalTable: "role_offers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "requirements",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    requirement_name = table.Column<string>(type: "text", nullable: true),
+                    @operator = table.Column<string>(name: "operator", type: "text", nullable: true),
+                    value = table.Column<string>(type: "text", nullable: true),
+                    excel_functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
+                    functional_requirement_id = table.Column<int>(type: "integer", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_requirements", x => x.id);
                     table.ForeignKey(
-                        name: "FK_role_offers_functional_areas_functional_area_id",
-                        column: x => x.functional_area_id,
-                        principalTable: "functional_areas",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_role_offers_job_titles_job_title_id",
-                        column: x => x.job_title_id,
-                        principalTable: "job_titles",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_role_offers_venues_location_id",
-                        column: x => x.location_id,
-                        principalTable: "venues",
+                        name: "FK_requirements_functional_requirements_functional_requirement~",
+                        column: x => x.functional_requirement_id,
+                        principalTable: "functional_requirements",
                         principalColumn: "id");
                 });
 
@@ -253,9 +305,20 @@ namespace Repository.Migrations
                 column: "functional_area_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_functional_requirements_role_offer_id",
+                table: "functional_requirements",
+                column: "role_offer_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_job_title_venues_location_id",
                 table: "job_title_venues",
                 column: "location_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_requirements_functional_requirement_id",
+                table: "requirements",
+                column: "functional_requirement_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_role_offers_functional_area_id",
@@ -293,10 +356,16 @@ namespace Repository.Migrations
                 name: "job_title_venues");
 
             migrationBuilder.DropTable(
-                name: "role_offers");
+                name: "requirements");
 
             migrationBuilder.DropTable(
                 name: "templates");
+
+            migrationBuilder.DropTable(
+                name: "functional_requirements");
+
+            migrationBuilder.DropTable(
+                name: "role_offers");
 
             migrationBuilder.DropTable(
                 name: "functional_area_types");
@@ -308,7 +377,7 @@ namespace Repository.Migrations
                 name: "job_titles");
 
             migrationBuilder.DropTable(
-                name: "venues");
+                name: "locations");
         }
     }
 }

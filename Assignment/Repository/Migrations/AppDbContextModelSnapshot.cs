@@ -66,7 +66,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("template_id");
 
-                    b.ToTable("filters");
+                    b.ToTable("filters", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalArea", b =>
@@ -104,7 +104,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_areas");
+                    b.ToTable("functional_areas", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitle", b =>
@@ -121,7 +121,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("FunctionalAreaId");
 
-                    b.ToTable("functional_area_job_titles");
+                    b.ToTable("functional_area_job_titles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaType", b =>
@@ -155,7 +155,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_area_types");
+                    b.ToTable("functional_area_types", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaTypeFunctionalArea", b =>
@@ -172,7 +172,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("FunctionalAreaId");
 
-                    b.ToTable("functional_area_type_functional_areas");
+                    b.ToTable("functional_area_type_functional_areas", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalRequirement", b =>
@@ -200,13 +200,20 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<int>("RoleOfferId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_offer_id");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_requirements");
+                    b.HasIndex("RoleOfferId")
+                        .IsUnique();
+
+                    b.ToTable("functional_requirements", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
@@ -244,7 +251,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("job_titles");
+                    b.ToTable("job_titles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
@@ -261,7 +268,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("job_title_venues");
+                    b.ToTable("job_title_venues", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
@@ -299,7 +306,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("venues");
+                    b.ToTable("locations", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>
@@ -350,7 +357,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("functional_requirement_id");
 
-                    b.ToTable("requirements");
+                    b.ToTable("requirements", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
@@ -374,6 +381,10 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<int>("LevelOfConfidence")
+                        .HasColumnType("integer")
+                        .HasColumnName("level_of_confidence");
+
                     b.Property<int>("RoleOfferId")
                         .HasColumnType("integer")
                         .HasColumnName("role_offer_id");
@@ -385,6 +396,10 @@ namespace Repository.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
+
+                    b.Property<int>("WaitListCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("waitlist_count");
 
                     b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");
@@ -408,7 +423,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("location_id");
 
-                    b.ToTable("role_offers");
+                    b.ToTable("role_offers", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>
@@ -442,7 +457,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("templates");
+                    b.ToTable("templates", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Filter", b =>
@@ -490,6 +505,17 @@ namespace Repository.Migrations
                     b.Navigation("FunctionalArea");
 
                     b.Navigation("FunctionalAreaType");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalRequirement", b =>
+                {
+                    b.HasOne("DomainModels.Models.Entities.RoleOffer", "RoleOffer")
+                        .WithOne("FunctionalRequirement")
+                        .HasForeignKey("DomainModels.Models.Entities.FunctionalRequirement", "RoleOfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoleOffer");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
@@ -582,6 +608,11 @@ namespace Repository.Migrations
                     b.Navigation("JobTitleVenues");
 
                     b.Navigation("RoleOffers");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
+                {
+                    b.Navigation("FunctionalRequirement");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>

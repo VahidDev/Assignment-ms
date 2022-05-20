@@ -11,7 +11,8 @@ namespace Assignment.Utilities.RuntimeUtilities
         {
             foreach (PropertyInfo prop in props)
             {
-                string? name = prop.GetCustomAttribute<DisplayAttribute>()?.Name;
+                string? name = prop.GetCustomAttribute<DisplayAttribute>()?
+                    .Name?.Trim().ToLower();
                 if (name == null)
                     continue;
                 if (prop.IsInNamespace(nameof(DomainModels)))

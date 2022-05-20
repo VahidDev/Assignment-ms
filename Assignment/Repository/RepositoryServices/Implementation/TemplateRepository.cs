@@ -27,29 +27,11 @@ namespace Repository.RepositoryServices.Implementation
             return true;
         }
 
-        public async Task<Template> GetTemplatesWithFiltersAsync
+        public async Task<Template> GetTemplatesWithFiltersAsNoTrackingAsync
             (Expression<Func<Template,bool>> expression)
         {
             return await dbSet.Include(t => t.Filters.Where(f => !f.IsDeleted))
                 .AsNoTracking().FirstOrDefaultAsync(expression);
-        }
-
-        public async Task<bool> UpdateWithFiltersAsync(Template updatedTemplate)
-        {
-            Template dbTemplate=await dbSet.Include(t=>t.Filters).AsNoTracking()
-                .FirstOrDefaultAsync(t=>t.Id== updatedTemplate.Id);
-            ICollection<Filter> updatedFilters = updatedTemplate.Filters;
-            List<Filter> deletedFilters = new();
-            foreach (Filter dbFilter in dbTemplate.Filters)
-            {
-                if (!updatedFilters.Any(f => f.Id == dbFilter.Id))
-                {
-                    dbFilter.IsDeleted = true;
-                    updatedFilters.Add(dbFilter);
-                }
-            }
-            dbSet.Update(updatedTemplate);
-            return true;
         }
         public async override Task<IEnumerable<Template>> GetAllAsync
             (IEnumerable<string> includingItems = null)

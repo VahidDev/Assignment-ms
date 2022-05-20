@@ -1,10 +1,12 @@
-﻿using Assignment.Factory;
+﻿using Assignment.Constants;
+using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Repository.RepositoryServices.Abstraction;
+using System.Collections.Generic;
 
 namespace Assignment.Services.Implementation
 {
@@ -27,10 +29,33 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest
                     ,"The same named template already exists");
             }
+
+            Template template = _mapper.Map<Template>(templateDto);
+            template.Filters= new List<Filter>();
+            foreach (CreateFilterDto filterDto in templateDto.Filters)
+            {
+                if(filterDto.Value.Length== 0)
+                {
+                    return _jsonFactory.CreateJson(400
+                        ,$"No value was provided for filter: {filterDto.Requirement}");
+                }
+                Filter filter = _mapper.Map<Filter>(filterDto);
+                if (filterDto.Value.Length == 1)
+                {
+                    filter.Value =filterDto.Value[0]+"";
+                }
+                else
+                {
+                    filter.Value = filterDto.Value[0]
+                         + DbValueSeperatorConstants.TripleDashSeperator
+                         + filterDto.Value[1];
+                }
+                template.Filters.Add(filter);
+            }
             await _unitOfWork.TemplateRepository
-                .AddAsync(_mapper.Map<Template>(templateDto));
+                .AddAsync(template);
             await _unitOfWork.CompleteAsync();
-            return _jsonFactory.CreateJson(StatusCodes.Status201Created);
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
         public async Task<JsonResult> DeleteAsync(int id)
@@ -46,18 +71,54 @@ namespace Assignment.Services.Implementation
 
         public async Task<JsonResult> GetAllTemplatesAsync()
         {
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK,
-                _mapper.Map<List<GetTemplateDto>>(await _unitOfWork.TemplateRepository
-                .GetAllAsync(new List<string> { nameof(Filter) + "s" })));
+            ICollection<Template> templates = (await _unitOfWork.TemplateRepository
+                .GetAllAsync(new List<string> { nameof(Filter) + "s" })).ToList();
+            List<GetTemplateDto> templateDtos = new();
+            foreach (Template template in templates)
+            {
+                GetTemplateDto getTemplateDto = _mapper.Map<GetTemplateDto>(template);
+                getTemplateDto.Filters = new List<GetFilterDto>();
+                foreach (Filter filter in template.Filters)
+                {
+                    GetFilterDto filterDto =_mapper.Map<GetFilterDto>(filter);
+                    filterDto.Value = filter.Value
+                        .Split(DbValueSeperatorConstants.TripleDashSeperator);
+                    getTemplateDto.Filters.Add(filterDto);
+                }
+                templateDtos.Add(getTemplateDto);
+            }
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK,templateDtos);
         }
 
-        public async Task<JsonResult> UpdateAsync(UpdateTemplateDto templateDto)
+        public async Task<JsonResult> UpdateAsync(UpdateTemplateDto updatedTemplate)
         {
-            if (!await _unitOfWork.TemplateRepository
-              .AnyAsync(t => t.Id == templateDto.Id))
+            Template dbTemplate = await _unitOfWork.TemplateRepository
+                .GetTemplatesWithFiltersAsNoTrackingAsync(t => !t.IsDeleted);
+
+            if (dbTemplate == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
-            await _unitOfWork.TemplateRepository
-                .UpdateWithFiltersAsync(_mapper.Map<Template>(templateDto));
+
+            ICollection<UpdateFilterDto> updatedFilters = updatedTemplate.Filters;
+
+            List<Filter> deletedFilters = new();
+            Template template=_mapper.Map<Template>(updatedTemplate);
+            template.Filters=new List<Filter>();
+            foreach (UpdateFilterDto filterDto in updatedFilters)
+            {
+                Filter filter=_mapper.Map<Filter>(filterDto);
+                filter.Value = String
+                    .Join(DbValueSeperatorConstants.TripleDashSeperator,filterDto.Value);
+                template.Filters.Add(filter);
+            }
+            foreach (Filter dbFilter in dbTemplate.Filters)
+            {
+                if (!updatedFilters.Any(f => f.Id == dbFilter.Id))
+                {
+                    dbFilter.IsDeleted=true;
+                    template.Filters.Add(dbFilter);
+                }
+            }
+            _unitOfWork.TemplateRepository.Update(template);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }

@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace Repository.RepositoryServices.Implementation
 {
-    internal class RoleOfferRepository : GenericRepository<RoleOffer>,IRoleOfferRepository
+    internal class RoleOfferRepository
+        : GenericRepository<RoleOffer>,IRoleOfferRepository
     {
         public RoleOfferRepository(AppDbContext context, ILogger logger) 
             : base(context, logger){}
@@ -54,6 +55,12 @@ namespace Repository.RepositoryServices.Implementation
                 .Where(r => !r.FunctionalAreaType.IsDeleted)
                 .Where(r => !r.Location.IsDeleted)
                 .ToListAsync();
+        }
+
+        public async Task<ICollection<RoleOffer>> GetAllSpecificRoleOffers
+            (Expression<Func<RoleOffer, bool>> expression)
+        {
+            return await dbSet.Where(expression).ToListAsync();
         }
     }
 }

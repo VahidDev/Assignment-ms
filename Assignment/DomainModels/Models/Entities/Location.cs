@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
-    [Table("venues")]
+    [Table("locations")]
     public class Location:Entity
     {
         [Column("name")]

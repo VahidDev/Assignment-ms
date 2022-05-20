@@ -16,7 +16,8 @@ namespace Assignment.Controllers
         }
 
         [HttpPost("import")]
-        public async Task<IActionResult> ImportRoleOffersAsync([FromForm] IFormFile file)
+        public async Task<IActionResult> ImportFunctionalRequirementsAsync
+            ([FromForm] IFormFile file)
         {
             return ResponseGenerator
                 .GetResponse(await _functionalRequirementServices
