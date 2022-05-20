@@ -42,6 +42,8 @@ namespace Assignment.Utilities.Startup
             builder.Services
                 .AddScoped<ITemplateServices, TemplateServices>();
             builder.Services
+               .AddScoped<IFunctionalRequirementServices, FunctionalRequirementServices>();
+            builder.Services
                .AddScoped<IJsonFactory, JsonFactory>();
             return builder;
         }

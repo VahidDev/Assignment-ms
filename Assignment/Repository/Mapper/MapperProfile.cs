@@ -17,6 +17,8 @@ namespace Repository.Mapper
             CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap();
             CreateMap<Filter, CreateFilterDto>().ReverseMap();
             CreateMap<Filter, GetFilterDto>().ReverseMap();
+            CreateMap<FunctionalRequirement, GetFunctionalRequirementDto>().ReverseMap();
+            CreateMap<Requirement, GetRequirementDto>().ReverseMap();
             CreateMap<Filter, UpdateFilterDto>().ReverseMap(); 
             CreateMap<Template, UpdateTemplateDto>().ReverseMap(); 
             CreateMap<Template, GetTemplateDto>().ReverseMap(); 
