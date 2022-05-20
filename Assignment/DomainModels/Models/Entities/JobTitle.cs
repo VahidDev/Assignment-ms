@@ -9,18 +9,16 @@ namespace DomainModels.Models.Entities
     public class JobTitle:Entity
     {
         [Column("name")]
-        [Display(Name= "Role")]
+        [Display(Name= "Role Offer - Job Title")]
         public string Name { get; set; }
+        [Display(Name="Role Offer - Job Title Code")]
         [Column("code")]
         public string Code { get; set; }
-        [Display(Name = "JT ID")]
-        [Column("job_title_id")]
-        public int ExcelJTId { get; set; }
-        public ICollection<Venue> Venues { get; set; }
+        public ICollection<Location> Venues { get; set; }
         public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<FunctionalAreaJobTitles> FunctionalAreaJobTitles { get; set; }
-        public ICollection<JobTitleVenues> JobTitleVenues { get; set; }
+        public ICollection<FunctionalAreaJobTitle> FunctionalAreaJobTitles { get; set; }
+        public ICollection<JobTitleLocation> JobTitleVenues { get; set; }
 
     }
 }

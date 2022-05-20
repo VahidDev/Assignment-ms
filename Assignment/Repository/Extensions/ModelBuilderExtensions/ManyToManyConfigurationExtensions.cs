@@ -9,28 +9,28 @@ namespace Repository.Extensions.ModelBuilderExtensions
         {
 
             // Many to Many between FunctionalArea and ExcelEntity
-            builder.Entity<ExcelEntity>()
+            builder.Entity<FunctionalAreaType>()
             .HasMany(p => p.FunctionalAreas)
-            .WithMany(p => p.ExcelEntities)
-            .UsingEntity<ExcelEntityFunctionalAreas>(
+            .WithMany(p => p.FunctionalAreaTypes)
+            .UsingEntity<FunctionalAreaTypeFunctionalArea>(
                 j => j
                     .HasOne(pt => pt.FunctionalArea)
                     .WithMany(t => t.ExcelEntityFunctionalAreas)
                     .HasForeignKey(pt => pt.FunctionalAreaId),
                 j => j
-                    .HasOne(pt => pt.ExcelEntity)
-                    .WithMany(p => p.ExcelEntityFunctionalAreas)
-                    .HasForeignKey(pt => pt.ExcelEntityId),
+                    .HasOne(pt => pt.FunctionalAreaType)
+                    .WithMany(p => p.FunctionalAreaTypeFunctionalAreas)
+                    .HasForeignKey(pt => pt.FunctionalAreaTypeId),
                 j =>
                 {
-                    j.HasKey(t => new { t.ExcelEntityId, t.FunctionalAreaId });
+                    j.HasKey(t => new { t.FunctionalAreaTypeId, t.FunctionalAreaId });
                 });
 
             // Many to Many between FunctionalArea and JobTitle
             builder.Entity<JobTitle>()
             .HasMany(p => p.FunctionalAreas)
             .WithMany(p => p.JobTitles)
-            .UsingEntity<FunctionalAreaJobTitles>(
+            .UsingEntity<FunctionalAreaJobTitle>(
                 j => j
                     .HasOne(pt => pt.FunctionalArea)
                     .WithMany(t => t.FunctionalAreaJobTitles)
@@ -45,21 +45,21 @@ namespace Repository.Extensions.ModelBuilderExtensions
                 });
 
             // Many to Many between JobTitle and Venues
-            builder.Entity<Venue>()
+            builder.Entity<Location>()
             .HasMany(p => p.JobTitles)
             .WithMany(p => p.Venues)
-            .UsingEntity<JobTitleVenues>(
+            .UsingEntity<JobTitleLocation>(
                 j => j
                     .HasOne(pt => pt.JobTitle)
                     .WithMany(t => t.JobTitleVenues)
                     .HasForeignKey(pt => pt.JobTitleId),
                 j => j
-                    .HasOne(pt => pt.Venue)
+                    .HasOne(pt => pt.Location)
                     .WithMany(p => p.JobTitleVenues)
-                    .HasForeignKey(pt => pt.VenueId),
+                    .HasForeignKey(pt => pt.LocationId),
                 j =>
                 {
-                    j.HasKey(t => new { t.JobTitleId, t.VenueId });
+                    j.HasKey(t => new { t.JobTitleId, t.LocationId });
                 });
         }
     }

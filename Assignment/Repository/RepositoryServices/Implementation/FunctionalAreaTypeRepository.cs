@@ -11,12 +11,15 @@ using System.Threading.Tasks;
 
 namespace Repository.RepositoryServices.Implementation
 {
-    internal class ExcelEntityRepository:GenericRepository<ExcelEntity>,IExcelEntityRepository
+    internal class FunctionalAreaTypeRepository 
+        : GenericRepository<FunctionalAreaType>,IFunctionalAreaTypeRepository
     {
-        public ExcelEntityRepository
+
+        public FunctionalAreaTypeRepository
            (AppDbContext context, ILogger logger) : base(context, logger) { }
-        public async Task<ICollection<ExcelEntity>> GetAllAsNoTrackingIncludingItemsAsync
-           (Expression<Func<ExcelEntity, bool>> expression)
+
+        public async Task<ICollection<FunctionalAreaType>> GetAllAsNoTrackingIncludingItemsAsync
+           (Expression<Func<FunctionalAreaType, bool>> expression)
         {
             return await dbSet
                 .Include(r => r.FunctionalAreas.Where(r => !r.IsDeleted))

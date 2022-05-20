@@ -7,66 +7,56 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
     {
         public static void MapDbRoleOfferToExcelRoleOfferId
             (ref RoleOffer dbRoleOffer,RoleOffer newExcelRoleOffer
-            , IMapper mapper, Venue? dbVenue,JobTitle? dbJobTitle ,
-            ExcelEntity? dbExcelEntitiy,FunctionalArea? dbFunctionalArea)
+            , IMapper mapper, Location? dbVenue,JobTitle? dbJobTitle ,
+            FunctionalAreaType? dbExcelEntitiy,FunctionalArea? dbFunctionalArea)
         {
             int dbRoleOfferId = dbRoleOffer.Id;
 
             int dbFunctionalAreaId = dbRoleOffer.FunctionalArea.Id;
-            int dbExcelFunctionalAreaId = dbRoleOffer.FunctionalArea.ExcelFAId;
+            string dbExcelFunctionalAreaId = dbRoleOffer.FunctionalArea.Code;
             int dbJobTitleId = dbRoleOffer.JobTitle.Id;
-            int dbExcelJobTitleId = dbRoleOffer.JobTitle.ExcelJTId;
-            int dbEntityId = dbRoleOffer.ExcelEntity.Id;
-            int dbExcelEntityId = dbRoleOffer.ExcelEntity.ExcelEId;
-            int dbVenueId = dbRoleOffer.Venue.Id;
-            int dbExcelVenueId = dbRoleOffer.Venue.ExcelVId;
+            string dbExcelJobTitleId = dbRoleOffer.JobTitle.Code;
+            int dbEntityId = dbRoleOffer.FunctionalAreaType.Id;
+            string dbExcelEntityId = dbRoleOffer.FunctionalAreaType.Name;
+            int dbVenueId = dbRoleOffer.Location.Id;
+            string dbExcelVenueId = dbRoleOffer.Location.Code;
 
             dbRoleOffer = mapper.Map<RoleOffer>(newExcelRoleOffer);
 
             dbRoleOffer.Id = dbRoleOfferId;
 
-            if (dbExcelFunctionalAreaId== dbRoleOffer.FunctionalArea.ExcelFAId)
+            if (dbExcelFunctionalAreaId== dbRoleOffer.FunctionalArea.Name)
             {
                 dbRoleOffer.FunctionalArea.Id = dbFunctionalAreaId;
             }
             else
             {
-                dbRoleOffer.FunctionalArea.ExcelFAId= dbRoleOffer
-                    .FunctionalArea.ExcelFAId;
-               
+                dbRoleOffer.FunctionalArea.Code= dbRoleOffer.FunctionalArea.Code;
             }
-
-            if (dbExcelJobTitleId == dbRoleOffer.JobTitle.ExcelJTId)
+            if (dbExcelJobTitleId == dbRoleOffer.JobTitle.Code)
             {
                 dbRoleOffer.JobTitle.Id = dbJobTitleId;
             }
             else
             {
-                dbRoleOffer.JobTitle.ExcelJTId= dbRoleOffer
-                    .JobTitle.ExcelJTId;
-               
+                dbRoleOffer.JobTitle.Code = dbRoleOffer.JobTitle.Code;
             }
-
-            if (dbExcelEntityId == dbRoleOffer.ExcelEntity.ExcelEId)
+            if (dbExcelEntityId == dbRoleOffer.FunctionalAreaType.Name)
             {
-                dbRoleOffer.ExcelEntity.Id = dbEntityId;
+                dbRoleOffer.FunctionalAreaType.Id = dbEntityId;
             }
             else
             {
-                dbRoleOffer.ExcelEntity.ExcelEId= dbRoleOffer
-                    .ExcelEntity.ExcelEId;
+                dbRoleOffer.FunctionalAreaType.Name = dbRoleOffer.FunctionalAreaType.Name;
                
             }
-
-            if (dbExcelVenueId == dbRoleOffer.Venue.ExcelVId)
+            if (dbExcelVenueId == dbRoleOffer.Location.Code)
             {
-                dbRoleOffer.Venue.Id = dbVenueId;
+                dbRoleOffer.Location.Id = dbVenueId;
             }
             else
             {
-                dbRoleOffer.Venue.ExcelVId= dbRoleOffer
-                    .Venue.ExcelVId;
-               
+                dbRoleOffer.Location.Code = dbRoleOffer.Location.Code;
             }
         } 
     }

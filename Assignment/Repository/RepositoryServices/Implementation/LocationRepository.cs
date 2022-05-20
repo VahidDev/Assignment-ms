@@ -4,9 +4,9 @@ using Repository.DAL;
 using Repository.RepositoryServices.Abstraction;
 namespace Repository.RepositoryServices.Implementation
 {
-    internal class VenueRepository:GenericRepository<Venue>, IVenueRepository
+    internal class LocationRepository:GenericRepository<Location>, ILocationRepository
     {
-        public VenueRepository
+        public LocationRepository
           (AppDbContext context, ILogger logger) : base(context, logger) { }
     }
 }
