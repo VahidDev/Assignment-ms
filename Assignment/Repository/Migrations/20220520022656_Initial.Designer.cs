@@ -12,7 +12,7 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220518192553_Initial")]
+    [Migration("20220520022656_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,61 +23,6 @@ namespace Repository.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("DomainModels.Models.Entities.ExcelEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<int>("ExcelEId")
-                        .HasColumnType("integer")
-                        .HasColumnName("entity_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("entities");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.ExcelEntityFunctionalAreas", b =>
-                {
-                    b.Property<int>("ExcelEntityId")
-                        .HasColumnType("integer")
-                        .HasColumnName("entity_id");
-
-                    b.Property<int>("FunctionalAreaId")
-                        .HasColumnType("integer")
-                        .HasColumnName("functional_area_id");
-
-                    b.HasKey("ExcelEntityId", "FunctionalAreaId");
-
-                    b.HasIndex("FunctionalAreaId");
-
-                    b.ToTable("entity_functional_areas");
-                });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Filter", b =>
                 {
@@ -147,10 +92,6 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("ExcelFAId")
-                        .HasColumnType("integer")
-                        .HasColumnName("functional_area_id");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -168,7 +109,7 @@ namespace Repository.Migrations
                     b.ToTable("functional_areas");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitles", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitle", b =>
                 {
                     b.Property<int>("JobTitleId")
                         .HasColumnType("integer")
@@ -183,6 +124,57 @@ namespace Repository.Migrations
                     b.HasIndex("FunctionalAreaId");
 
                     b.ToTable("functional_area_job_titles");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("functional_area_types");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaTypeFunctionalArea", b =>
+                {
+                    b.Property<int>("FunctionalAreaTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("functional_area_type_id");
+
+                    b.Property<int>("FunctionalAreaId")
+                        .HasColumnType("integer")
+                        .HasColumnName("functional_area_id");
+
+                    b.HasKey("FunctionalAreaTypeId", "FunctionalAreaId");
+
+                    b.HasIndex("FunctionalAreaId");
+
+                    b.ToTable("functional_area_type_functional_areas");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
@@ -206,10 +198,6 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("ExcelJTId")
-                        .HasColumnType("integer")
-                        .HasColumnName("job_title_id");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -227,21 +215,59 @@ namespace Repository.Migrations
                     b.ToTable("job_titles");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.JobTitleVenues", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
                 {
                     b.Property<int>("JobTitleId")
                         .HasColumnType("integer")
                         .HasColumnName("job_title_id");
 
-                    b.Property<int>("VenueId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer")
-                        .HasColumnName("venue_id");
+                        .HasColumnName("location_id");
 
-                    b.HasKey("JobTitleId", "VenueId");
+                    b.HasKey("JobTitleId", "LocationId");
 
-                    b.HasIndex("VenueId");
+                    b.HasIndex("LocationId");
 
                     b.ToTable("job_title_venues");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text")
+                        .HasColumnName("Role Offer - Location Code");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("venues");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
@@ -261,10 +287,6 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("Headcount")
-                        .HasColumnType("integer")
-                        .HasColumnName("headcount");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -273,31 +295,35 @@ namespace Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("role_offer_id");
 
+                    b.Property<int>("TotalDemand")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_demand");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
 
-                    b.Property<int?>("excel_entity_id")
+                    b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("functional_area_id")
+                    b.Property<int?>("functional_area_type_id")
                         .HasColumnType("integer");
 
                     b.Property<int?>("job_title_id")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("venue_id")
+                    b.Property<int?>("location_id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("excel_entity_id");
-
                     b.HasIndex("functional_area_id");
+
+                    b.HasIndex("functional_area_type_id");
 
                     b.HasIndex("job_title_id");
 
-                    b.HasIndex("venue_id");
+                    b.HasIndex("location_id");
 
                     b.ToTable("role_offers");
                 });
@@ -336,67 +362,6 @@ namespace Repository.Migrations
                     b.ToTable("templates");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("text")
-                        .HasColumnName("code");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<int>("ExcelVId")
-                        .HasColumnType("integer")
-                        .HasColumnName("venue_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("venues");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.ExcelEntityFunctionalAreas", b =>
-                {
-                    b.HasOne("DomainModels.Models.Entities.ExcelEntity", "ExcelEntity")
-                        .WithMany("ExcelEntityFunctionalAreas")
-                        .HasForeignKey("ExcelEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
-                        .WithMany("ExcelEntityFunctionalAreas")
-                        .HasForeignKey("FunctionalAreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ExcelEntity");
-
-                    b.Navigation("FunctionalArea");
-                });
-
             modelBuilder.Entity("DomainModels.Models.Entities.Filter", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.Template", "Template")
@@ -406,7 +371,7 @@ namespace Repository.Migrations
                     b.Navigation("Template");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitles", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitle", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
                         .WithMany("FunctionalAreaJobTitles")
@@ -425,7 +390,26 @@ namespace Repository.Migrations
                     b.Navigation("JobTitle");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.JobTitleVenues", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaTypeFunctionalArea", b =>
+                {
+                    b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
+                        .WithMany("ExcelEntityFunctionalAreas")
+                        .HasForeignKey("FunctionalAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainModels.Models.Entities.FunctionalAreaType", "FunctionalAreaType")
+                        .WithMany("FunctionalAreaTypeFunctionalAreas")
+                        .HasForeignKey("FunctionalAreaTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FunctionalArea");
+
+                    b.Navigation("FunctionalAreaType");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
                 {
                     b.HasOne("DomainModels.Models.Entities.JobTitle", "JobTitle")
                         .WithMany("JobTitleVenues")
@@ -433,49 +417,42 @@ namespace Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DomainModels.Models.Entities.Venue", "Venue")
+                    b.HasOne("DomainModels.Models.Entities.Location", "Location")
                         .WithMany("JobTitleVenues")
-                        .HasForeignKey("VenueId")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("JobTitle");
 
-                    b.Navigation("Venue");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
                 {
-                    b.HasOne("DomainModels.Models.Entities.ExcelEntity", "ExcelEntity")
-                        .WithMany("RoleOffers")
-                        .HasForeignKey("excel_entity_id");
-
                     b.HasOne("DomainModels.Models.Entities.FunctionalArea", "FunctionalArea")
                         .WithMany("RoleOffers")
                         .HasForeignKey("functional_area_id");
+
+                    b.HasOne("DomainModels.Models.Entities.FunctionalAreaType", "FunctionalAreaType")
+                        .WithMany("RoleOffers")
+                        .HasForeignKey("functional_area_type_id");
 
                     b.HasOne("DomainModels.Models.Entities.JobTitle", "JobTitle")
                         .WithMany("RoleOffers")
                         .HasForeignKey("job_title_id");
 
-                    b.HasOne("DomainModels.Models.Entities.Venue", "Venue")
+                    b.HasOne("DomainModels.Models.Entities.Location", "Location")
                         .WithMany("RoleOffers")
-                        .HasForeignKey("venue_id");
-
-                    b.Navigation("ExcelEntity");
+                        .HasForeignKey("location_id");
 
                     b.Navigation("FunctionalArea");
 
+                    b.Navigation("FunctionalAreaType");
+
                     b.Navigation("JobTitle");
 
-                    b.Navigation("Venue");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.ExcelEntity", b =>
-                {
-                    b.Navigation("ExcelEntityFunctionalAreas");
-
-                    b.Navigation("RoleOffers");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalArea", b =>
@@ -483,6 +460,13 @@ namespace Repository.Migrations
                     b.Navigation("ExcelEntityFunctionalAreas");
 
                     b.Navigation("FunctionalAreaJobTitles");
+
+                    b.Navigation("RoleOffers");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaType", b =>
+                {
+                    b.Navigation("FunctionalAreaTypeFunctionalAreas");
 
                     b.Navigation("RoleOffers");
                 });
@@ -496,16 +480,16 @@ namespace Repository.Migrations
                     b.Navigation("RoleOffers");
                 });
 
-            modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>
-                {
-                    b.Navigation("Filters");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.Venue", b =>
+            modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
                 {
                     b.Navigation("JobTitleVenues");
 
                     b.Navigation("RoleOffers");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>
+                {
+                    b.Navigation("Filters");
                 });
 #pragma warning restore 612, 618
         }

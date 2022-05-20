@@ -5,18 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
-    [Table("entities")]
-    public class ExcelEntity:Entity
+    [Table("functional_area_types")]
+    public class FunctionalAreaType:Entity
     {
-        [Display(Name="Entity")]
+        [Display(Name= "Role Offer - Functional Area Type")]
         [Column("name")]
         public string Name { get; set; }
-        [Display(Name = "Entity ID")]
-        [Column("entity_id")]
-        public int ExcelEId { get; set; }
-
         public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<ExcelEntityFunctionalAreas> ExcelEntityFunctionalAreas { get; set; }
+        public ICollection<FunctionalAreaTypeFunctionalArea> FunctionalAreaTypeFunctionalAreas 
+        { get; set; }
     }
 }

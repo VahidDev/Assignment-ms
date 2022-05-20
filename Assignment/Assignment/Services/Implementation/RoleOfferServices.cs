@@ -29,28 +29,29 @@ namespace Assignment.Services.Implementation
         }
         public async Task<JsonResult> GetALlNestedRoleOffersAsync()
         {
-            List<ExcelEntityDto> entities=_mapper.Map<List<ExcelEntityDto>>
-                ((await _unitOfWork.ExcelEntityRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted)).ToList());
+            List<FunctionalAreaTypeDto> entities=_mapper.Map<List<FunctionalAreaTypeDto>>
+                ((await _unitOfWork.FunctionalAreaTypeRepository
+                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted))
+                .ToList());
             ICollection<RoleOfferDto> roleOffers = _mapper
                .Map<ICollection<RoleOfferDto>>(await _unitOfWork.RoleOfferRepository
                .GetAllAsNoTrackingIncludingItemsAsync(e => !e.IsDeleted));
-            List<ExcelEntityDto> entitiesToSend = new();
+            List<FunctionalAreaTypeDto> entitiesToSend = new();
 
-            foreach (ExcelEntityDto excelEntity in entities)
+            foreach (FunctionalAreaTypeDto excelEntity in entities)
             {
-                ExcelEntityDto entity = excelEntity;
+                FunctionalAreaTypeDto entity = excelEntity;
                 foreach (FunctionalAreaDto functionalArea in entity.FunctionalAreas)
                 {
                     foreach (JobTitleDto jobTitle in functionalArea.JobTitles)
                     {
-                        List<VenueDto> venues = new();
-                        foreach (VenueDto venue in jobTitle.Venues)
+                        List<LocationDto> venues = new();
+                        foreach (LocationDto venue in jobTitle.Venues)
                         {
                             NestedRoleOfferDto roleOffer =
                                 _mapper.Map<NestedRoleOfferDto>(roleOffers
-                                .FirstOrDefault(r => r.Venue.Id == venue.Id
-                             && r.ExcelEntity.Id == excelEntity.Id
+                                .FirstOrDefault(r => r.Location.Id == venue.Id
+                             && r.FunctionalAreaType.Id == excelEntity.Id
                              && r.JobTitle.Id == jobTitle.Id
                              && r.FunctionalArea.Id == functionalArea.Id));
                             if (roleOffer==null)
@@ -90,7 +91,7 @@ namespace Assignment.Services.Implementation
         public async Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
         {
             if (file == null) return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
-            if(!file.IsFileTypeSupported(FileTypeConstants.ExcelFileContentType))
+            if(!file.IsExcelFile())
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status415UnsupportedMediaType,
                     ($"{FileErrorMessageConstants.NotSupportedFile}: " +
@@ -102,29 +103,35 @@ namespace Assignment.Services.Implementation
 
             List<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(r => !r.IsDeleted)).ToList();
-            List<Venue> dbVenues = (await _unitOfWork.VenueRepository
+
+            List<Location> dbLocations = (await _unitOfWork.LocationRepository
                 .GetAllAsNoTrackingAsync(v=>!v.IsDeleted)).ToList();
+
             List<JobTitle> dbJobTitles = (await _unitOfWork.JobTitleRepository
                 .GetAllAsNoTrackingAsync(j=>!j.IsDeleted)).ToList();
-            List<ExcelEntity> dbExcelEntities = (await _unitOfWork.ExcelEntityRepository
+
+            List<FunctionalAreaType> dbFunctionalAreaType
+                = (await _unitOfWork.FunctionalAreaTypeRepository
                 .GetAllAsNoTrackingAsync(e=>!e.IsDeleted)).ToList();
-            List<FunctionalArea> dbFunctionalAreas = (await _unitOfWork.FunctionalAreaRepository
+
+            List<FunctionalArea> dbFunctionalAreas 
+                = (await _unitOfWork.FunctionalAreaRepository
                 .GetAllAsNoTrackingAsync(fa=>!fa.IsDeleted)).ToList();
+
             List<object>x=new List<object>();
             List<RoleOffer> updatedOrAddedRoleOffers=new();
             foreach (RoleOffer newExcelRoleOffer in excelRoleOffers)
             {
                 RoleOffer? dbRoleOffer = dbRoleOffers
                     .FirstOrDefault(r => r.RoleOfferId == newExcelRoleOffer.RoleOfferId);
-                Venue? dbVenue = dbVenues
-                    .FirstOrDefault(v=> v.ExcelVId== newExcelRoleOffer.Venue.ExcelVId);
+                Location? dbVenue = dbLocations
+                    .FirstOrDefault(v=> v.Code== newExcelRoleOffer.Location.Code);
                 JobTitle? dbJobTitle = dbJobTitles
-                    .FirstOrDefault(j => j.ExcelJTId== newExcelRoleOffer.JobTitle.ExcelJTId);
-                ExcelEntity? dbExcelEntity = dbExcelEntities
-                   .FirstOrDefault(e => e.ExcelEId== newExcelRoleOffer.ExcelEntity.ExcelEId);
+                    .FirstOrDefault(j => j.Code== newExcelRoleOffer.JobTitle.Code);
+                FunctionalAreaType? dbExcelEntity = dbFunctionalAreaType
+                   .FirstOrDefault(e => e.Name== newExcelRoleOffer.FunctionalAreaType.Name);
                 FunctionalArea? dbFunctionalArea = dbFunctionalAreas
-                   .FirstOrDefault(f => f.ExcelFAId 
-                   == newExcelRoleOffer.FunctionalArea.ExcelFAId);
+                   .FirstOrDefault(f => f.Code == newExcelRoleOffer.FunctionalArea.Code);
 
                 if (dbRoleOffer != null)
                 {
@@ -138,11 +145,11 @@ namespace Assignment.Services.Implementation
                 {
                     if (dbVenue!=null)
                     {
-                        newExcelRoleOffer.Venue.Id = dbVenue.Id;
+                        newExcelRoleOffer.Location.Id = dbVenue.Id;
                     }
                     if (dbExcelEntity!=null)
                     {
-                        newExcelRoleOffer.ExcelEntity.Id = dbExcelEntity.Id;
+                        newExcelRoleOffer.FunctionalAreaType.Id = dbExcelEntity.Id;
                     }
                     if (dbFunctionalArea!=null)
                     {
@@ -157,9 +164,9 @@ namespace Assignment.Services.Implementation
             }
             List<RoleOffer> removedRoleOffers = new();
             List<Volunteer> volunteersWithRemovedRoleOffer= new();
-            List<Venue> removedVenues= new();
+            List<Location> removedLocations= new();
             List<FunctionalArea> removedFunctionalAreas= new();
-            List<ExcelEntity> removedExcelEntities= new();
+            List<FunctionalAreaType> removedFunctionalAreaTypes = new();
             List<JobTitle> removedJobTitles= new();
 
             //collecting removed roleoffers and others 
@@ -181,108 +188,112 @@ namespace Assignment.Services.Implementation
                 volunteer.RoleOfferId = null;
                 volunteer.Status = Statusenum.Free;
             }
-            foreach (Venue venue in dbVenues)
+            foreach (Location location in dbLocations)
             {
-                if (!updatedOrAddedRoleOffers.Any(r => r.Venue.ExcelVId != venue.ExcelVId))
+                if (!updatedOrAddedRoleOffers
+                    .Any(r => r.Location.Code != location.Code))
                 {
-                    removedVenues.Add(venue);
+                    removedLocations.Add(location);
                 }
             }
 
             foreach (FunctionalArea fa in dbFunctionalAreas)
             {
                 if (!updatedOrAddedRoleOffers
-                    .Any(r => r.FunctionalArea.ExcelFAId != fa.ExcelFAId))
+                    .Any(r => r.FunctionalArea.Name != fa.Name))
                 {
                     removedFunctionalAreas.Add(fa);
                 }
             }
 
-            foreach (ExcelEntity entity in dbExcelEntities)
+            foreach (FunctionalAreaType functionalAreaType in dbFunctionalAreaType)
             {
                 if (!updatedOrAddedRoleOffers
-                    .Any(r => r.ExcelEntity.ExcelEId != entity.ExcelEId))
+                    .Any(r => r.FunctionalAreaType.Name!= functionalAreaType.Name))
                 {
-                    removedExcelEntities.Add(entity);
+                    removedFunctionalAreaTypes.Add(functionalAreaType);
                 }
             }
 
             foreach (JobTitle jobTitle in dbJobTitles)
             {
                 if (!updatedOrAddedRoleOffers
-                    .Any(r => r.JobTitle.ExcelJTId != jobTitle.ExcelJTId))
+                    .Any(r => r.JobTitle.Code != jobTitle.Code))
                 {
                     removedJobTitles.Add(jobTitle);
                 }
             }
 
 
-            List<Venue> sameVenues = updatedOrAddedRoleOffers.
-              Select(r => r.Venue)
-              .DistinctBy(r => r.ExcelVId)
+            List<Location> sameLocations = updatedOrAddedRoleOffers.
+              Select(r => r.Location)
+              .DistinctBy(r => r.Code)
               .ToList();
             List<FunctionalArea> sameFunctionalAreas = updatedOrAddedRoleOffers.
                 Select(r => r.FunctionalArea)
-                .DistinctBy(r => r.ExcelFAId).ToList();
-            List<ExcelEntity> sameExcelEntity = updatedOrAddedRoleOffers.
-                            Select(r => r.ExcelEntity)
-                            .DistinctBy(r => r.ExcelEId)
+                .DistinctBy(r => r.Code).ToList();
+            List<FunctionalAreaType> sameFunctionalAreaTypes= updatedOrAddedRoleOffers.
+                            Select(r => r.FunctionalAreaType)
+                            .DistinctBy(r => r.Name)
                             .ToList();
             List<JobTitle> sameJobTitles = updatedOrAddedRoleOffers.
                             Select(r => r.JobTitle)
-                            .DistinctBy(r => r.ExcelJTId)
+                            .DistinctBy(r => r.Code)
                             .ToList();
 
-            List<ExcelEntity> excelEntities = new();
+            List<FunctionalAreaType> functionalAreaTypes = new();
             List<int> roleOfferIds = new();
 
 
             //necessary
             foreach (RoleOffer roleOffer in updatedOrAddedRoleOffers)
             {
-                ExcelEntity entity = sameExcelEntity
-                    .First(r => r.ExcelEId == roleOffer.ExcelEntity.ExcelEId);
+                FunctionalAreaType functionalAreaType = sameFunctionalAreaTypes
+                    .First(r => r.Name == roleOffer.FunctionalAreaType.Name);
                 FunctionalArea functionalAreaa = sameFunctionalAreas
-                    .First(r => r.ExcelFAId
-                    == roleOffer.FunctionalArea.ExcelFAId);
+                    .First(r => r.Code
+                    == roleOffer.FunctionalArea.Code);
                 JobTitle jobTitle = sameJobTitles
-                    .First(r => r.ExcelJTId == roleOffer.JobTitle.ExcelJTId);
-                Venue venue = sameVenues
-                    .First(r => r.ExcelVId == roleOffer.Venue.ExcelVId);
+                    .First(r => r.Code == roleOffer.JobTitle.Code);
+                Location location = sameLocations
+                    .First(r => r.Code == roleOffer.Location.Code);
 
-                roleOffer.ExcelEntity = entity;
+                roleOffer.FunctionalAreaType = functionalAreaType;
                 roleOffer.FunctionalArea=functionalAreaa;
 
                 roleOffer.JobTitle = jobTitle;
-                roleOffer.Venue = venue;
+                roleOffer.Location = location;
             }
 
             // Mapping ExcelEntities from Excel
-            foreach (ExcelEntity excelEntity in sameExcelEntity)
+            foreach (FunctionalAreaType excelEntity in sameFunctionalAreaTypes)
             {
                 ICollection<FunctionalArea>functionalAreas=updatedOrAddedRoleOffers
-                    .Where(r=>r.ExcelEntity.ExcelEId==excelEntity.ExcelEId)
-                    .DistinctBy(r=>r.FunctionalArea.ExcelFAId)
-                    .Select(r=>r.FunctionalArea).ToList();
+                    .Where(r=>r.FunctionalAreaType.Name==excelEntity.Name)
+                    .DistinctBy(r=>r.FunctionalArea.Name)
+                    .Select(r=>r.FunctionalArea)
+                    .ToList();
                 excelEntity.FunctionalAreas=functionalAreas;
                 foreach (FunctionalArea functionalArea in functionalAreas)
                 {
                     ICollection<JobTitle> jobTitles = updatedOrAddedRoleOffers
-                    .Where(r => r.FunctionalArea.ExcelFAId== functionalArea.ExcelFAId)
-                    .DistinctBy(r => r.JobTitle.ExcelJTId)
-                    .Select(r => r.JobTitle).ToList();
+                    .Where(r => r.FunctionalArea.Code== functionalArea.Code)
+                    .DistinctBy(r => r.JobTitle.Code)
+                    .Select(r => r.JobTitle)
+                    .ToList();
                     functionalArea.JobTitles=jobTitles;
                     foreach (JobTitle jobTitle in jobTitles)
                     {
-                        ICollection<Venue> venues = updatedOrAddedRoleOffers
-                            .Where(r => r.JobTitle.ExcelJTId == jobTitle.ExcelJTId)
-                            .DistinctBy(r => r.Venue.ExcelVId)
-                            .Select(r => r.Venue).ToList();
+                        ICollection<Location> venues = updatedOrAddedRoleOffers
+                            .Where(r => r.JobTitle.Code == jobTitle.Code)
+                            .DistinctBy(r => r.Location.Code)
+                            .Select(r => r.Location)
+                            .ToList();
                         jobTitle.Venues=venues;
-                        foreach (Venue venue in venues)
+                        foreach (Location venue in venues)
                         {
                             ICollection<RoleOffer> roleOffers = updatedOrAddedRoleOffers
-                            .Where(r => r.Venue.ExcelVId == venue.ExcelVId)
+                            .Where(r => r.Location.Code == venue.Code)
                             .DistinctBy(r => r.RoleOfferId)
                             .ToList();
                             venue.RoleOffers = roleOffers;
@@ -301,19 +312,20 @@ namespace Assignment.Services.Implementation
                 _unitOfWork.FunctionalAreaRepository
                     .RemoveRangePermanently(removedFunctionalAreas);
 
-            if (removedExcelEntities.Count > 0)
-                _unitOfWork.ExcelEntityRepository
-                    .RemoveRangePermanently(removedExcelEntities);
+            if (removedFunctionalAreaTypes.Count > 0)
+                _unitOfWork.FunctionalAreaTypeRepository
+                    .RemoveRangePermanently(removedFunctionalAreaTypes);
 
-            if (removedVenues.Count > 0)
-                _unitOfWork.VenueRepository
-                    .RemoveRangePermanently(removedVenues);
+            if (removedLocations.Count > 0)
+                _unitOfWork.LocationRepository
+                    .RemoveRangePermanently(removedLocations);
 
             if (removedRoleOffers.Count > 0)
                 _unitOfWork.RoleOfferRepository.RemoveRangePermanently(removedRoleOffers);
 
-            if(sameExcelEntity.Count>0)
-                 _unitOfWork.ExcelEntityRepository.UpdateRange(sameExcelEntity);
+            if(sameFunctionalAreaTypes.Count>0)
+                 await _unitOfWork.FunctionalAreaTypeRepository
+                    .AddRangeAsync(sameFunctionalAreaTypes);
 
 
             await _unitOfWork.CompleteAsync();

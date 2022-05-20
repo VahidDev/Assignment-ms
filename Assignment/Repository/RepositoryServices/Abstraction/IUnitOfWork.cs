@@ -9,8 +9,8 @@ namespace Repository.RepositoryServices.Abstraction
         public ITemplateRepository TemplateRepository { get;}
         public IJobTitleRepository JobTitleRepository { get;}
         public IFunctionalAreaRepository FunctionalAreaRepository { get;}
-        public IExcelEntityRepository ExcelEntityRepository { get;}
-        public IVenueRepository VenueRepository { get;}
+        public IFunctionalAreaTypeRepository FunctionalAreaTypeRepository { get;}
+        public ILocationRepository LocationRepository { get;}
         public IFilterRepository FilterRepository { get;}
         Task CompleteAsync();
         void Dispose();

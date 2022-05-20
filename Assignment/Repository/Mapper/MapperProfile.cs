@@ -8,12 +8,12 @@ namespace Repository.Mapper
     {
         public MapperProfile()
         {
-            CreateMap<Venue, VenueDto>().ReverseMap();
+            CreateMap<Location, LocationDto>().ReverseMap();
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
             CreateMap<RoleOffer,GetRoleOffersDto>().ReverseMap();
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
             CreateMap<RoleOfferDto,NestedRoleOfferDto>().ReverseMap();
-            CreateMap<ExcelEntity,ExcelEntityDto>().ReverseMap();
+            CreateMap<FunctionalAreaType,FunctionalAreaTypeDto>().ReverseMap();
             CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap();
             CreateMap<Filter, CreateFilterDto>().ReverseMap();
             CreateMap<Filter, GetFilterDto>().ReverseMap();

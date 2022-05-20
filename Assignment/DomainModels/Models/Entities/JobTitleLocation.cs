@@ -2,14 +2,14 @@
 
 namespace DomainModels.Models.Entities
 {
-    [Table("functional_area_job_titles")]
-    public class FunctionalAreaJobTitles
+    [Table("job_title_venues")]
+    public class JobTitleLocation
     {
-        public FunctionalArea FunctionalArea { get; set; }
         public JobTitle JobTitle { get; set; }
-        [Column("functional_area_id")]
-        public int FunctionalAreaId { get; set; }
+        public Location Location { get; set; }
         [Column("job_title_id")]
         public int JobTitleId { get; set; }
+        [Column("location_id")]
+        public int LocationId { get; set; }
     }
 }

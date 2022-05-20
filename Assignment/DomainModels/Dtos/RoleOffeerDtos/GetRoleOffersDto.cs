@@ -2,6 +2,6 @@
 {
     public class GetRoleOffersDto 
     {
-        public ExcelEntityDto ExcelEntity { get; set; }
+        public FunctionalAreaTypeDto FunctionalAreaType { get; set; }
     }
 }

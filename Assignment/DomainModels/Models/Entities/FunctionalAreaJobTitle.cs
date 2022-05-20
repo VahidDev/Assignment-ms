@@ -2,14 +2,14 @@
 
 namespace DomainModels.Models.Entities
 {
-    [Table("entity_functional_areas")]
-    public class ExcelEntityFunctionalAreas
+    [Table("functional_area_job_titles")]
+    public class FunctionalAreaJobTitle
     {
-        public ExcelEntity ExcelEntity { get; set; }
         public FunctionalArea FunctionalArea { get; set; }
+        public JobTitle JobTitle { get; set; }
         [Column("functional_area_id")]
         public int FunctionalAreaId { get; set; }
-        [Column("entity_id")]
-        public int ExcelEntityId { get; set; }
+        [Column("job_title_id")]
+        public int JobTitleId { get; set; }
     }
 }

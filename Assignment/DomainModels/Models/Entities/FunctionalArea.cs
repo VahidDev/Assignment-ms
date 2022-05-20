@@ -9,18 +9,16 @@ namespace DomainModels.Models.Entities
     public class FunctionalArea : Entity
     {
         [Column("name")]
-        [Display(Name = "Project")]
+        [Display(Name = "Role Offer - Functional Area")]
         public string Name { get; set; }
+        [Display(Name = "Role Offer - Functional Area Code")]
         [Column("code")]
         public string Code { get; set; }
-        public ICollection<ExcelEntity> ExcelEntities { get; set; }
-        [Display(Name = "FA ID")]
-        [Column("functional_area_id")]
-        public int ExcelFAId { get; set; }
+        public ICollection<FunctionalAreaType> FunctionalAreaTypes { get; set; }
         public ICollection<JobTitle> JobTitles { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<ExcelEntityFunctionalAreas> ExcelEntityFunctionalAreas { get; set; }
-        public ICollection<FunctionalAreaJobTitles> FunctionalAreaJobTitles { get; set; }
+        public ICollection<FunctionalAreaTypeFunctionalArea> ExcelEntityFunctionalAreas { get; set; }
+        public ICollection<FunctionalAreaJobTitle> FunctionalAreaJobTitles { get; set; }
 
     }
 }
