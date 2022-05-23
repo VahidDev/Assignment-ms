@@ -1,5 +1,4 @@
-﻿using DomainModels.Dtos.Base;
-
+﻿
 namespace DomainModels.Dtos
 {
     public class LocationDto : BaseDto

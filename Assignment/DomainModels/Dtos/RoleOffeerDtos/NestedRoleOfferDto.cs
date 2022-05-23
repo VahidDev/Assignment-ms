@@ -1,5 +1,4 @@
-﻿using DomainModels.Dtos.Base;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace DomainModels.Dtos
 {
@@ -10,6 +9,6 @@ namespace DomainModels.Dtos
         public int RoleOfferFulfillment { get; set; }
         [JsonProperty("waitlist_fulfillment")]
         public int WaitlistFulfillment { get; set; }
-        public GetFunctionalRequirementDto FunctionalRequirement { get; set; }
+        public GetFunctionalRequirementDto FunctionalRequirement { get; set; } 
     }
 }

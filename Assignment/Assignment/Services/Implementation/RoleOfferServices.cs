@@ -4,6 +4,7 @@ using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using Assignment.Utilities.FileUtilities;
 using Assignment.Utilities.ServicesUtilities.MapperUtilities;
+using Assignment.Utilities.ServicesUtilities.RoleOfferUtilities;
 using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
@@ -13,7 +14,7 @@ using Repository.RepositoryServices.Abstraction;
 
 namespace Assignment.Services.Implementation
 {
-    internal class RoleOfferServices : IRoleOfferServices
+    internal class RoleOfferServices : IRoleOfferServices, IExcelImportable
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -63,7 +64,7 @@ namespace Assignment.Services.Implementation
 
             if (excelRoleOffers == null || excelRoleOffers.Count == 0)
             {
-                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
+                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
 
@@ -115,6 +116,16 @@ namespace Assignment.Services.Implementation
                     {
                         newExcelRoleOffer.JobTitle.Id = dbJobTitle.Id;
                     }
+                }
+
+                if (newExcelRoleOffer.LevelOfConfidence != null && newExcelRoleOffer.WaitlistCount != null)
+                {
+                    newExcelRoleOffer.RoleOfferFulfillment = FulfilmentCalculator
+                        .CalculateRoleFulfilment((int)newExcelRoleOffer.LevelOfConfidence,
+                        newExcelRoleOffer.TotalDemand);
+                    newExcelRoleOffer.WaitlistFulfillment = FulfilmentCalculator
+                        .CalculateWaitlistFulfilment((int)newExcelRoleOffer.WaitlistCount,
+                        newExcelRoleOffer.TotalDemand);
                 }
                 updatedOrAddedRoleOffers.Add(newExcelRoleOffer);
             }
@@ -242,7 +253,7 @@ namespace Assignment.Services.Implementation
             // the realations can be created. If the relations already exist in db EF will understand it
             // So we do it only for the new ones (the ones that don't have id)
             foreach (FunctionalAreaType functionalAreaType 
-                in distinctFunctionalAreaTypes.Where(f=>f.Id!=0))
+                in distinctFunctionalAreaTypes.Where(r=>r.Id==0))
             {
                 ICollection<FunctionalArea> functionalAreas = updatedOrAddedRoleOffers
                     .Where(r => r.FunctionalAreaType.Name == functionalAreaType.Name)
@@ -251,7 +262,7 @@ namespace Assignment.Services.Implementation
                     .ToList();
                 functionalAreaType.FunctionalAreas = functionalAreas;
             }
-            foreach (FunctionalArea functionalArea in distinctFunctionalAreas.Where(f => f.Id != 0))
+            foreach (FunctionalArea functionalArea in distinctFunctionalAreas.Where(r => r.Id == 0))
             {
                 ICollection<JobTitle> jobTitles = updatedOrAddedRoleOffers
                 .Where(r => r.FunctionalArea.Code == functionalArea.Code)
@@ -261,7 +272,7 @@ namespace Assignment.Services.Implementation
                 functionalArea.JobTitles = jobTitles;
 
             }
-            foreach (JobTitle jobTitle in distinctJobTitles.Where(j => j.Id != 0))
+            foreach (JobTitle jobTitle in distinctJobTitles.Where(r => r.Id == 0))
             {
                 ICollection<Location> locations = updatedOrAddedRoleOffers
                     .Where(r => r.JobTitle.Code == jobTitle.Code)

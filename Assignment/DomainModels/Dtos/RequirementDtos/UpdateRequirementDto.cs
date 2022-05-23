@@ -3,11 +3,13 @@ using Newtonsoft.Json;
 
 namespace DomainModels.Dtos
 {
-    public class GetRequirementDto : BaseDto, IValueFromStringConvertible
+    public class UpdateRequirementDto : IValueFromArrayConvertible
     {
+        public int? Id { get; set; }
         [JsonProperty("requirement_name")]
         public string RequirementName { get; set; }
         public string Operator { get; set; }
-        public object[] Value { get; set; }
+        public string Value { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

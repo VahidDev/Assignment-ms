@@ -28,6 +28,12 @@ namespace Repository.Mapper
                 .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToArrayConverter>()); 
 
             CreateMap<FunctionalRequirement, GetFunctionalRequirementDto>().ReverseMap();
+            CreateMap<UpdateFunctionalRequirementDto, UpdateFunctionalRequirementConvertibleDto>().ReverseMap();
+
+            CreateMap<UpdateRequirementDto, UpdateRequirementConvertibleDto>().ReverseMap()
+                .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
+
+            CreateMap<UpdateRequirementDto, Requirement>().ReverseMap();
 
             CreateMap<GetRequirementDto, Requirement>().ReverseMap()
                 .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToArrayConverter>());

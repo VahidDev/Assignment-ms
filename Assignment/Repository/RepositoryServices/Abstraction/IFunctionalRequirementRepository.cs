@@ -11,5 +11,7 @@ namespace Repository.RepositoryServices.Abstraction
     {
         Task<ICollection<FunctionalRequirement>> GetAllAsNoTrackingIncludingItemsAsync
            (Expression<Func<FunctionalRequirement, bool>> expression);
+        Task<FunctionalRequirement> GetByIdAsNoTrackingIncludingItemsAsync
+            (Expression<Func<FunctionalRequirement, bool>> expression);
     }
 }

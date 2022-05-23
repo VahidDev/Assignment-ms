@@ -27,9 +27,13 @@ namespace DomainModels.Models.Entities
         [Display(Name = "Role Offer - Total Demand")]
         public int TotalDemand { get; set; }
         [Column("role_offer_fulfillment")]
-        public int RoleOfferFulfillment { get; set; } = 100;
+        public int RoleOfferFulfillment { get; set; }
         [Column("waitlist_fulfillment")]
-        public int WaitlistFulfillment { get; set; } = 0;
+        public int WaitlistFulfillment { get; set; } 
+        [Column("level_of_confidence")]
+        public int? LevelOfConfidence { get; set; } = 100;
+        [Column("waitlist_count")]
+        public int? WaitlistCount { get; set; } = 0;
         public ICollection<Volunteer> Volunteers { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
     }

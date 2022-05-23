@@ -1,5 +1,4 @@
-﻿using DomainModels.Dtos.Base;
-using DomainModels.Models.Enums;
+﻿using DomainModels.Models.Enums;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 

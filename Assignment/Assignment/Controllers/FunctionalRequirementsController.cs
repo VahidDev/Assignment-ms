@@ -1,5 +1,6 @@
 ﻿using Assignment.Services.Abstraction;
 using Assignment.Utilities.ResponseUtilities;
+using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 namespace Assignment.Controllers
 {
@@ -15,6 +16,14 @@ namespace Assignment.Controllers
             _functionalRequirementServices = functionalRequirementServices;
         }
 
+        [HttpGet("getByRoleOfferId/{id}")]
+        public async Task<IActionResult> GetByRoleOfferIdAsync([FromRoute] int id)
+        {
+            return ResponseGenerator
+                .GetResponse(await _functionalRequirementServices
+                .GetByRoleOfferIdAsync(id));
+        }
+
         [HttpPost("import")]
         public async Task<IActionResult> ImportFunctionalRequirementsAsync
             ([FromForm] IFormFile file)
@@ -23,12 +32,22 @@ namespace Assignment.Controllers
                 .GetResponse(await _functionalRequirementServices
                 .ValidateExcelFileThenWriteToDbAsync(file));
         }
+
         [HttpGet]
         public async Task<IActionResult> GetFunctionalRequirementsAsync()
         {
             return ResponseGenerator
                 .GetResponse(await _functionalRequirementServices
-                .GetAllFunctionalRequirementssync());
+                .GetAllFunctionalRequirementsAsync());
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateFunctionalRequirementAsync
+            (UpdateFunctionalRequirementConvertibleDto convertibleDto)
+        {
+            return ResponseGenerator
+                .GetResponse(await _functionalRequirementServices
+                .UpdateFunctionalRequirementAsync(convertibleDto));
         }
     }
 }

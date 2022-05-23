@@ -23,7 +23,18 @@ namespace Repository.RepositoryServices.Implementation
             return await dbSet
                 .AsNoTracking()
                 .Include(fr=>fr.Requirements.Where(r=>!r.IsDeleted))
+                .Include(fr=>fr.RoleOffer)
                 .ToListAsync();
+        }
+
+        public async Task<FunctionalRequirement> GetByIdAsNoTrackingIncludingItemsAsync
+            (Expression<Func<FunctionalRequirement, bool>> expression)
+        {
+            return await dbSet
+                 .AsNoTracking()
+                 .Include(fr => fr.Requirements.Where(r => !r.IsDeleted))
+                 .Include(fr => fr.RoleOffer)
+                 .FirstOrDefaultAsync(expression);
         }
     }
 }

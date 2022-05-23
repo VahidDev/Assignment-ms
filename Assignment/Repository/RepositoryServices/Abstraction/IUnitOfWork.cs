@@ -13,6 +13,7 @@ namespace Repository.RepositoryServices.Abstraction
         public ILocationRepository LocationRepository { get;}
         public IFilterRepository FilterRepository { get;}
         public IFunctionalRequirementRepository FunctionalRequirementRepository { get;}
+        public IRequirementRepository RequirementRepository { get;}
         Task CompleteAsync();
         void Dispose();
     }

@@ -18,6 +18,7 @@ namespace Repository.RepositoryServices.Implementation
         public IJobTitleRepository JobTitleRepository { get; private set; }
         public ILocationRepository LocationRepository { get; private set; }
         public IFunctionalRequirementRepository FunctionalRequirementRepository { get; private set; }
+        public IRequirementRepository RequirementRepository { get; private set; }
 
         public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
         {
@@ -31,6 +32,7 @@ namespace Repository.RepositoryServices.Implementation
             LocationRepository = new LocationRepository(context, _logger);
             FunctionalAreaTypeRepository = new FunctionalAreaTypeRepository(context, _logger);
             FunctionalAreaRepository = new FunctionalAreaRepository(context, _logger);
+            RequirementRepository = new RequirementRepository(context, _logger);
             FunctionalRequirementRepository
                 = new FunctionalRequirementRepository(context, _logger);
         }

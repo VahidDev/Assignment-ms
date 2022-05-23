@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DomainModels.Dtos.Base
+namespace DomainModels.Dtos
 {
     public class BaseDto: IBaseDto
     {

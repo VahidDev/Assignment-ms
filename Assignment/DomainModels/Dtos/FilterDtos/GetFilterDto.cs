@@ -1,6 +1,4 @@
-﻿using DomainModels.Dtos.Base;
-
-namespace DomainModels.Dtos
+﻿namespace DomainModels.Dtos
 {
     public class GetFilterDto : BaseDto
     {

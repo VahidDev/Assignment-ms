@@ -26,9 +26,9 @@ namespace DomainModels.Models.Entities
         public FunctionalRequirement FunctionalRequirement { get; set; }
         [NotMapped]
         [Display(Name = "Level Of Confidence")]
-        public int LevelOfConfidence { get; set; }
+        public int LevelOfConfidence { get; set; } = 100;
         [NotMapped]
         [Display(Name = "WaitList Count")]
-        public int WaitlistCount { get; set; }
+        public int WaitlistCount { get; set; } = 0;
     }
 }

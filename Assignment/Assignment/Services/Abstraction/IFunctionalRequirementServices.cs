@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DomainModels.Dtos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Services.Abstraction
 {
     public interface IFunctionalRequirementServices
     {
         Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
-        Task<JsonResult> GetAllFunctionalRequirementssync();
+        Task<JsonResult> GetAllFunctionalRequirementsAsync();
+        Task<JsonResult> GetByRoleOfferIdAsync(int id);
+        Task<JsonResult> UpdateFunctionalRequirementAsync(UpdateFunctionalRequirementConvertibleDto convertibleDto);
     }
 }
