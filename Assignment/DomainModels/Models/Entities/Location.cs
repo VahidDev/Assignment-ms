@@ -11,7 +11,8 @@ namespace DomainModels.Models.Entities
         [Column("name")]
         [Display(Name = "Role Offer - Location")]
         public string Name { get; set; }
-        [Column("Role Offer - Location Code")]
+        [Column("code")]
+        [Display(Name="Role Offer - Location Code")]
         public string Code { get; set; }
         public ICollection<JobTitle> JobTitles { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }

@@ -2,6 +2,6 @@
 {
     public interface IFileServices
     {
-        ICollection<T> ReadCollectionFromExcelFile<T>(IFormFile file);
+        ICollection<T>? ReadCollectionFromExcelFile<T>(IFormFile file);
     }
 }

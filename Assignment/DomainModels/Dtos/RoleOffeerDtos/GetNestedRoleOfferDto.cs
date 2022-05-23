@@ -1,6 +1,6 @@
 ﻿namespace DomainModels.Dtos
 {
-    public class GetRoleOffersDto 
+    public class GetNestedRoleOfferDto 
     {
         public FunctionalAreaTypeDto FunctionalAreaType { get; set; }
     }

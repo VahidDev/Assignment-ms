@@ -70,7 +70,7 @@ namespace Repository.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: true),
-                    RoleOfferLocationCode = table.Column<string>(name: "Role Offer - Location Code", type: "text", nullable: true),
+                    code = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -147,7 +147,7 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "job_title_venues",
+                name: "job_title_locations",
                 columns: table => new
                 {
                     job_title_id = table.Column<int>(type: "integer", nullable: false),
@@ -155,15 +155,15 @@ namespace Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_job_title_venues", x => new { x.job_title_id, x.location_id });
+                    table.PrimaryKey("PK_job_title_locations", x => new { x.job_title_id, x.location_id });
                     table.ForeignKey(
-                        name: "FK_job_title_venues_job_titles_job_title_id",
+                        name: "FK_job_title_locations_job_titles_job_title_id",
                         column: x => x.job_title_id,
                         principalTable: "job_titles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_job_title_venues_locations_location_id",
+                        name: "FK_job_title_locations_locations_location_id",
                         column: x => x.location_id,
                         principalTable: "locations",
                         principalColumn: "id",
@@ -182,8 +182,8 @@ namespace Repository.Migrations
                     location_id = table.Column<int>(type: "integer", nullable: true),
                     role_offer_id = table.Column<int>(type: "integer", nullable: false),
                     total_demand = table.Column<int>(type: "integer", nullable: false),
-                    level_of_confidence = table.Column<int>(type: "integer", nullable: false),
-                    waitlist_count = table.Column<int>(type: "integer", nullable: false),
+                    role_offer_fulfillment = table.Column<int>(type: "integer", nullable: false),
+                    waitlist_fulfillment = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -245,7 +245,7 @@ namespace Repository.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    excel_functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
+                    functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
                     role_offer_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -272,8 +272,7 @@ namespace Repository.Migrations
                     requirement_name = table.Column<string>(type: "text", nullable: true),
                     @operator = table.Column<string>(name: "operator", type: "text", nullable: true),
                     value = table.Column<string>(type: "text", nullable: true),
-                    excel_functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
-                    functional_requirement_id = table.Column<int>(type: "integer", nullable: true),
+                    functional_requirement_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -286,7 +285,8 @@ namespace Repository.Migrations
                         name: "FK_requirements_functional_requirements_functional_requirement~",
                         column: x => x.functional_requirement_id,
                         principalTable: "functional_requirements",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -311,8 +311,8 @@ namespace Repository.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_job_title_venues_location_id",
-                table: "job_title_venues",
+                name: "IX_job_title_locations_location_id",
+                table: "job_title_locations",
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
@@ -353,7 +353,7 @@ namespace Repository.Migrations
                 name: "functional_area_type_functional_areas");
 
             migrationBuilder.DropTable(
-                name: "job_title_venues");
+                name: "job_title_locations");
 
             migrationBuilder.DropTable(
                 name: "requirements");

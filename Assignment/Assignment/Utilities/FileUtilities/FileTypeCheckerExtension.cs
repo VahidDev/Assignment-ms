@@ -3,7 +3,7 @@ namespace Assignment.Utilities.FileUtilities
 {
     public static class FileTypeCheckerExtension
     {
-        public static bool IsFileTypeSupported
+        public static bool IsSpecificFileType
             (this IFormFile file,string extension)
         {
             if (!file.ContentType.Contains(extension))

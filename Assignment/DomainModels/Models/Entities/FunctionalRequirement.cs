@@ -8,8 +8,8 @@ namespace DomainModels.Models.Entities
     public class FunctionalRequirement : Entity
     {
         public ICollection<Requirement> Requirements { get; set; }
-        [Column("excel_functional_requirement_id")]
-        public int ExcelFunctionalRequirementId { get; set; }
+        [Column("functional_requirement_id")]
+        public int FunctionalRequirementId { get; set; }
         public RoleOffer RoleOffer { get; set; }
         [Column("role_offer_id")]
         public int RoleOfferId { get; set; }

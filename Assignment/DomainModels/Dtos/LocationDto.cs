@@ -1,5 +1,4 @@
 ﻿using DomainModels.Dtos.Base;
-using System.Collections.Generic;
 
 namespace DomainModels.Dtos
 {

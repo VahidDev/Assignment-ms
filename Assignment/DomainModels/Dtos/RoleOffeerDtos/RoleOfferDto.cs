@@ -11,5 +11,6 @@ namespace DomainModels.Dtos
         public int TotalDemand { get; set; }
         public int RoleOfferFulfillment { get; set; }
         public int WaitlistFulfillment { get; set; }
+        public GetFunctionalRequirementDto FunctionalRequirement { get; set; }
     }
 }

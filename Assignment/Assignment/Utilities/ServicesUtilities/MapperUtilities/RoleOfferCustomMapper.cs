@@ -1,63 +1,81 @@
 ﻿using AutoMapper;
 using DomainModels.Models.Entities;
+using DomainModels.Models.Entities.Base;
 
 namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
 {
     public static class RoleOfferCustomMapper
     {
-        public static void MapDbRoleOfferToExcelRoleOfferId
-            (ref RoleOffer dbRoleOffer,RoleOffer newExcelRoleOffer
-            , IMapper mapper, Location? dbVenue,JobTitle? dbJobTitle ,
-            FunctionalAreaType? dbExcelEntitiy,FunctionalArea? dbFunctionalArea)
+        public static RoleOffer MapExcelRoleOfferToDbRoleOffer
+            (RoleOffer dbRoleOffer, RoleOffer newExcelRoleOffer,
+            IReadOnlyCollection<RoleOffer> dbRoleOffers, IMapper mapper)
         {
-            int dbRoleOfferId = dbRoleOffer.Id;
+            RoleOffer updatedOrNewRoleOffer = mapper.Map<RoleOffer>(newExcelRoleOffer);
+            updatedOrNewRoleOffer.Id = dbRoleOffer.Id;
 
-            int dbFunctionalAreaId = dbRoleOffer.FunctionalArea.Id;
-            string dbExcelFunctionalAreaId = dbRoleOffer.FunctionalArea.Code;
-            int dbJobTitleId = dbRoleOffer.JobTitle.Id;
-            string dbExcelJobTitleId = dbRoleOffer.JobTitle.Code;
-            int dbEntityId = dbRoleOffer.FunctionalAreaType.Id;
-            string dbExcelEntityId = dbRoleOffer.FunctionalAreaType.Name;
-            int dbVenueId = dbRoleOffer.Location.Id;
-            string dbExcelVenueId = dbRoleOffer.Location.Code;
-
-            dbRoleOffer = mapper.Map<RoleOffer>(newExcelRoleOffer);
-
-            dbRoleOffer.Id = dbRoleOfferId;
-
-            if (dbExcelFunctionalAreaId== dbRoleOffer.FunctionalArea.Name)
+            // Check if the given excel item is the same as dbRoleOffer's item
+            // if yes then just set id of excel item to dbRoleOffer item 
+            // if no then find dbItem(if exists) and set this id to it and the same goes for others
+            if (dbRoleOffer.FunctionalArea.Code == updatedOrNewRoleOffer.FunctionalArea.Code)
             {
-                dbRoleOffer.FunctionalArea.Id = dbFunctionalAreaId;
+                updatedOrNewRoleOffer.FunctionalArea.Id = dbRoleOffer.FunctionalArea.Id;
             }
             else
             {
-                dbRoleOffer.FunctionalArea.Code= dbRoleOffer.FunctionalArea.Code;
+                updatedOrNewRoleOffer.FunctionalArea = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                    r=>r.FunctionalArea, f=>f.Code==updatedOrNewRoleOffer.FunctionalArea.Code,
+                    updatedOrNewRoleOffer.FunctionalArea, mapper);
             }
-            if (dbExcelJobTitleId == dbRoleOffer.JobTitle.Code)
+            if (dbRoleOffer.JobTitle.Code == updatedOrNewRoleOffer.JobTitle.Code)
             {
-                dbRoleOffer.JobTitle.Id = dbJobTitleId;
+                updatedOrNewRoleOffer.JobTitle.Id = dbRoleOffer.JobTitle.Id;
             }
             else
             {
-                dbRoleOffer.JobTitle.Code = dbRoleOffer.JobTitle.Code;
+                updatedOrNewRoleOffer.JobTitle = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                   r => r.JobTitle, j => j.Code == updatedOrNewRoleOffer.JobTitle.Code,
+                   updatedOrNewRoleOffer.JobTitle, mapper);
             }
-            if (dbExcelEntityId == dbRoleOffer.FunctionalAreaType.Name)
+            if (dbRoleOffer.FunctionalAreaType.Name == updatedOrNewRoleOffer.FunctionalAreaType.Name)
             {
-                dbRoleOffer.FunctionalAreaType.Id = dbEntityId;
+                updatedOrNewRoleOffer.FunctionalAreaType.Id = dbRoleOffer.FunctionalAreaType.Id;
             }
             else
             {
-                dbRoleOffer.FunctionalAreaType.Name = dbRoleOffer.FunctionalAreaType.Name;
-               
+                updatedOrNewRoleOffer.FunctionalAreaType = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                   r => r.FunctionalAreaType, f => f.Name
+                    == updatedOrNewRoleOffer.FunctionalAreaType.Name,
+                   updatedOrNewRoleOffer.FunctionalAreaType, mapper);
             }
-            if (dbExcelVenueId == dbRoleOffer.Location.Code)
+            if (dbRoleOffer.Location.Code == updatedOrNewRoleOffer.Location.Code)
             {
-                dbRoleOffer.Location.Id = dbVenueId;
+                updatedOrNewRoleOffer.Location.Id = dbRoleOffer.Location.Id;
             }
             else
             {
-                dbRoleOffer.Location.Code = dbRoleOffer.Location.Code;
+                updatedOrNewRoleOffer.Location = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                   r => r.Location, l => l.Code == updatedOrNewRoleOffer.Location.Code,
+                   updatedOrNewRoleOffer.Location, mapper);
             }
-        } 
+            return updatedOrNewRoleOffer;
+        }      
+    
+        public static U MapExcelDataToDbDataIfExists<T,U>(IReadOnlyCollection<T>dbItems, 
+            Func<T,U>selectCallback, Func<U,bool>firstOrDefaultCallback, U dbItem,
+            IMapper mapper) where T : IEntity where U : IEntity
+        {
+            U? item = dbItems
+                   .Select(selectCallback)
+                   .FirstOrDefault(firstOrDefaultCallback);
+            // if this item exists in db then map the fields of updated item to db item
+            if (item != null)
+            {
+                int itemId = item.Id;
+                item = mapper.Map<U>(dbItem);
+                item.Id = itemId;
+                return item;
+            }
+            return dbItem;
+        }
     }
 }

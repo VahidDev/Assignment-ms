@@ -2,7 +2,7 @@
 
 namespace DomainModels.Models.Entities
 {
-    [Table("job_title_venues")]
+    [Table("job_title_locations")]
     public class JobTitleLocation
     {
         public JobTitle JobTitle { get; set; }

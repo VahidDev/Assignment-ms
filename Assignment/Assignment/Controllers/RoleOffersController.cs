@@ -17,13 +17,7 @@ namespace Assignment.Controllers
         public async Task<IActionResult> GetALlRoleOffersAsync()
         {
             return ResponseGenerator
-                .GetResponse(await _roleOfferServices.GetALlRoleOffersAsync());
-        }
-        [HttpGet("nested")]
-        public async Task<IActionResult> GetALlNestedRoleOffersAsync()
-        {
-            return ResponseGenerator
-                .GetResponse(await _roleOfferServices.GetALlNestedRoleOffersAsync());
+                .GetResponse(await _roleOfferServices.GetAllRoleOffersAsync());
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleOfferAsync(int id)

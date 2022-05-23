@@ -6,6 +6,6 @@ namespace DomainModels.Dtos
     public class JobTitleDto: BaseDto
     {
         public string Name { get; set; }
-        public ICollection<LocationDto> Venues { get; set; }
+        public ICollection<LocationDto> Locations { get; set; }
     }
 }

@@ -1,111 +1,114 @@
-﻿using Assignment.Services.Abstraction;
+﻿using Assignment.Constants.FileConstants;
+using Assignment.Services.Abstraction;
+using Assignment.Utilities.FileUtilities;
 using Assignment.Utilities.RuntimeUtilities;
-using OfficeOpenXml;
-using System.ComponentModel.DataAnnotations;
+using ExcelDataReader;
 using System.Reflection;
 
 namespace Assignment.Services.Implementation
 {
     internal class FileServices : IFileServices
     {
-        public ICollection<T> ReadCollectionFromExcelFile<T>(IFormFile file)
+        private readonly IRuntimeServices _runtimeServices;
+
+        public FileServices(IRuntimeServices runtimeServices)
         {
+            _runtimeServices = runtimeServices;
+        }
+
+        public ICollection<T>? ReadCollectionFromExcelFile<T>(IFormFile file)
+        {
+            List<T> items = new();
+
+            IReadOnlyCollection<PropertyInfo> props = typeof(T).GetProperties();
+
+            // all the needed props will be storoed in this dict
+            // Needed props have Display Attribute
+            Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict
+                = DisplayAttributeAndPropDictGenerator
+                .CreateDict(props, new Dictionary<string, PropertyInfo>());
+
+            //This needs to be set (from the documentation)
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             Stream stream = file.OpenReadStream();
-            List<T> list = new();
+            IExcelDataReader reader;
 
-            ExcelPackage package = new(stream);
-            // this is necessary by the documentation 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            var worksheets = package.Workbook.Worksheets;
-            foreach (var ws in worksheets)
+            // Determine which reader to use. For csv it is Csv reader
+            // but for other extensions(xlsx,xls) it is just XML reader 
+            if (file.IsSpecificFileType(FileTypeConstants.CsvFileContentType))
             {
-                ExcelRange excelRange = ws.Cells[ws.Dimension.Start.Row,
-                    ws.Dimension.Start.Column,
-                    1, ws.Dimension.End.Column];
+                reader = ExcelReaderFactory.CreateCsvReader(stream);
+            }
+            else
+            {
+                reader=ExcelReaderFactory.CreateOpenXmlReader(stream);
+            }
+            // The below dictionary will consist of all the headers 
+            // with their indecies (column index)
+            Dictionary<int,string> headersDict = new ();
+            bool IsStartingRowFound = false;
+            int startingColumn = 0;
+            bool isStartingColumnFound = false;
 
-                int totalNumberOfRows = ws.Dimension.Rows;
-
-                IReadOnlyCollection<PropertyInfo> props = typeof(T).GetProperties();
-
-                // all the needed props are storoed in this dict
-                // Needed props have Display Attribute
-                Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict 
-                    = DisplayAttributeAndPropDictGenerator
-                    .CreateDict(props, new Dictionary<string, PropertyInfo>());
-               
-                int startingRow = 1;
-                int startingColumn = 1;
-                int headerRowNumber = 0;
-                bool isFinished = false;
-                // Define what is the correct row to start from
-
-                for (int i = startingRow; i<= totalNumberOfRows; i++)
+            // Find the starting row and the starting column
+            while (!IsStartingRowFound)
+            {
+                reader.Read();
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    for (int j = startingColumn;j<= excelRange.Columns; j++)
+                    if (reader[i] != null)
                     {
-                        if (ws.Cells[i, j].Value !=null)
+                        string? headerValue = reader[i].ToString();
+                        if (headerValue != null)
                         {
-                            headerRowNumber = i;
-                            totalNumberOfRows=totalNumberOfRows+(i-1);
-                            // We take values from the row after the header row
-                            startingRow = headerRowNumber + 1;
-                            startingColumn = j;
-                            isFinished = true;
-                            break;
+                            headersDict.Add(i,headerValue);
+                            if (!isStartingColumnFound)
+                            {
+                                startingColumn = i;
+                                isStartingColumnFound = true;
+                            }
                         }
                     }
-                    if (isFinished) break;
                 }
-                for (int i = startingRow; i <= totalNumberOfRows; i++)
-                {
-                    Dictionary<string, object> propNameAndValueDict = new();
-                    for (int j = startingColumn; j <= excelRange.Columns; j++)
-                    {
-                        // Check if the header cell or
-                        // the current cell is empty
-                        if (ws.Cells[i, j].Value == null
-                            ||ws.Cells[headerRowNumber, j].Value==null)
-                            continue;
+                if(headersDict.Count > 0) 
+                    IsStartingRowFound=true;
+            }
 
-                        string headerCellValue = ws.Cells[headerRowNumber, j].Value.ToString()??"";
-                        if (!displayAttributeNameAndPropDict
-                            .ContainsKey(headerCellValue.Trim().ToLower())) continue;
-                        //ws.Cells[i, j].Value is the current cell value
-                        propNameAndValueDict.Add(headerCellValue, ws.Cells[i, j].Value);
-                    }
-                    if (propNameAndValueDict.Count == 0)
-                    {
-                        return list;
-                    }
-                    T parentObj = Activator.CreateInstance<T>();
-                    List<PropertyInfo> allProprs =typeof(T).GetProperties()
-                        .ToList();
-                    foreach (PropertyInfo prop in allProprs)
-                    {
-                        // ignore if prop doesn't have DisplayAttribute
-                        if (prop.GetCustomAttribute<DisplayAttribute>() == null)
-                            continue;
-                        if (prop.IsInNamespace(nameof(DomainModels)))
-                        {
-                            if(parentObj!=null)
-                            prop.CreateCustomObjectAndSetToProperty
-                                    (propNameAndValueDict, parentObj);
-                        }
-                        else
-                        {
-                            prop.SetPropertyValue<T>(parentObj
-                                ,propNameAndValueDict
-                                .FirstOrDefault(p => p.Key.Trim().ToLower() == 
-                                prop.GetCustomAttribute<DisplayAttribute>()?
-                                .Name?.Trim().ToLower()).Value);
-                        }
-                    }
+            while (reader.Read())
+            {
+                Dictionary<string, object> propNameAndValueDict = new();
+                for (int j = startingColumn; j < reader.FieldCount; j++)
+                {
+                    // Check if the header cell or
+                    // the current cell is empty or an empty string
+                    if (reader.GetValue(j) == null||string.IsNullOrEmpty(reader.GetValue(j).ToString()))
+                        continue;
+                   
+                    if (!headersDict.ContainsKey(j))
+                        continue;
+                    string headerCellValue = headersDict[j].Trim().ToLower();
+
+                    if (!displayAttributeNameAndPropDict
+                        .ContainsKey(headerCellValue)) continue;
+
+                    //ws.Cells[i, j].Value is the current cell value
+                    propNameAndValueDict.Add(headerCellValue, reader.GetValue(j));
+                }
+                if (propNameAndValueDict.Count == 0) continue;
+                if (propNameAndValueDict.Count ==headersDict.Count) 
+                {
+                    items.Add(_runtimeServices.CreateCustomObject<T>(propNameAndValueDict));
+
+                    // Reset dict 
                     propNameAndValueDict.Clear();
-                    list.Add(parentObj);
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return list;
+            return items;
         }
     }
 }

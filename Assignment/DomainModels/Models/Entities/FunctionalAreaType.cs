@@ -8,12 +8,11 @@ namespace DomainModels.Models.Entities
     [Table("functional_area_types")]
     public class FunctionalAreaType:Entity
     {
-        [Display(Name= "Role Offer - Functional Area Type")]
         [Column("name")]
+        [Display(Name= "Role Offer - Functional Area Type")]
         public string Name { get; set; }
         public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<FunctionalAreaTypeFunctionalArea> FunctionalAreaTypeFunctionalAreas 
-        { get; set; }
+        public ICollection<FunctionalAreaTypeFunctionalArea> FunctionalAreaTypeFunctionalAreas { get; set; }
     }
 }

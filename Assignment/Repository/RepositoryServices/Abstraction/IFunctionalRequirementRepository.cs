@@ -10,6 +10,6 @@ namespace Repository.RepositoryServices.Abstraction
         : IGenericRepository<FunctionalRequirement>
     {
         Task<ICollection<FunctionalRequirement>> GetAllAsNoTrackingIncludingItemsAsync
-           (Expression<Func<RoleOffer, bool>> expression);
+           (Expression<Func<FunctionalRequirement, bool>> expression);
     }
 }

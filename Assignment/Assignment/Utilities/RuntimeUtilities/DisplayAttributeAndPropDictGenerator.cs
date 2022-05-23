@@ -6,8 +6,8 @@ namespace Assignment.Utilities.RuntimeUtilities
     internal static class DisplayAttributeAndPropDictGenerator
     {
         public static Dictionary<string, PropertyInfo> CreateDict
-            (IReadOnlyCollection<PropertyInfo> props
-            , Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict)
+            (IReadOnlyCollection<PropertyInfo> props,
+            Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict)
         {
             foreach (PropertyInfo prop in props)
             {

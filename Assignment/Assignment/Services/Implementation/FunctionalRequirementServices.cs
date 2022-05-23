@@ -30,28 +30,10 @@ namespace Assignment.Services.Implementation
 
         public async Task<JsonResult> GetAllFunctionalRequirementssync()
         {
-            List<FunctionalRequirement> requirementDtos = _mapper
-                .Map<List<FunctionalRequirement>>
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK, _mapper
+                .Map<List<GetFunctionalRequirementDto>>
                 (await _unitOfWork.FunctionalRequirementRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted));
-            List<GetFunctionalRequirementDto> dtoToSend = new();
-
-            foreach (FunctionalRequirement fr in requirementDtos)
-            {
-                GetFunctionalRequirementDto dto = new();
-                dto.Requirements = new List<GetRequirementDto>();
-                foreach (Requirement requirement in fr.Requirements)
-                {
-                    GetRequirementDto requirementDto=_mapper
-                        .Map<GetRequirementDto>(requirement);
-                    requirementDto.Value = requirement.Value
-                        .Split(DbValueSeperatorConstants.TripleDashSeperator);
-                    dto.Requirements.Add(requirementDto);
-                }
-                dto.Id=fr.Id;
-                dtoToSend.Add(dto);
-            }
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK, dtoToSend);
+                .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted)));
         }
 
         public async Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
@@ -65,47 +47,64 @@ namespace Assignment.Services.Implementation
             }
 
             // Get All RoleOffers from excel file
-            ICollection<Requirement> excelRequirements = _fileServices
+            ICollection<Requirement>? newRequirements = _fileServices
                 .ReadCollectionFromExcelFile<Requirement>(file);
-            List<FunctionalRequirement> functionalRequirements = new();
+            if (newRequirements == null || newRequirements.Count == 0)
+            {
+                return _jsonFactory
+                    .CreateJson(StatusCodes.Status404NotFound,
+                    FileErrorMessageConstants.NotInCorrectFormat);
+            }
+            int[] roleOfferIds = newRequirements.Distinct().Select(x => x.RoleOfferId).ToArray();
 
-            int[] roleOfferIds = excelRequirements.Select(x => x.RoleOfferId).ToArray();
             ICollection<RoleOffer> updatedRoleOffers = (await _unitOfWork
                 .RoleOfferRepository
-                .GetAllSpecificRoleOffers(r=>!r.IsDeleted&&roleOfferIds.Contains(r.Id)))
-                .ToList();
+                .GetAllSpecificRoleOffers(r=>!r.IsDeleted
+                && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
-            foreach (Requirement requirement in excelRequirements)
+            List<FunctionalRequirement> functionalRequirements 
+                = (await _unitOfWork.FunctionalRequirementRepository
+                .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted
+                && roleOfferIds.Contains(fr.RoleOffer.Id))).ToList();
+
+            foreach (Requirement requirement in newRequirements)
             {
                 RoleOffer? roleOffer = updatedRoleOffers
-                      .FirstOrDefault(r => r.Id == requirement.RoleOfferId);
+                      .FirstOrDefault(r => r.RoleOfferId == requirement.RoleOfferId);
+
                 if (roleOffer==null)
                     return _jsonFactory
-                        .CreateJson(StatusCodes.Status400BadRequest
-                        , $"Role Offer {requirement.RoleOfferId} was not found");
+                        .CreateJson(StatusCodes.Status400BadRequest,
+                        $"RoleOffer with the ID {requirement.RoleOfferId} was not found");
 
                 FunctionalRequirement? fr=functionalRequirements
-                    .FirstOrDefault(r=>r.ExcelFunctionalRequirementId
-                    == requirement.ExcelFunctionalRequirementId);
+                    .FirstOrDefault(r=>r.FunctionalRequirementId
+                    == requirement.FunctionalRequirementId);
+                if (requirement.WaitlistCount != 0)
+                {
+                    roleOffer.WaitlistFulfillment
+                     = (roleOffer.TotalDemand * 100) / requirement.WaitlistCount;
+                }
+                if(requirement.LevelOfConfidence != 0)
+                {
+                    roleOffer.RoleOfferFulfillment
+                    = (roleOffer.TotalDemand * 100) / requirement.LevelOfConfidence;
+                }
                 if (fr == null)
                 {
-                    roleOffer.WaitListCount = requirement.WaitListCount;
-                    roleOffer.LevelOfConfidence = requirement.LevelOfConfidence;
                     functionalRequirements.Add(new FunctionalRequirement
                     {
-                        ExcelFunctionalRequirementId=requirement.ExcelFunctionalRequirementId,
+                        FunctionalRequirementId = requirement.FunctionalRequirementId,
                         Requirements=new List<Requirement>() { requirement } ,
                         RoleOffer=roleOffer
                     });
                 }
                 else
                 {
-                    fr.RoleOfferId = requirement.RoleOfferId;
                     fr.Requirements.Add(requirement);
                 }
             }
-            await _unitOfWork.FunctionalRequirementRepository
-                .AddRangeAsync(functionalRequirements); 
+            _unitOfWork.FunctionalRequirementRepository.UpdateRange(functionalRequirements); 
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }

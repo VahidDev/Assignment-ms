@@ -6,9 +6,9 @@ namespace Assignment.Utilities.FileUtilities
     {
         public static bool IsExcelFile(this IFormFile file)
         {
-            if (file.IsFileTypeSupported(FileTypeConstants.ExcelXLSXFileContentType)
-                || file.IsFileTypeSupported(FileTypeConstants.CsvFileContentType)
-                || file.IsFileTypeSupported(FileTypeConstants.ExcelXLSFileContentType))
+            if (file.IsSpecificFileType(FileTypeConstants.ExcelXLSXFileContentType)
+                || file.IsSpecificFileType(FileTypeConstants.CsvFileContentType)
+                || file.IsSpecificFileType(FileTypeConstants.ExcelXLSFileContentType))
             {
                 return true;
             }

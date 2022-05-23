@@ -47,7 +47,7 @@ namespace Repository.Extensions.ModelBuilderExtensions
             // Many to Many between JobTitle and Venues
             builder.Entity<Location>()
             .HasMany(p => p.JobTitles)
-            .WithMany(p => p.Venues)
+            .WithMany(p => p.Locations)
             .UsingEntity<JobTitleLocation>(
                 j => j
                     .HasOne(pt => pt.JobTitle)

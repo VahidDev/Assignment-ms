@@ -44,7 +44,11 @@ namespace Assignment.Utilities.Startup
             builder.Services
                .AddScoped<IFunctionalRequirementServices, FunctionalRequirementServices>();
             builder.Services
+               .AddScoped<IRuntimeServices, RuntimeServices>();
+            builder.Services
                .AddScoped<IJsonFactory, JsonFactory>();
+            builder.Services
+               .AddScoped<IFunctionalAreaTypeServices, FunctionalAreaTypeServices>();
             return builder;
         }
     }

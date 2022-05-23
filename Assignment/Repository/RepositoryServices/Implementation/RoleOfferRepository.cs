@@ -33,27 +33,33 @@ namespace Repository.RepositoryServices.Implementation
         public async Task<ICollection<RoleOffer>> GetAllAsNoTrackingIncludingItemsAsync
             (Expression<Func<RoleOffer, bool>> expression)
         {
-            return await dbSet.Include(r => r.FunctionalAreaType)
+            return await dbSet
+                .Include(r => r.FunctionalAreaType)
                 .Include(f => f.FunctionalArea)
                 .Include(j => j.JobTitle)
                 .Include(r=>r.Location)
+                .Where(r => !r.FunctionalAreaType.IsDeleted)
                 .Where(r => !r.FunctionalArea.IsDeleted)
                 .Where(r => !r.JobTitle.IsDeleted)
-                .Where(r => !r.FunctionalAreaType.IsDeleted)
                 .Where(r => !r.Location.IsDeleted)
-                .Where(expression).AsNoTracking().ToListAsync();
+                .Where(expression)
+                .AsNoTracking().ToListAsync();
         }
 
         public async Task<ICollection<RoleOffer>> GetAllIncludingItemsAsync()
         {
-            return await dbSet.Include(r => r.FunctionalArea)
+            return await dbSet
+                .Include(r=>r.FunctionalAreaType)
+                .Include(r => r.FunctionalArea)
                 .Include(f => f.JobTitle)
                 .Include(j => j.Location)
-                .Include(r=>r.FunctionalAreaType)
+                .Include(r=>r.FunctionalRequirement)
+                .ThenInclude(r=>r.Requirements.Where(r=>!r.IsDeleted))
+                .Where(r => !r.FunctionalAreaType.IsDeleted)
                 .Where(r => !r.FunctionalArea.IsDeleted)
                 .Where(r => !r.JobTitle.IsDeleted)
-                .Where(r => !r.FunctionalAreaType.IsDeleted)
                 .Where(r => !r.Location.IsDeleted)
+                .Where(r=>!r.IsDeleted)
                 .ToListAsync();
         }
 

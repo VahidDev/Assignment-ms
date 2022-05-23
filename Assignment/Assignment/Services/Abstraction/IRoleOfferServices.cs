@@ -6,7 +6,6 @@ namespace Assignment.Services.Abstraction
     {
         Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
         Task<JsonResult> GetRoleOfferAsync(int id);
-        Task<JsonResult> GetALlRoleOffersAsync();
-        Task<JsonResult> GetALlNestedRoleOffersAsync();
+        Task<JsonResult> GetAllRoleOffersAsync();
     }
 }

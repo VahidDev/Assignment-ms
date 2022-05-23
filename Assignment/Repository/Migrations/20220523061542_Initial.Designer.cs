@@ -12,14 +12,14 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220520091848_Initial")]
+    [Migration("20220523061542_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -194,9 +194,9 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("ExcelFunctionalRequirementId")
+                    b.Property<int>("FunctionalRequirementId")
                         .HasColumnType("integer")
-                        .HasColumnName("excel_functional_requirement_id");
+                        .HasColumnName("functional_requirement_id");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -270,7 +270,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("job_title_venues");
+                    b.ToTable("job_title_locations");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
@@ -284,7 +284,7 @@ namespace Repository.Migrations
 
                     b.Property<string>("Code")
                         .HasColumnType("text")
-                        .HasColumnName("Role Offer - Location Code");
+                        .HasColumnName("code");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp")
@@ -328,9 +328,9 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("ExcelFunctionalRequirementId")
+                    b.Property<int>("FunctionalRequirementId")
                         .HasColumnType("integer")
-                        .HasColumnName("excel_functional_requirement_id");
+                        .HasColumnName("functional_requirement_id");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -352,12 +352,9 @@ namespace Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("value");
 
-                    b.Property<int?>("functional_requirement_id")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("functional_requirement_id");
+                    b.HasIndex("FunctionalRequirementId");
 
                     b.ToTable("requirements");
                 });
@@ -383,9 +380,9 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<int>("LevelOfConfidence")
+                    b.Property<int>("RoleOfferFulfillment")
                         .HasColumnType("integer")
-                        .HasColumnName("level_of_confidence");
+                        .HasColumnName("role_offer_fulfillment");
 
                     b.Property<int>("RoleOfferId")
                         .HasColumnType("integer")
@@ -399,9 +396,9 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
 
-                    b.Property<int>("WaitListCount")
+                    b.Property<int>("WaitlistFulfillment")
                         .HasColumnType("integer")
-                        .HasColumnName("waitlist_count");
+                        .HasColumnName("waitlist_fulfillment");
 
                     b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");
@@ -543,7 +540,9 @@ namespace Repository.Migrations
                 {
                     b.HasOne("DomainModels.Models.Entities.FunctionalRequirement", "FunctionalRequirement")
                         .WithMany("Requirements")
-                        .HasForeignKey("functional_requirement_id");
+                        .HasForeignKey("FunctionalRequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FunctionalRequirement");
                 });

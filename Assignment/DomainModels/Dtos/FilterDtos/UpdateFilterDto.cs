@@ -1,9 +1,9 @@
 ﻿
-using System.Text.Json.Serialization;
+using DomainModels.Dtos.Abstraction;
 
 namespace DomainModels.Dtos
 {
-    public class UpdateFilterDto
+    public class UpdateFilterDto : IValueFromStringConvertible
     {
         public int? Id { get; set; }
         public string Requirement { get; set; }

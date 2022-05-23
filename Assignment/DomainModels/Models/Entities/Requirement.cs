@@ -1,11 +1,12 @@
-﻿using DomainModels.Models.Entities.Base;
+﻿using DomainModels.Dtos.Abstraction;
+using DomainModels.Models.Entities.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
     [Table("requirements")]
-    public class Requirement : Entity
+    public class Requirement : Entity, IValueFromArrayConvertible
     {
         [Column("requirement_name")]
         [Display(Name = "Requirement")]
@@ -19,16 +20,15 @@ namespace DomainModels.Models.Entities
         [NotMapped]
         [Display(Name = "Role Offer ID")]
         public int RoleOfferId { get; set; }
+        [Column("functional_requirement_id")]
         [Display(Name ="Functional Requirement ID")]
-        [Column("excel_functional_requirement_id")]
-        public int ExcelFunctionalRequirementId { get; set; }
-        [ForeignKey("functional_requirement_id")]
+        public int FunctionalRequirementId { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
         [NotMapped]
         [Display(Name = "Level Of Confidence")]
         public int LevelOfConfidence { get; set; }
         [NotMapped]
         [Display(Name = "WaitList Count")]
-        public int WaitListCount { get; set; }
+        public int WaitlistCount { get; set; }
     }
 }

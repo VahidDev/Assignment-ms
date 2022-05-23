@@ -18,7 +18,7 @@ namespace Repository.RepositoryServices.Implementation
             :base(context, ilogger) { }
 
         public async Task<ICollection<FunctionalRequirement>> GetAllAsNoTrackingIncludingItemsAsync
-            (Expression<Func<RoleOffer, bool>> expression)
+            (Expression<Func<FunctionalRequirement, bool>> expression)
         {
             return await dbSet
                 .AsNoTracking()

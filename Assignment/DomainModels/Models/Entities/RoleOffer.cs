@@ -8,28 +8,28 @@ namespace DomainModels.Models.Entities
     [Table("role_offers")]
     public class RoleOffer : Entity
     {
-        [Display(Name = "Custom Object FunctionalAreaType")]
         [ForeignKey("functional_area_type_id")]
+        [Display(Name = "Custom Object FunctionalAreaType")]
         public FunctionalAreaType FunctionalAreaType { get; set; }
-        [Display(Name = "Custom Object FunctionalArea")]
         [ForeignKey("functional_area_id")]
+        [Display(Name = "Custom Object FunctionalArea")]
         public FunctionalArea FunctionalArea { get; set; }
-        [Display(Name = "Custom Object JobTitle")]
         [ForeignKey("job_title_id")]
+        [Display(Name = "Custom Object JobTitle")]
         public JobTitle JobTitle { get; set; }
-        [Display(Name = "Custom Object Location")]
         [ForeignKey("location_id")]
+        [Display(Name = "Custom Object Location")]
         public Location Location { get; set; }
-        [Display(Name = "Role Offer - ID")]
         [Column("role_offer_id")]
+        [Display(Name = "Role Offer - ID")]
         public int RoleOfferId { get; set; }
-        [Display(Name = "Role Offer - Total Demand")]
         [Column("total_demand")]
+        [Display(Name = "Role Offer - Total Demand")]
         public int TotalDemand { get; set; }
-        [Column("level_of_confidence")]
-        public int LevelOfConfidence { get; set; }
-        [Column("waitlist_count")]
-        public int WaitListCount { get; set; }
+        [Column("role_offer_fulfillment")]
+        public int RoleOfferFulfillment { get; set; } = 100;
+        [Column("waitlist_fulfillment")]
+        public int WaitlistFulfillment { get; set; } = 0;
         public ICollection<Volunteer> Volunteers { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
     }
