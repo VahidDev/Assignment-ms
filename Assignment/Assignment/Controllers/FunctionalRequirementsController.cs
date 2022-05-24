@@ -47,7 +47,7 @@ namespace Assignment.Controllers
         {
             return ResponseGenerator
                 .GetResponse(await _functionalRequirementServices
-                .UpdateFunctionalRequirementAsync(convertibleDto));
+                .UpdateOrAddFunctionalRequirementAsync(convertibleDto));
         }
     }
 }

@@ -31,5 +31,11 @@ namespace Assignment.Controllers
             return ResponseGenerator
                 .GetResponse(await _roleOfferServices.ValidateExcelFileThenWriteToDbAsync(file));
         }
+        [HttpPost("importDetals")]
+        public async Task<IActionResult> ImportRoleOfferDetailsAsync([FromForm] IFormFile file)
+        {
+            return ResponseGenerator
+                .GetResponse(await _roleOfferServices.ImportRoleOfferDetailsAsync(file));
+        }
     }
 }

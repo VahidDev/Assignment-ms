@@ -8,6 +8,6 @@ namespace Assignment.Services.Abstraction
         Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
         Task<JsonResult> GetAllFunctionalRequirementsAsync();
         Task<JsonResult> GetByRoleOfferIdAsync(int id);
-        Task<JsonResult> UpdateFunctionalRequirementAsync(UpdateFunctionalRequirementConvertibleDto convertibleDto);
+        Task<JsonResult> UpdateOrAddFunctionalRequirementAsync(UpdateFunctionalRequirementConvertibleDto convertibleDto);
     }
 }

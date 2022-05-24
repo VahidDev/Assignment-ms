@@ -47,25 +47,41 @@ namespace Assignment.Services.Implementation
                 _mapper.Map<GetFunctionalRequirementDto>(functionalRequirement));
         }
 
-        public async Task<JsonResult> UpdateFunctionalRequirementAsync
+        public async Task<JsonResult> UpdateOrAddFunctionalRequirementAsync
             (UpdateFunctionalRequirementConvertibleDto convertibleDto)
         {
             UpdateFunctionalRequirementDto dto=_mapper.Map<UpdateFunctionalRequirementDto>(convertibleDto);
-            FunctionalRequirement dbFunctionalRequirement = await _unitOfWork
-              .FunctionalRequirementRepository
-              .GetByIdAsNoTrackingIncludingItemsAsync(fr => fr.Id == dto.Id&&!fr.RoleOffer.IsDeleted);
+            FunctionalRequirement dbFunctionalRequirement = new();
+            RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository.GetByIdAsNoTrackingAsync(dto.RoleOfferId);
 
-            if (dbFunctionalRequirement == null)
-                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
-                    $"Functional Requirement {dto.Id} was not found");
-
-            if (dbFunctionalRequirement.RoleOfferId != dto.RoleOfferId)
+            if (roleOffer == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
-                    $"RoleOffer ID is invalid");
+                    $"RoleOffer was not found");
 
+            if (dto.Id != null)
+            {
+                dbFunctionalRequirement= await _unitOfWork
+                    .FunctionalRequirementRepository
+                    .GetByIdAsNoTrackingIncludingItemsAsync(fr => fr.Id == dto.Id && !fr.RoleOffer.IsDeleted);
+                if(dbFunctionalRequirement == null)
+                {
+                    return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
+                        $"Functional Requirement was not found");
+                }
+                if (dbFunctionalRequirement.RoleOfferId != dto.RoleOfferId)
+                    return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
+                        $"RoleOffer ID is invalid");
+            }
+            else
+            {
+                dbFunctionalRequirement = new();
+            }
+            dbFunctionalRequirement.RoleOffer = roleOffer;
             dbFunctionalRequirement.RoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             dbFunctionalRequirement.RoleOffer.WaitlistCount = dto.WaitlistCount;
             dbFunctionalRequirement.RoleOffer.TotalDemand = dto.TotalDemand;
+
+            dbFunctionalRequirement.RoleOffer.FunctionalRequirement=dbFunctionalRequirement;
 
             dbFunctionalRequirement.RoleOffer.WaitlistFulfillment
                    = FulfilmentCalculator.CalculateWaitlistFulfilment
@@ -78,6 +94,7 @@ namespace Assignment.Services.Implementation
             foreach (UpdateRequirementDto updateDto in dto.Requirements)
             {
                 if (updateDto.Id != null 
+                    && dbFunctionalRequirement.Requirements!=null
                     && !dbFunctionalRequirement.Requirements.Any(r => r.Id == updateDto.Id))
                 {
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
@@ -91,13 +108,16 @@ namespace Assignment.Services.Implementation
                 }
                 updatedDtos.Add(updateDto);
             }
-            foreach (Requirement requirement in dbFunctionalRequirement.Requirements)
+            if (dbFunctionalRequirement.Requirements != null)
             {
-                // If any requirement wasn't sent, it means it was removed
-                if (!updatedDtos.Any(r => r.Id == requirement.Id))
+                foreach (Requirement requirement in dbFunctionalRequirement.Requirements)
                 {
-                    requirement.IsDeleted = true;
-                    updatedDtos.Add(_mapper.Map<UpdateRequirementDto>(requirement));
+                    // If any requirement wasn't sent, it means it was removed
+                    if (!updatedDtos.Any(r => r.Id == requirement.Id))
+                    {
+                        requirement.IsDeleted = true;
+                        updatedDtos.Add(_mapper.Map<UpdateRequirementDto>(requirement));
+                    }
                 }
             }
             dbFunctionalRequirement.Requirements = _mapper.Map<ICollection<Requirement>>(updatedDtos);

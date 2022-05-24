@@ -9,6 +9,10 @@ namespace DomainModels.Dtos
         public int RoleOfferFulfillment { get; set; }
         [JsonProperty("waitlist_fulfillment")]
         public int WaitlistFulfillment { get; set; }
+        [JsonProperty("level_of_confidence")]
+        public int? LevelOfConfidence { get; set; }
+        [JsonProperty("waitlist_count")]
+        public int? WaitlistCount { get; set; }
         public GetFunctionalRequirementDto FunctionalRequirement { get; set; } 
     }
 }

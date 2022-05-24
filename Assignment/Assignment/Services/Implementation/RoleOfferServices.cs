@@ -7,6 +7,7 @@ using Assignment.Utilities.ServicesUtilities.MapperUtilities;
 using Assignment.Utilities.ServicesUtilities.RoleOfferUtilities;
 using AutoMapper;
 using DomainModels.Dtos;
+using DomainModels.Dtos.RoleOffeerDtos;
 using DomainModels.Models.Entities;
 using DomainModels.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,44 @@ namespace Assignment.Services.Implementation
             if (roleOffer == null) return _jsonFactory
                     .CreateJson(StatusCodes.Status404NotFound);
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,_mapper.Map<RoleOfferDto>(roleOffer));
+        }
+
+        public async Task<JsonResult> ImportRoleOfferDetailsAsync(IFormFile file)
+        {
+            if (file == null) return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
+            if (!file.IsExcelFile())
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status415UnsupportedMediaType,
+                    ($"{FileErrorMessageConstants.NotSupportedFile}: " +
+                    $"{file.ContentType}"));
+            }
+            ICollection<ImportRoleOfferDetailsDto>? dtos = _fileServices
+                .ReadCollectionFromExcelFile<ImportRoleOfferDetailsDto>(file);
+            if (dtos == null || dtos.Count == 0)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
+                    FileErrorMessageConstants.NotInCorrectFormat);
+            }
+            int[] roleOfferIds = dtos.Select(r => r.RoleOfferId).Distinct().ToArray();
+            IReadOnlyCollection<RoleOffer> updatedRoleOffers = (await _unitOfWork.RoleOfferRepository
+                .GetAllAsNoTrackingAsync(r =>roleOfferIds.Contains(r.Id))).ToList();
+            if (updatedRoleOffers.Count != roleOfferIds.Length)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,"Role offer couldn't be found");
+            }
+            foreach (RoleOffer updatedRoleOffer in updatedRoleOffers)
+            {
+                ImportRoleOfferDetailsDto dto = dtos.First(r => r.RoleOfferId == updatedRoleOffer.Id);
+                updatedRoleOffer.RoleOfferFulfillment = FulfilmentCalculator
+                    .CalculateRoleFulfilment(dto.LevelOfConfidence, dto.TotalDemand);
+                updatedRoleOffer.WaitlistFulfillment = FulfilmentCalculator
+                    .CalculateRoleFulfilment(dto.WaitlistCount, dto.TotalDemand);
+                updatedRoleOffer.WaitlistCount = dto.WaitlistCount;
+                updatedRoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
+            }
+            _unitOfWork.RoleOfferRepository.UpdateRange(updatedRoleOffers);
+            await _unitOfWork.CompleteAsync();
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
         public async Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
