@@ -80,7 +80,7 @@ namespace Assignment.Services.Implementation
             dbFunctionalRequirement.RoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             dbFunctionalRequirement.RoleOffer.WaitlistCount = dto.WaitlistCount;
             dbFunctionalRequirement.RoleOffer.TotalDemand = dto.TotalDemand;
-
+            roleOffer.FunctionalRequirement = dbFunctionalRequirement;  
             dbFunctionalRequirement.RoleOffer.FunctionalRequirement=dbFunctionalRequirement;
 
             dbFunctionalRequirement.RoleOffer.WaitlistFulfillment
@@ -100,7 +100,7 @@ namespace Assignment.Services.Implementation
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
                     $"Requirement {updateDto.Id} was not found");
                 }
-                if(updatedDtos.Any(r=>r.RequirementName==updateDto.RequirementName
+                if(updatedDtos.Any(r=>r.RequirementName == updateDto.RequirementName
                 && r.Operator == updateDto.Operator && r.Value == updateDto.Value))
                 {
                     return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,

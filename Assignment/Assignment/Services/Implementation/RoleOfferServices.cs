@@ -77,9 +77,9 @@ namespace Assignment.Services.Implementation
             {
                 ImportRoleOfferDetailsDto dto = dtos.First(r => r.RoleOfferId == updatedRoleOffer.Id);
                 updatedRoleOffer.RoleOfferFulfillment = FulfilmentCalculator
-                    .CalculateRoleFulfilment(dto.LevelOfConfidence, dto.TotalDemand);
+                    .CalculateRoleFulfilment(dto.LevelOfConfidence, updatedRoleOffer.TotalDemand);
                 updatedRoleOffer.WaitlistFulfillment = FulfilmentCalculator
-                    .CalculateRoleFulfilment(dto.WaitlistCount, dto.TotalDemand);
+                    .CalculateRoleFulfilment(dto.WaitlistCount, updatedRoleOffer.TotalDemand);
                 updatedRoleOffer.WaitlistCount = dto.WaitlistCount;
                 updatedRoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             }
