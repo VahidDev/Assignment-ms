@@ -26,19 +26,20 @@ namespace Assignment.Services.Implementation
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
+            ICollection<RoleOffer>dbRoleOffers = (await _unitOfWork.RoleOfferRepository
+                .GetAllAsNoTrackingAsync(r=>!r.IsDeleted)).ToList();
             List<Volunteer> volunteers =new ();
             foreach (AssignOrWaitlistVolunteerDto volunteerDto in volunteerDtos)
             {
                 // Check if the volunteer and role offer exist
                 if (!await _unitOfWork.VolunteerRepository
                     .AnyAsync(v => v.Id == volunteerDto.Id) 
-                    || !await _unitOfWork.RoleOfferRepository
-                    .AnyAsync(r => r.Id == volunteerDto.RoleOfferId)) 
+                    || !dbRoleOffers.Any(r => r.Id == volunteerDto.RoleOfferId)) 
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound
                         ,"Volunteer or RoleOffer was not found"); 
 
                 Volunteer updatedVolunteer =_mapper.Map<Volunteer>(volunteerDto);
-                updatedVolunteer.UpdatedAt = DateTime.Now;
+                
                 volunteers.Add(updatedVolunteer);
             }
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
@@ -52,6 +53,8 @@ namespace Assignment.Services.Implementation
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
+            ICollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted)).ToList();
             List<Volunteer> volunteers = new ();
 
             foreach (VolunteerChangeToAnyStatusDto volunteerDto in volunteerDtos)
@@ -63,14 +66,12 @@ namespace Assignment.Services.Implementation
                     return _jsonFactory.CreateJson
                         (StatusCodes.Status404NotFound,"Volunteer is not found"); 
                 // Check if the role offer exists
-                if (!await _unitOfWork.RoleOfferRepository
-                    .AnyAsync(r => r.Id == (int)dbVolunteer.RoleOfferId))
+                if (!dbRoleOffers.Any(r => r.Id == (int)dbVolunteer.RoleOfferId))
                     return _jsonFactory
                         .CreateJson(StatusCodes.Status404NotFound, "RoleOffer is not found");
 
                 Volunteer updatedVolunteer = _mapper.Map<Volunteer>(volunteerDto);
                 updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
-                updatedVolunteer.UpdatedAt = DateTime.Now;
 
                 if (volunteerDto.Status == Statusenum.Free)
                 {
