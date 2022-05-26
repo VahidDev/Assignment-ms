@@ -49,6 +49,11 @@ namespace Assignment.Utilities.Startup
                .AddScoped<IJsonFactory, JsonFactory>();
             builder.Services
                .AddScoped<IFunctionalAreaTypeServices, FunctionalAreaTypeServices>();
+            builder.Services
+                .AddScoped<IDashboardServices, DashboardServices>();
+            builder.Services
+                .AddScoped<IReportServices, ReportServices>();
+            
             return builder;
         }
     }
