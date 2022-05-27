@@ -31,7 +31,7 @@ namespace Assignment.Services.Implementation
             {
                 if(filterDto.Value.Length== 0)
                 {
-                    return _jsonFactory.CreateJson(400
+                    return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest
                         ,$"No value was provided for filter: {filterDto.Requirement}");
                 }
             }

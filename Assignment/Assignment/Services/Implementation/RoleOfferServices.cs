@@ -52,7 +52,8 @@ namespace Assignment.Services.Implementation
 
         public async Task<JsonResult> ImportRoleOfferDetailsAsync(IFormFile file)
         {
-            if (file == null) return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
+            if (file == null) return _jsonFactory
+                    .CreateJson(StatusCodes.Status404NotFound,"The file is not provided");
             if (!file.IsExcelFile())
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status415UnsupportedMediaType,

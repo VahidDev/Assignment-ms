@@ -2,7 +2,6 @@
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Repository.Converters;
-using System;
 
 namespace Repository.Mapper
 {
@@ -23,7 +22,6 @@ namespace Repository.Mapper
 
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
             
-            CreateMap<RoleOffer,GetNestedRoleOfferDto>().ReverseMap(); // not used (should consider to remove)
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
             CreateMap<RoleOffer, NestedRoleOfferDto>().ReverseMap();
             CreateMap<NestedRoleOfferDto, RoleOfferDto>().ReverseMap();
