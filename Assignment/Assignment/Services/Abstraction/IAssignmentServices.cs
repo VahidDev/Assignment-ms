@@ -5,9 +5,9 @@ namespace Assignment.Services.Abstraction
 {
     public interface IAssignmentServices
     {
-        Task<JsonResult> AssignOrWaitlistAsync
+        Task<ObjectResult> AssignOrWaitlistAsync
             (ICollection<AssignOrWaitlistVolunteerDto> volunteers); 
-        Task<JsonResult> ChangeToAnyStatusAsync
+        Task<ObjectResult> ChangeToAnyStatusAsync
             (ICollection<VolunteerChangeToAnyStatusDto> volunteers); 
     }
 }

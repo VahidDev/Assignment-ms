@@ -20,7 +20,7 @@ namespace Assignment.Services.Implementation
             _mapper = mapper;
             _jsonFactory = jsonFactory; 
         }
-        public async Task<JsonResult> CreateAsync(CreateTemplateDto templateDto)
+        public async Task<ObjectResult> CreateAsync(CreateTemplateDto templateDto)
         {
             if (await _unitOfWork.TemplateRepository.AnyAsync(t=>t.Name == templateDto.Name))
             {
@@ -41,7 +41,7 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
-        public async Task<JsonResult> DeleteAsync(int id)
+        public async Task<ObjectResult> DeleteAsync(int id)
         {
             Template template = await _unitOfWork.TemplateRepository
                 .GetByIdAsync(id, new List<string> { nameof(Filter) + "s" });
@@ -52,14 +52,15 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
-        public async Task<JsonResult> GetAllTemplatesAsync()
+        public async Task<ObjectResult> GetAllTemplatesAsync()
         {
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, 
+                null,
                 _mapper.Map<List<GetTemplateDto>>(await _unitOfWork.TemplateRepository
                 .GetAllAsync(new List<string> { nameof(Filter) + "s" })));
         }
 
-        public async Task<JsonResult> UpdateAsync(UpdateTemplateDto updatedTemplate)
+        public async Task<ObjectResult> UpdateAsync(UpdateTemplateDto updatedTemplate)
         {
             Template dbTemplate = await _unitOfWork.TemplateRepository
                 .GetTemplatesWithFiltersAsNoTrackingAsync(t => !t.IsDeleted

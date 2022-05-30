@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainModels.Models.Entities
 {
     [Table("requirements")]
-    public class Requirement : Entity, IValueFromArrayConvertible
+    public class Requirement : Entity, IValueToArrayConvertible
     {
         [Column("requirement_name")]
         [Display(Name = "Requirement")]

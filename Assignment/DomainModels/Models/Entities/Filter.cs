@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainModels.Models.Entities
 {
     [Table("filters")]
-    public class Filter:Entity, IValueFromArrayConvertible
+    public class Filter:Entity, IValueToArrayConvertible
     {
         [Column("requirement")]
         public string Requirement { get; set; }
@@ -15,5 +15,7 @@ namespace DomainModels.Models.Entities
         public string Value { get; set; }
         [ForeignKey("template_id")]
         public Template Template { get; set; }
+        [ForeignKey("report_id")]
+        public Report Report { get; set; }
     }
 }

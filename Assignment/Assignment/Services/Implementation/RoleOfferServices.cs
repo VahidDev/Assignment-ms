@@ -32,25 +32,28 @@ namespace Assignment.Services.Implementation
         }
         
 
-        public async Task<JsonResult> GetAllRoleOffersAsync()
+        public async Task<ObjectResult> GetAllRoleOffersAsync()
         {
            ICollection<RoleOfferDto> roleOffers=_mapper
                 .Map<ICollection<RoleOfferDto>>(await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(e=>!e.IsDeleted));
 
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK, roleOffers);
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK,null, roleOffers);
         }
 
-        public async Task<JsonResult> GetRoleOfferAsync(int id)
+        public async Task<ObjectResult> GetRoleOfferAsync(int id)
         {
             RoleOffer roleOffer =await _unitOfWork.RoleOfferRepository
                 .FirstOrDefaultIncludingItemsAsync(r => r.Id == id && !r.IsDeleted);
             if (roleOffer == null) return _jsonFactory
                     .CreateJson(StatusCodes.Status404NotFound);
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK,_mapper.Map<RoleOfferDto>(roleOffer));
+            return _jsonFactory.CreateJson(
+                StatusCodes.Status200OK,
+                null,
+                _mapper.Map<RoleOfferDto>(roleOffer));
         }
 
-        public async Task<JsonResult> ImportRoleOfferDetailsAsync(IFormFile file)
+        public async Task<ObjectResult> ImportRoleOfferDetailsAsync(IFormFile file)
         {
             if (file == null) return _jsonFactory
                     .CreateJson(StatusCodes.Status404NotFound,"The file is not provided");
@@ -89,7 +92,7 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
-        public async Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
+        public async Task<ObjectResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
         {
             if (file == null) return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
             if(!file.IsExcelFile())
@@ -109,7 +112,8 @@ namespace Assignment.Services.Implementation
             }
 
             IReadOnlyCollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted)).ToList();
+                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted 
+                && excelRoleOffers.Select(e=>e.RoleOfferId).ToArray().Contains(r.RoleOfferId))).ToList();
 
             List<RoleOffer> updatedOrAddedRoleOffers=new();
 
@@ -198,7 +202,8 @@ namespace Assignment.Services.Implementation
                         volunteersWithRoleOffer = (
                             await _unitOfWork.VolunteerRepository
                             .GetAllAsNoTrackingAsync
-                            (v => v.RoleOfferId != null && !v.IsDeleted)
+                            (v => v.RoleOfferId != null && !v.IsDeleted
+                            && dbRoleOffers.Select(r=>r.Id).ToArray().Contains((int)v.RoleOfferId))
                             ).ToList();
                         isVolunteersRequestSent = true;
                     }
@@ -207,8 +212,7 @@ namespace Assignment.Services.Implementation
                     removedRoleOffers.Add(new RoleOffer { Id=dbRoleOffer.Id,IsDeleted=true});
                     freeVolunteers.AddRange(
                         volunteersWithRoleOffer.Where
-                        (v =>v.RoleOfferId == dbRoleOffer.Id && !v.IsDeleted)
-                        );
+                        (v =>v.RoleOfferId == dbRoleOffer.Id));
                 }
                 if (!updatedOrAddedRoleOffers
                     .Any(r => r.Location.Code == dbRoleOffer.Location.Code)

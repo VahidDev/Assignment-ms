@@ -28,15 +28,16 @@ namespace Assignment.Services.Implementation
             _jsonFactory = jsonFactory;
         }
 
-        public async Task<JsonResult> GetAllFunctionalRequirementsAsync()
+        public async Task<ObjectResult> GetAllFunctionalRequirementsAsync()
         {
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK, _mapper
-                .Map<List<GetFunctionalRequirementDto>>
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK,
+                null,
+                _mapper.Map<List<GetFunctionalRequirementDto>>
                 (await _unitOfWork.FunctionalRequirementRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted)));
         }
 
-        public async Task<JsonResult> GetByRoleOfferIdAsync(int id)
+        public async Task<ObjectResult> GetByRoleOfferIdAsync(int id)
         {
             FunctionalRequirement functionalRequirement
                 = await _unitOfWork.FunctionalRequirementRepository
@@ -44,10 +45,11 @@ namespace Assignment.Services.Implementation
             if (functionalRequirement == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,
+                null,
                 _mapper.Map<GetFunctionalRequirementDto>(functionalRequirement));
         }
 
-        public async Task<JsonResult> UpdateOrAddFunctionalRequirementAsync
+        public async Task<ObjectResult> UpdateOrAddFunctionalRequirementAsync
             (UpdateFunctionalRequirementConvertibleDto convertibleDto)
         {
             UpdateFunctionalRequirementDto dto=_mapper.Map<UpdateFunctionalRequirementDto>(convertibleDto);
@@ -126,7 +128,7 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
 
-        public async Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
+        public async Task<ObjectResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file)
         {
             if (file == null) return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
             if (!file.IsExcelFile())

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DomainModels.Dtos
 {
-    public class UpdateRequirementDto : IValueFromArrayConvertible
+    public class UpdateRequirementDto : IValueToArrayConvertible
     {
         public int? Id { get; set; }
         [JsonProperty("requirement_name")]

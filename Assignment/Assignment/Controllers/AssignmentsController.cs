@@ -1,5 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using Assignment.Utilities.ResponseUtilities;
 using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +17,13 @@ namespace Assignment.Controllers
         public async Task<IActionResult> AssignOrWaitListAsync
             ([FromBody]ICollection<AssignOrWaitlistVolunteerDto>volunteers)
         {
-            return ResponseGenerator
-                .GetResponse(await _assignmentServices.AssignOrWaitlistAsync(volunteers));
+            return await _assignmentServices.AssignOrWaitlistAsync(volunteers);
         }
         [HttpPost("ChangeToAnyStatus")]
         public async Task<IActionResult> ChangeToAnyStatusAsync
             ([FromBody] ICollection<VolunteerChangeToAnyStatusDto> volunteers)
         {
-            return ResponseGenerator
-                .GetResponse(await _assignmentServices.ChangeToAnyStatusAsync(volunteers));
+            return await _assignmentServices.ChangeToAnyStatusAsync(volunteers);
         }
     }
 }

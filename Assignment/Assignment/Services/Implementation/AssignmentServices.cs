@@ -20,15 +20,15 @@ namespace Assignment.Services.Implementation
             _mapper=mapper;
             _jsonFactory=jsonFactory;
         }
-        public async Task<JsonResult> AssignOrWaitlistAsync
+        public async Task<ObjectResult> AssignOrWaitlistAsync
             (ICollection<AssignOrWaitlistVolunteerDto> volunteerDtos)
         {
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             ICollection<Volunteer> dbVolunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(v=> !v.IsDeleted && volunteerDtos.Select(d=>d.Id).ToArray()
-                .Contains(v.Id))).ToList();
+                .GetAllAsNoTrackingAsync(v=> !v.IsDeleted && volunteerDtos.Select(d=>d.CandidateId).ToArray()
+                .Contains(v.CandidateId))).ToList();
             ICollection<RoleOffer>dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingAsync(r=>!r.IsDeleted 
                 && volunteerDtos.Select(d=>d.RoleOfferId).ToArray().Contains(r.Id))).ToList();
@@ -36,7 +36,7 @@ namespace Assignment.Services.Implementation
             foreach (AssignOrWaitlistVolunteerDto volunteerDto in volunteerDtos)
             {
                 // Check if the volunteer and role offer exist
-                if (!dbVolunteers.Any(v => v.Id == volunteerDto.Id) 
+                if (!dbVolunteers.Any(v => v.CandidateId == volunteerDto.CandidateId) 
                     || !dbRoleOffers.Any(r => r.Id == volunteerDto.RoleOfferId)) 
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
                         "Volunteer or RoleOffer was not found"); 
@@ -50,22 +50,22 @@ namespace Assignment.Services.Implementation
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK); ;
         }
-        public async Task<JsonResult> ChangeToAnyStatusAsync
+        public async Task<ObjectResult> ChangeToAnyStatusAsync
             (ICollection<VolunteerChangeToAnyStatusDto> volunteerDtos)
         {
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             ICollection<Volunteer> dbVolunteers = (await _unitOfWork.VolunteerRepository
-               .GetAllAsNoTrackingAsync(v => !v.IsDeleted && volunteerDtos.Select(d => d.Id).ToArray()
-               .Contains(v.Id))).ToList();
+               .GetAllAsNoTrackingAsync(v => !v.IsDeleted && volunteerDtos.Select(d => d.CandidateId).ToArray()
+               .Contains(v.CandidateId))).ToList();
             ICollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingAsync(r => !r.IsDeleted)).ToList();
             List<Volunteer> volunteers = new ();
 
             foreach (VolunteerChangeToAnyStatusDto volunteerDto in volunteerDtos)
             {
-                Volunteer? dbVolunteer = dbVolunteers.FirstOrDefault(r=>r.Id == volunteerDto.Id);
+                Volunteer? dbVolunteer = dbVolunteers.FirstOrDefault(r=>r.CandidateId == volunteerDto.CandidateId);
 
                 if (dbVolunteer == null || dbVolunteer.RoleOfferId== null)
                     return _jsonFactory.CreateJson

@@ -1,5 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using Assignment.Utilities.ResponseUtilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
@@ -16,26 +15,22 @@ namespace Assignment.Controllers
         [HttpGet]
         public async Task<IActionResult> GetALlRoleOffersAsync()
         {
-            return ResponseGenerator
-                .GetResponse(await _roleOfferServices.GetAllRoleOffersAsync());
+            return await _roleOfferServices.GetAllRoleOffersAsync();
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleOfferAsync(int id)
         {
-            return ResponseGenerator
-                .GetResponse(await _roleOfferServices.GetRoleOfferAsync(id));
+            return await _roleOfferServices.GetRoleOfferAsync(id);
         }
         [HttpPost("import")]
         public async Task<IActionResult> ImportRoleOffersAsync([FromForm]IFormFile file)
         {
-            return ResponseGenerator
-                .GetResponse(await _roleOfferServices.ValidateExcelFileThenWriteToDbAsync(file));
+            return await _roleOfferServices.ValidateExcelFileThenWriteToDbAsync(file);
         }
         [HttpPost("importDetails")]
         public async Task<IActionResult> ImportRoleOfferDetailsAsync([FromForm] IFormFile file)
         {
-            return ResponseGenerator
-                .GetResponse(await _roleOfferServices.ImportRoleOfferDetailsAsync(file));
+            return await _roleOfferServices.ImportRoleOfferDetailsAsync(file);
         }
     }
 }

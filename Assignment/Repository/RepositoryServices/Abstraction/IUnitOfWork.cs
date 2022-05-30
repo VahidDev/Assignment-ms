@@ -14,6 +14,7 @@ namespace Repository.RepositoryServices.Abstraction
         public IFilterRepository FilterRepository { get;}
         public IFunctionalRequirementRepository FunctionalRequirementRepository { get;}
         public IRequirementRepository RequirementRepository { get;}
+        public IReportRepository ReportRepository { get;}
         Task CompleteAsync();
         void Dispose();
     }

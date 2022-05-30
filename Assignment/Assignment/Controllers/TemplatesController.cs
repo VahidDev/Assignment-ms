@@ -1,5 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using Assignment.Utilities.ResponseUtilities;
 using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,27 +17,23 @@ namespace Assignment.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            return ResponseGenerator
-                .GetResponse(await _templateServices.GetAllTemplatesAsync());
+            return await _templateServices.GetAllTemplatesAsync();
         }
         [HttpPost]
         public async Task<IActionResult> CreateAsync
             ([FromBody] CreateTemplateDto templates)
         {
-            return ResponseGenerator
-                .GetResponse(await _templateServices.CreateAsync(templates));
+            return await _templateServices.CreateAsync(templates);
         }
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody]UpdateTemplateDto templateDto)
         {
-            return ResponseGenerator
-                .GetResponse(await _templateServices.UpdateAsync(templateDto));
+            return await _templateServices.UpdateAsync(templateDto);
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            return ResponseGenerator
-                .GetResponse(await _templateServices.DeleteAsync(id));
+            return await _templateServices.DeleteAsync(id);
         }
     }
 }

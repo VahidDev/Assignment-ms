@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
 {
-    public class CreateFilterDto : IValueFromStringConvertible
+    public class CreateFilterDto : IValueToStringConvertible
     {
         [Required]
-        [JsonProperty("requirement_name")]
+        [JsonProperty("requirement")]
         public string Requirement { get; set; }
         [Required]
         public string Operator { get; set; }

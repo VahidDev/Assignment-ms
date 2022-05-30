@@ -5,9 +5,9 @@ namespace Assignment.Services.Abstraction
 {
     public interface ITemplateServices
     {
-        Task<JsonResult> CreateAsync(CreateTemplateDto templates);
-        Task<JsonResult> UpdateAsync(UpdateTemplateDto templateDto);
-        Task<JsonResult> DeleteAsync(int id);
-        Task<JsonResult> GetAllTemplatesAsync();
+        Task<ObjectResult> CreateAsync(CreateTemplateDto templates);
+        Task<ObjectResult> UpdateAsync(UpdateTemplateDto templateDto);
+        Task<ObjectResult> DeleteAsync(int id);
+        Task<ObjectResult> GetAllTemplatesAsync();
     }
 }

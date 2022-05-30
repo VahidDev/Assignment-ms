@@ -20,9 +20,10 @@ namespace Repository.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // UnComment this section when migrating
-            //builder.Ignore<Volunteer>();
+            builder.Ignore<Volunteer>();
             //when creating custom enums
             //builder.HasPostgresEnum<Statusenum>();
+            //builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r=>r.CandidateId);
             base.OnModelCreating(builder);
             builder.ConfigureManyToManyRelationships();
         }
@@ -65,5 +66,6 @@ namespace Repository.DAL
         public DbSet<FunctionalAreaType> FunctionalAreaTypes { get; set; }
         public DbSet<FunctionalRequirement> FunctionalRequirements { get; set; }
         public DbSet<Requirement> Requirements { get; set; }
+        public DbSet<Report> Reports { get; set; }
     }
 }

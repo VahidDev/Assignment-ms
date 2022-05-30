@@ -5,9 +5,10 @@ namespace Assignment.Services.Abstraction
 {
     public interface IFunctionalRequirementServices
     {
-        Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
-        Task<JsonResult> GetAllFunctionalRequirementsAsync();
-        Task<JsonResult> GetByRoleOfferIdAsync(int id);
-        Task<JsonResult> UpdateOrAddFunctionalRequirementAsync(UpdateFunctionalRequirementConvertibleDto convertibleDto);
+        Task<ObjectResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
+        Task<ObjectResult> GetAllFunctionalRequirementsAsync();
+        Task<ObjectResult> GetByRoleOfferIdAsync(int id);
+        Task<ObjectResult> UpdateOrAddFunctionalRequirementAsync
+            (UpdateFunctionalRequirementConvertibleDto convertibleDto);
     }
 }

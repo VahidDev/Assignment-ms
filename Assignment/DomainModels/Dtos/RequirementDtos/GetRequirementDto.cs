@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DomainModels.Dtos
 {
-    public class GetRequirementDto : BaseDto, IValueFromStringConvertible
+    public class GetRequirementDto : BaseDto, IValueToStringConvertible
     {
         [JsonProperty("requirement_name")]
         public string RequirementName { get; set; }

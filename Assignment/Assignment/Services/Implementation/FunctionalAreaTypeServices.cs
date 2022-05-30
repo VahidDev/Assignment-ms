@@ -1,5 +1,4 @@
-﻿using Assignment.Constants;
-using Assignment.Factory;
+﻿using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using AutoMapper;
 using DomainModels.Dtos;
@@ -23,7 +22,7 @@ namespace Assignment.Services.Implementation
             _jsonFactory = jsonFactory;
         }
 
-        public async Task<JsonResult> GetAllIncludingItemsAsync()
+        public async Task<ObjectResult> GetAllIncludingItemsAsync()
         {
             IReadOnlyCollection<RoleOffer>dbRoleOffers=(await _unitOfWork.RoleOfferRepository
                 .GetAllIncludingItemsAsync()).ToList();
@@ -32,7 +31,7 @@ namespace Assignment.Services.Implementation
                 .FunctionalAreaTypeRepository.GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted));
             if(functionalAreaTypes.Count == 0)
             {
-                return _jsonFactory.CreateJson(StatusCodes.Status200OK,functionalAreaTypes);
+                return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,functionalAreaTypes);
             }
             foreach (RoleOffer roleOffer in dbRoleOffers)
             {
@@ -53,6 +52,7 @@ namespace Assignment.Services.Implementation
             }
            
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,
+                null,
                 functionalAreaTypes);
         }
     }

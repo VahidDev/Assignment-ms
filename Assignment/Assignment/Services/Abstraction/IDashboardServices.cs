@@ -4,6 +4,6 @@ namespace Assignment.Services.Abstraction
 {
     public interface IDashboardServices
     {
-        Task<JsonResult> GetAllInfoAsync(); 
+        Task<ObjectResult> GetAllInfoAsync(); 
     }
 }

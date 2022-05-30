@@ -1,5 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using Assignment.Utilities.ResponseUtilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
@@ -18,8 +17,7 @@ namespace Assignment.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllInfoAsync()
         {
-            return ResponseGenerator
-                .GetResponse(await _dashboardServices.GetAllInfoAsync());
+            return await _dashboardServices.GetAllInfoAsync();
         }
     }
 }

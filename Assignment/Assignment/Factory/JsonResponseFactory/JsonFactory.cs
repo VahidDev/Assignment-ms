@@ -1,15 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Assignment.Factory.JsonResponseFactory;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Factory
 {
     internal class JsonFactory : IJsonFactory
     {
-        public JsonResult CreateJson(int? response, object? data=null)
+        public ObjectResult CreateJson
+            (
+            int statusCode, 
+            string? error = null,
+            object? result = null, 
+            int? key = null
+            )
         {
-            JsonResult jsonResult = new(data);
-            jsonResult.StatusCode = response;
-            jsonResult.ContentType = "application/json";
-            return jsonResult;
+            return new ObjectResult(
+                new CustomJson { Error = error, Key = key, Result = result }
+                ) { StatusCode = statusCode };
         }
     }
 }

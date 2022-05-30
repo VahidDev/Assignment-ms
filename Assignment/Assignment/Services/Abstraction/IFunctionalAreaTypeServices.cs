@@ -4,6 +4,6 @@ namespace Assignment.Services.Abstraction
 {
     public interface IFunctionalAreaTypeServices
     {
-        Task<JsonResult> GetAllIncludingItemsAsync();
+        Task<ObjectResult> GetAllIncludingItemsAsync();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DomainModels.Dtos.Abstraction
 {
-    public interface IValueFromStringConvertible
+    public interface IValueToStringConvertible
     {
         object[] Value { get; set; }
     }

@@ -1,6 +1,4 @@
 ﻿using Assignment.Services.Abstraction;
-using Assignment.Utilities.ResponseUtilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
@@ -19,8 +17,7 @@ namespace Assignment.Controllers
         [HttpGet("nested")]
         public async Task<IActionResult> GetAllIncludingItemsAsync()
         {
-            return ResponseGenerator
-                .GetResponse(await _functionalAreaTypeServices.GetAllIncludingItemsAsync());
+            return await _functionalAreaTypeServices.GetAllIncludingItemsAsync();
         }
     }
 }

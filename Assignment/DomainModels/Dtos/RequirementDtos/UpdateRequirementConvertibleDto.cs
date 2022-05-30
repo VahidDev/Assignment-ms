@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
 {
-    public class UpdateRequirementConvertibleDto  : IValueFromStringConvertible
+    public class UpdateRequirementConvertibleDto  : IValueToStringConvertible
     {
         public int? Id { get; set; }
         [Required]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DomainModels.Dtos.Abstraction;
+using Repository.Constants;
 
 namespace Repository.Converters
 {
@@ -7,10 +8,10 @@ namespace Repository.Converters
     {
         public object[] Resolve(object source, object destination, object[] destMember, ResolutionContext context)
         {
-            IValueFromArrayConvertible valueConvertible = source as IValueFromArrayConvertible;
+            IValueToArrayConvertible valueConvertible = source as IValueToArrayConvertible;
             if(valueConvertible!=null)
             {
-                return valueConvertible.Value.Split(",");
+                return valueConvertible.Value.Split(DbValueSeperatorConstants.TripleDashSeperator);
             }
             return null;
         }

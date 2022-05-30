@@ -4,6 +4,12 @@ namespace Assignment.Factory
 {
     public interface IJsonFactory
     {
-        JsonResult CreateJson(int? statusCode, object data=null);
+        ObjectResult CreateJson
+            (
+            int statusCode,
+            string? error = null,
+            object? result = null,
+            int? key = null
+            );
     }
 }

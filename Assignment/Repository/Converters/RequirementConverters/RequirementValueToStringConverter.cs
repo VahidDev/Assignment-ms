@@ -8,10 +8,10 @@ namespace Repository.Converters
     {
         public string Resolve(object source, object destination, string destMember, ResolutionContext context)
         {
-            IValueFromStringConvertible valueConvertible = source as IValueFromStringConvertible;
+            IValueToStringConvertible valueConvertible = source as IValueToStringConvertible;
             if (valueConvertible != null)
             {
-                return string.Join(DbValueSeperatorConstants.CommaSeperator,valueConvertible.Value);
+                return string.Join(DbValueSeperatorConstants.TripleDashSeperator, valueConvertible.Value);
             }
             return null;
         }

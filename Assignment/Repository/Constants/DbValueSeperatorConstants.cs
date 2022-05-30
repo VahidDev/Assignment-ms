@@ -2,6 +2,6 @@
 {
     public static class DbValueSeperatorConstants
     {
-        public const string CommaSeperator = ",";
+        public const string TripleDashSeperator = "---";
     }
 }

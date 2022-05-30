@@ -4,6 +4,6 @@ namespace Assignment.Services.Abstraction
 {
     internal interface IExcelImportable
     {
-        public Task<JsonResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
+        public Task<ObjectResult> ValidateExcelFileThenWriteToDbAsync(IFormFile file);
     }
 }

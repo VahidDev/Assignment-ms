@@ -35,6 +35,13 @@ namespace Repository.Mapper
             CreateMap<Filter, UpdateFilterDto>().ReverseMap()
                .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
 
+            CreateMap<Report, CreateReportDto>().ReverseMap()
+                .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToStringConverter>())
+                .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToStringConverter>());
+            CreateMap<GetReportDto, Report>().ReverseMap()
+                .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToArrayConverter>())
+                .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToArrayConverter>());
+
             CreateMap<UpdateRequirementDto, UpdateRequirementConvertibleDto>().ReverseMap()
                .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
             CreateMap<UpdateRequirementDto, Requirement>().ReverseMap();

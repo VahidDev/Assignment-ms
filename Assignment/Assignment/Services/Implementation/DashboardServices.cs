@@ -13,9 +13,9 @@ namespace Assignment.Services.Implementation
             _jsonFactory = jsonFactory;
         }
 
-        public async Task<JsonResult> GetAllInfoAsync()
+        public async Task<ObjectResult> GetAllInfoAsync()
         {
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK, await Task.FromResult(2));
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK,null, await Task.FromResult(2));
         }
     }
 }
