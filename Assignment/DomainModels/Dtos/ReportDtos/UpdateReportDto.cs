@@ -1,9 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using DomainModels.Dtos.Abstraction;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DomainModels.Dtos
 {
-    public class GetReportDto : BaseDto
+    public class UpdateReportDto 
+        : BaseDto
+        , IVolunteerColumnsToStringConvertible
+        , IRoleOfferColumnsToStringConvertible
     {
         public string Name { get; set; }
         [JsonProperty("volunteer_columns")]
@@ -11,8 +15,8 @@ namespace DomainModels.Dtos
         [JsonProperty("role_offer_columns")]
         public object[] RoleOfferColumns { get; set; }
         [JsonProperty("volunteer_filters")]
-        public ICollection<GetFilterDto> VolunteerFilters { get; set; }
+        public ICollection<UpdateFilterDto> VolunteerFilters { get; set; }
         [JsonProperty("role_offer_filters")]
-        public ICollection<GetFilterDto> RoleOfferFilters { get; set; }
+        public ICollection<UpdateFilterDto> RoleOfferFilters { get; set; }
     }
 }

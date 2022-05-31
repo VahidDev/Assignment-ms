@@ -65,21 +65,27 @@ namespace Assignment.Services.Implementation
             foreach (VolunteerChangeToAnyStatusDto volunteerDto in volunteerDtos)
             {
                 Volunteer? dbVolunteer = dbVolunteers.FirstOrDefault(r=>r.CandidateId == volunteerDto.Id);
-
-                if (dbVolunteer == null || dbVolunteer.RoleOfferId== null)
-                    return _jsonFactory.CreateJson
-                        (StatusCodes.Status404NotFound,"Volunteer is not found"); 
-                // Check if the role offer exists
-                if (!dbRoleOffers.Any(r => r.Id == (int)dbVolunteer.RoleOfferId))
-                    return _jsonFactory
-                        .CreateJson(StatusCodes.Status404NotFound, "RoleOffer is not found");
-
                 Volunteer updatedVolunteer = _mapper.Map<Volunteer>(volunteerDto);
-                updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
 
+                if (dbVolunteer == null)
+                {
+                    return _jsonFactory.CreateJson
+                        (StatusCodes.Status404NotFound, "Volunteer is not found");
+                }
                 if (volunteerDto.Status == null)
                 {
                     updatedVolunteer.RoleOfferId = null;
+                }
+                else
+                {
+                    // Check if the role offer exists
+                    if (dbVolunteer.RoleOfferId == null 
+                        || !dbRoleOffers.Any(r => r.Id == (int)dbVolunteer.RoleOfferId))
+                    {
+                        return _jsonFactory
+                            .CreateJson(StatusCodes.Status404NotFound, "RoleOffer is not found");
+                    }
+                    updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
                 }
                 volunteers.Add(updatedVolunteer);
             }

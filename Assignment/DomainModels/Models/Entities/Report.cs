@@ -1,6 +1,5 @@
 ﻿using DomainModels.Dtos.Abstraction;
 using DomainModels.Models.Entities.Base;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities

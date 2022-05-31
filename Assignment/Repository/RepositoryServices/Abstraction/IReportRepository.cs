@@ -10,5 +10,7 @@ namespace Repository.RepositoryServices.Abstraction
     {
         Task<ICollection<Report>> GetAllAsNoTrackingIncludingItemsAsync
             (Expression<Func<Report, bool>> expression);
+
+        Task<Report> GetByIdIncludingItemsAsNoTrackingAsync(int id);
     }
 }

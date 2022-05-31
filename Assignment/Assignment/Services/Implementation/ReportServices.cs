@@ -1,5 +1,7 @@
 ﻿using Assignment.Factory;
 using Assignment.Services.Abstraction;
+using Assignment.Utilities.ServicesUtilities.MapperUtilities;
+using Assignment.Utilities.ServicesUtilities.ReportUtilities;
 using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
@@ -30,17 +32,34 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     "The report name has already been used");
             }
-            report.VolunteerTemplate = new Template 
-            { 
-                Name = nameof(Report.VolunteerTemplate) ,
-                Filters = _mapper.Map<ICollection<Filter>>(dto.VolunteerFilters)
-            };
-            report.RoleOfferTemplate = new Template
+            if (dto.VolunteerFilters != null)
             {
-                Name = nameof(Report.RoleOfferTemplate),
-                Filters = _mapper.Map<ICollection<Filter>>(dto.RoleOfferFilters)
-            };
+                report.VolunteerTemplate = ReportTemplatesCreator
+                    .CreateVolunteerTemplateAndMapFilters
+                    (_mapper.Map<ICollection<Filter>>(dto.VolunteerFilters));
+            }
+            if (dto.RoleOfferFilters != null)
+            {
+                report.RoleOfferTemplate = ReportTemplatesCreator
+                    .CreateRoleOfferTemplateAndMapFilters
+                    (_mapper.Map<ICollection<Filter>>(dto.RoleOfferFilters));
+            }
+
             await _unitOfWork.ReportRepository.AddAsync(report);
+            await _unitOfWork.CompleteAsync();
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK);
+        }
+
+        public async Task<ObjectResult> DeleteByIdAsync(int id)
+        {
+            Report dbReport = await _unitOfWork.ReportRepository
+                .GetByIdIncludingItemsAsNoTrackingAsync(id);
+            if (dbReport == null)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound
+                    , "Report is not found");
+            }
+            _unitOfWork.ReportRepository.Delete(dbReport);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
@@ -55,6 +74,54 @@ namespace Assignment.Services.Implementation
                 await _unitOfWork.ReportRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(r => !r.IsDeleted)
                 ));
+        }
+
+        public async Task<ObjectResult> UpdateReportAsync(UpdateReportDto dto)
+        {
+            Report dbReport = await _unitOfWork.ReportRepository
+                .GetByIdIncludingItemsAsNoTrackingAsync(dto.Id ?? 0);
+            if (dbReport == null)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound
+                    ,"Report is not found");
+            }
+            Report updatedReport = UpdateReportMapper
+                .MapToReport(dto,dbReport,_mapper.Map<Report>(dto), _mapper);
+
+            if (dbReport.RoleOfferTemplate != null && dbReport.RoleOfferTemplate.Filters != null)
+            {
+                if(updatedReport.RoleOfferTemplate.Filters == null)
+                {
+                    updatedReport.RoleOfferTemplate.Filters = new List<Filter>();
+                }
+                foreach (Filter filter in dbReport.RoleOfferTemplate.Filters)
+                {
+                    if (!updatedReport.RoleOfferTemplate.Filters.Any(f => f.Id == filter.Id))
+                    {
+                        filter.IsDeleted = true;
+                        updatedReport.RoleOfferTemplate.Filters.Add(filter);
+                    }
+                }
+            }
+
+            if (dbReport.VolunteerTemplate != null && dbReport.VolunteerTemplate.Filters != null)
+            {
+                if (updatedReport.VolunteerTemplate.Filters == null)
+                {
+                    updatedReport.VolunteerTemplate.Filters = new List<Filter>();
+                }
+                foreach (Filter filter in dbReport.VolunteerTemplate.Filters)
+                {
+                    if (!updatedReport.VolunteerTemplate.Filters.Any(f => f.Id == filter.Id))
+                    {
+                        filter.IsDeleted = true;
+                        updatedReport.VolunteerTemplate.Filters.Add(filter);
+                    }
+                }
+            }
+            _unitOfWork.ReportRepository.Update(updatedReport);
+            await _unitOfWork.CompleteAsync();
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
     }
 }

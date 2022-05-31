@@ -22,9 +22,21 @@ namespace Assignment.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateReportAsync(CreateReportDto dto)
+        public async Task<IActionResult> CreateReportAsync([FromBody] CreateReportDto dto)
         {
             return await _reportServices.CreateReportAsync(dto);
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateeReportAsync([FromBody] UpdateReportDto dto)
+        {
+            return await _reportServices.UpdateReportAsync(dto);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteByIdAsync([FromRoute] int id)
+        {
+            return await _reportServices.DeleteByIdAsync(id);
         }
     }
 }

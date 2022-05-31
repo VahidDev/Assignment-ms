@@ -16,7 +16,7 @@ namespace Repository.Converters
         {
             IVolunteerColumnsToArrayConvertible valueConvertible 
                 = source as IVolunteerColumnsToArrayConvertible;
-            if (valueConvertible != null)
+            if (valueConvertible.VolunteerColumns != null)
             {
                 return valueConvertible.VolunteerColumns
                     .Split(DbValueSeperatorConstants.TripleDashSeperator);

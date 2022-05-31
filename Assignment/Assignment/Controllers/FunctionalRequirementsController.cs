@@ -39,7 +39,7 @@ namespace Assignment.Controllers
 
         [HttpPost("update")]
         public async Task<IActionResult> UpdateFunctionalRequirementAsync
-            (UpdateFunctionalRequirementConvertibleDto convertibleDto)
+            ([FromBody] UpdateFunctionalRequirementConvertibleDto convertibleDto)
         {
             return await _functionalRequirementServices
                 .UpdateOrAddFunctionalRequirementAsync(convertibleDto);
