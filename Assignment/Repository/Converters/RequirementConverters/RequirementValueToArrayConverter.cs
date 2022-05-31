@@ -9,7 +9,7 @@ namespace Repository.Converters
         public object[] Resolve(object source, object destination, object[] destMember, ResolutionContext context)
         {
             IValueToArrayConvertible valueConvertible = source as IValueToArrayConvertible;
-            if(valueConvertible!=null)
+            if(valueConvertible.Value != null)
             {
                 return valueConvertible.Value.Split(DbValueSeperatorConstants.TripleDashSeperator);
             }

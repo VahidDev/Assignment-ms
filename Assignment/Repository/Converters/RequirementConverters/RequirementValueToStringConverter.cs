@@ -9,7 +9,7 @@ namespace Repository.Converters
         public string Resolve(object source, object destination, string destMember, ResolutionContext context)
         {
             IValueToStringConvertible valueConvertible = source as IValueToStringConvertible;
-            if (valueConvertible != null)
+            if (valueConvertible.Value != null)
             {
                 return string.Join(DbValueSeperatorConstants.TripleDashSeperator, valueConvertible.Value);
             }

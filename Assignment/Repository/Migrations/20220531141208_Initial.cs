@@ -184,6 +184,8 @@ namespace Repository.Migrations
                     total_demand = table.Column<int>(type: "integer", nullable: false),
                     role_offer_fulfillment = table.Column<int>(type: "integer", nullable: false),
                     waitlist_fulfillment = table.Column<int>(type: "integer", nullable: false),
+                    level_of_confidence = table.Column<int>(type: "integer", nullable: true),
+                    waitlist_count = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
@@ -235,6 +237,37 @@ namespace Repository.Migrations
                     table.ForeignKey(
                         name: "FK_filters_templates_template_id",
                         column: x => x.template_id,
+                        principalTable: "templates",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "reports",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: true),
+                    volunteer_columns = table.Column<string>(type: "text", nullable: true),
+                    role_offer_columns = table.Column<string>(type: "text", nullable: true),
+                    role_offer_template_id = table.Column<int>(type: "integer", nullable: true),
+                    volunteer_template_id = table.Column<int>(type: "integer", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reports", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_reports_templates_role_offer_template_id",
+                        column: x => x.role_offer_template_id,
+                        principalTable: "templates",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_reports_templates_volunteer_template_id",
+                        column: x => x.volunteer_template_id,
                         principalTable: "templates",
                         principalColumn: "id");
                 });
@@ -316,6 +349,16 @@ namespace Repository.Migrations
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_reports_role_offer_template_id",
+                table: "reports",
+                column: "role_offer_template_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reports_volunteer_template_id",
+                table: "reports",
+                column: "volunteer_template_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_requirements_functional_requirement_id",
                 table: "requirements",
                 column: "functional_requirement_id");
@@ -354,6 +397,9 @@ namespace Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "job_title_locations");
+
+            migrationBuilder.DropTable(
+                name: "reports");
 
             migrationBuilder.DropTable(
                 name: "requirements");

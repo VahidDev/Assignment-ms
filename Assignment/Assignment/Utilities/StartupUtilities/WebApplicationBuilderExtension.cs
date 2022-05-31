@@ -23,12 +23,12 @@ namespace Assignment.Utilities.Startup
             (this WebApplicationBuilder builder,IConfiguration configuration)
         {
             builder.Services.AddDbContext<AppDbContext>(options => {
-                options.UseNpgsql(configuration.GetConnectionString("Default"), builder =>
+                options.UseNpgsql(Environment.GetEnvironmentVariable("Connection_String") ?? "", builder =>
                 {
                     builder.MigrationsAssembly(nameof(Repository));
                     builder.MigrationsHistoryTable("__ef_assignment_migrations_history");
                 }).ReplaceService<IHistoryRepository, EfMigrationsHistory>();
-                },ServiceLifetime.Scoped);
+                });
             return builder;
         }
         public static WebApplicationBuilder AddCustomServices(this WebApplicationBuilder builder)

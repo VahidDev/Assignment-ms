@@ -16,7 +16,7 @@ namespace Repository.Converters
         {
             IRoleOfferColumnsToArrayConvertible valueConvertible
                 = source as IRoleOfferColumnsToArrayConvertible;
-            if (valueConvertible != null)
+            if (valueConvertible.RoleOfferColumns != null)
             {
                 return valueConvertible.RoleOfferColumns
                     .Split(DbValueSeperatorConstants.TripleDashSeperator);

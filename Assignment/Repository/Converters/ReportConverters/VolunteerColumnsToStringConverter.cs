@@ -16,7 +16,7 @@ namespace Repository.Converters
         {
             IVolunteerColumnsToStringConvertible toStringConvertible 
                 = source as IVolunteerColumnsToStringConvertible;
-            if (toStringConvertible != null)
+            if (toStringConvertible.VolunteerColumns != null)
             {
                 return string.Join(
                     DbValueSeperatorConstants.TripleDashSeperator, 

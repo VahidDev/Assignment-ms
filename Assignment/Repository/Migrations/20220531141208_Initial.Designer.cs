@@ -12,7 +12,7 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220523061542_Initial")]
+    [Migration("20220531141208_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -311,6 +311,58 @@ namespace Repository.Migrations
                     b.ToTable("locations");
                 });
 
+            modelBuilder.Entity("DomainModels.Models.Entities.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("RoleOfferColumns")
+                        .HasColumnType("text")
+                        .HasColumnName("role_offer_columns");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("VolunteerColumns")
+                        .HasColumnType("text")
+                        .HasColumnName("volunteer_columns");
+
+                    b.Property<int?>("role_offer_template_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("volunteer_template_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("role_offer_template_id");
+
+                    b.HasIndex("volunteer_template_id");
+
+                    b.ToTable("reports");
+                });
+
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>
                 {
                     b.Property<int>("Id")
@@ -380,6 +432,10 @@ namespace Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<int?>("LevelOfConfidence")
+                        .HasColumnType("integer")
+                        .HasColumnName("level_of_confidence");
+
                     b.Property<int>("RoleOfferFulfillment")
                         .HasColumnType("integer")
                         .HasColumnName("role_offer_fulfillment");
@@ -395,6 +451,10 @@ namespace Repository.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
+
+                    b.Property<int?>("WaitlistCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("waitlist_count");
 
                     b.Property<int>("WaitlistFulfillment")
                         .HasColumnType("integer")
@@ -534,6 +594,21 @@ namespace Repository.Migrations
                     b.Navigation("JobTitle");
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.Report", b =>
+                {
+                    b.HasOne("DomainModels.Models.Entities.Template", "RoleOfferTemplate")
+                        .WithMany()
+                        .HasForeignKey("role_offer_template_id");
+
+                    b.HasOne("DomainModels.Models.Entities.Template", "VolunteerTemplate")
+                        .WithMany()
+                        .HasForeignKey("volunteer_template_id");
+
+                    b.Navigation("RoleOfferTemplate");
+
+                    b.Navigation("VolunteerTemplate");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>

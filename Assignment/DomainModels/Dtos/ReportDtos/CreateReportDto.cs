@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
 {
-    public class CreateReportDto : IVolunteerColumnsToStringConvertible, IRoleOfferColumnsToStringConvertible
+    public class CreateReportDto 
+        : IVolunteerColumnsToStringConvertible
+        , IRoleOfferColumnsToStringConvertible
     {
         [Required]
         public string Name { get; set; }
@@ -15,7 +17,7 @@ namespace DomainModels.Dtos
         public object[] RoleOfferColumns { get; set; }
         [JsonProperty("volunteer_filters")]
         public ICollection<CreateFilterDto> VolunteerFilters { get; set; }
-        [JsonProperty("role_offer_columns")]
+        [JsonProperty("role_offer_filters")]
         public ICollection<CreateFilterDto> RoleOfferFilters { get; set; }
     }
 }

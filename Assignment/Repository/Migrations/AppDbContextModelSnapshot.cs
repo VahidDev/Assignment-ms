@@ -59,15 +59,10 @@ namespace Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("value");
 
-                    b.Property<int?>("report_id")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("template_id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("report_id");
 
                     b.HasIndex("template_id");
 
@@ -351,7 +346,17 @@ namespace Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("volunteer_columns");
 
+                    b.Property<int?>("role_offer_template_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("volunteer_template_id")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("role_offer_template_id");
+
+                    b.HasIndex("volunteer_template_id");
 
                     b.ToTable("reports");
                 });
@@ -514,15 +519,9 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("DomainModels.Models.Entities.Filter", b =>
                 {
-                    b.HasOne("DomainModels.Models.Entities.Report", "Report")
-                        .WithMany("Filters")
-                        .HasForeignKey("report_id");
-
                     b.HasOne("DomainModels.Models.Entities.Template", "Template")
                         .WithMany("Filters")
                         .HasForeignKey("template_id");
-
-                    b.Navigation("Report");
 
                     b.Navigation("Template");
                 });
@@ -593,6 +592,21 @@ namespace Repository.Migrations
                     b.Navigation("JobTitle");
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("DomainModels.Models.Entities.Report", b =>
+                {
+                    b.HasOne("DomainModels.Models.Entities.Template", "RoleOfferTemplate")
+                        .WithMany()
+                        .HasForeignKey("role_offer_template_id");
+
+                    b.HasOne("DomainModels.Models.Entities.Template", "VolunteerTemplate")
+                        .WithMany()
+                        .HasForeignKey("volunteer_template_id");
+
+                    b.Navigation("RoleOfferTemplate");
+
+                    b.Navigation("VolunteerTemplate");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>
@@ -668,11 +682,6 @@ namespace Repository.Migrations
                     b.Navigation("JobTitleVenues");
 
                     b.Navigation("RoleOffers");
-                });
-
-            modelBuilder.Entity("DomainModels.Models.Entities.Report", b =>
-                {
-                    b.Navigation("Filters");
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>

@@ -30,7 +30,7 @@ namespace Repository.Mapper
 
             CreateMap<FunctionalAreaType,FunctionalAreaTypeDto>().ReverseMap();
 
-            CreateMap<Filter,CreateFilterDto > ().ReverseMap()
+            CreateMap<Filter,CreateFilterDto>().ReverseMap()
                 .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
             CreateMap<GetFilterDto,Filter>().ReverseMap()
                 .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToArrayConverter>());
@@ -38,6 +38,9 @@ namespace Repository.Mapper
                .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
 
             CreateMap<Report, CreateReportDto>().ReverseMap()
+                .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToStringConverter>())
+                .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToStringConverter>());
+            CreateMap<Report, UpdateReportDto>().ReverseMap()
                 .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToStringConverter>())
                 .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToStringConverter>());
             CreateMap<GetReportDto, Report>().ReverseMap()
