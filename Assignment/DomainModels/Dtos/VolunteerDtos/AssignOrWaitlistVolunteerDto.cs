@@ -6,8 +6,7 @@ namespace DomainModels.Dtos
     public class AssignOrWaitlistVolunteerDto
     {
         [Required]
-        [JsonProperty("candidate_id")]
-        public int CandidateId { get; set; }
+        public int Id { get; set; }
         [Required]
         [JsonProperty("role_offer_id")]
         public int RoleOfferId { get; set; }

@@ -26,7 +26,7 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             ICollection<Volunteer> dbVolunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(v=> !v.IsDeleted && volunteerDtos.Select(d=>d.CandidateId).ToArray()
+                .GetAllAsNoTrackingAsync(v=> !v.IsDeleted && volunteerDtos.Select(d=>d.Id).ToArray()
                 .Contains(v.CandidateId))).ToList();
             ICollection<RoleOffer>dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingAsync(r=>!r.IsDeleted 
@@ -35,7 +35,7 @@ namespace Assignment.Services.Implementation
             foreach (AssignOrWaitlistVolunteerDto volunteerDto in volunteerDtos)
             {
                 // Check if the volunteer and role offer exist
-                if (!dbVolunteers.Any(v => v.CandidateId == volunteerDto.CandidateId) 
+                if (!dbVolunteers.Any(v => v.CandidateId == volunteerDto.Id) 
                     || !dbRoleOffers.Any(r => r.Id == volunteerDto.RoleOfferId)) 
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
                         "Volunteer or RoleOffer was not found"); 
@@ -56,7 +56,7 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             ICollection<Volunteer> dbVolunteers = (await _unitOfWork.VolunteerRepository
-               .GetAllAsNoTrackingAsync(v => !v.IsDeleted && volunteerDtos.Select(d => d.CandidateId).ToArray()
+               .GetAllAsNoTrackingAsync(v => !v.IsDeleted && volunteerDtos.Select(d => d.Id).ToArray()
                .Contains(v.CandidateId))).ToList();
             ICollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllAsNoTrackingAsync(r => !r.IsDeleted)).ToList();
@@ -64,7 +64,7 @@ namespace Assignment.Services.Implementation
 
             foreach (VolunteerChangeToAnyStatusDto volunteerDto in volunteerDtos)
             {
-                Volunteer? dbVolunteer = dbVolunteers.FirstOrDefault(r=>r.CandidateId == volunteerDto.CandidateId);
+                Volunteer? dbVolunteer = dbVolunteers.FirstOrDefault(r=>r.CandidateId == volunteerDto.Id);
 
                 if (dbVolunteer == null || dbVolunteer.RoleOfferId== null)
                     return _jsonFactory.CreateJson

@@ -13,6 +13,9 @@ namespace DomainModels.Dtos
         public object[] VolunteerColumns { get; set; }
         [JsonProperty("role_offer_columns")]
         public object[] RoleOfferColumns { get; set; }
-        public ICollection<CreateFilterDto> Filters { get; set; }
+        [JsonProperty("volunteer_filters")]
+        public ICollection<CreateFilterDto> VolunteerFilters { get; set; }
+        [JsonProperty("role_offer_columns")]
+        public ICollection<CreateFilterDto> RoleOfferFilters { get; set; }
     }
 }

@@ -15,7 +15,5 @@ namespace DomainModels.Models.Entities
         public string Value { get; set; }
         [ForeignKey("template_id")]
         public Template Template { get; set; }
-        [ForeignKey("report_id")]
-        public Report Report { get; set; }
     }
 }

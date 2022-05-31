@@ -13,8 +13,10 @@ namespace Repository.Mapper
             CreateMap<Template, GetTemplateDto>().ReverseMap();
             CreateMap<Template, CreateTemplateDto>().ReverseMap();
             
-            CreateMap<Volunteer, VolunteerChangeToAnyStatusDto>().ReverseMap();
-            CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap();
+            CreateMap<Volunteer, VolunteerChangeToAnyStatusDto>().ReverseMap()
+                .ForMember(r=>r.CandidateId, r=>r.MapFrom(r=>r.Id));
+            CreateMap<Volunteer, AssignOrWaitlistVolunteerDto>().ReverseMap()
+                .ForMember(r => r.CandidateId, r => r.MapFrom(r => r.Id));
             
             CreateMap<FunctionalArea, FunctionalAreaDto>().ReverseMap();
 
@@ -39,6 +41,8 @@ namespace Repository.Mapper
                 .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToStringConverter>())
                 .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToStringConverter>());
             CreateMap<GetReportDto, Report>().ReverseMap()
+                .ForMember(r=>r.RoleOfferFilters, r=>r.MapFrom(r=>r.RoleOfferTemplate.Filters))
+                .ForMember(r => r.VolunteerFilters, r => r.MapFrom(r => r.VolunteerTemplate.Filters))
                 .ForMember(r => r.VolunteerColumns, r => r.MapFrom<VolunteerColumnsToArrayConverter>())
                 .ForMember(r => r.RoleOfferColumns, r => r.MapFrom<RoleOfferColumnsToArrayConverter>());
 

@@ -30,7 +30,16 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     "The report name has already been used");
             }
-
+            report.VolunteerTemplate = new Template 
+            { 
+                Name = nameof(Report.VolunteerTemplate) ,
+                Filters = _mapper.Map<ICollection<Filter>>(dto.VolunteerFilters)
+            };
+            report.RoleOfferTemplate = new Template
+            {
+                Name = nameof(Report.RoleOfferTemplate),
+                Filters = _mapper.Map<ICollection<Filter>>(dto.RoleOfferFilters)
+            };
             await _unitOfWork.ReportRepository.AddAsync(report);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);

@@ -19,7 +19,10 @@ namespace Repository.RepositoryServices.Implementation
             (Expression<Func<Report, bool>> expression)
         {
             return await dbSet
-                .Include(r=>r.Filters.Where(f=>!f.IsDeleted))
+                .Include(r=>r.VolunteerTemplate)
+                .ThenInclude(r=>r.Filters.Where(r=>!r.IsDeleted))
+                .Include(r=>r.RoleOfferTemplate)
+                .ThenInclude(r=>r.Filters.Where(f=>!f.IsDeleted))
                 .Where(expression)
                 .AsNoTracking()
                 .ToListAsync();

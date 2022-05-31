@@ -17,6 +17,9 @@ namespace DomainModels.Models.Entities
         public string VolunteerColumns { get; set; }
         [Column("role_offer_columns")]
         public string RoleOfferColumns { get; set; }
-        public ICollection<Filter> Filters { get; set; }    
+        [ForeignKey("role_offer_template_id")]
+        public Template RoleOfferTemplate { get; set; }
+        [ForeignKey("volunteer_template_id")]
+        public Template VolunteerTemplate { get; set; }
     }
 }
