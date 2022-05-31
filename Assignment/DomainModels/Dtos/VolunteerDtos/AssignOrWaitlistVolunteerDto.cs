@@ -1,5 +1,4 @@
-﻿using DomainModels.Models.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
@@ -14,6 +13,6 @@ namespace DomainModels.Dtos
         public int RoleOfferId { get; set; }
         [Required]
         [JsonProperty("status")]
-        public Statusenum Status { get; set; }
+        public string Status { get; set; }
     }
 }

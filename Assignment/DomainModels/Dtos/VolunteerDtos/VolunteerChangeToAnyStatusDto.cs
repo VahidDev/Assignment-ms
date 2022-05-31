@@ -1,5 +1,4 @@
-﻿using DomainModels.Models.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.Dtos
@@ -11,6 +10,6 @@ namespace DomainModels.Dtos
         public int CandidateId { get; set; }
         [JsonProperty("status")]
         [Required]
-        public Statusenum Status { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using DomainModels.Models.Entities;
 using DomainModels.Models.Entities.Base;
-using DomainModels.Models.Enums;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Repository.Extensions.ModelBuilderExtensions;
 using System;
 using System.Collections.Generic;
@@ -20,12 +18,11 @@ namespace Repository.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // UnComment this section when migrating
-            builder.Ignore<Volunteer>();
-            //when creating custom enums
-            //builder.HasPostgresEnum<Statusenum>();
-            //builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r=>r.CandidateId);
-            base.OnModelCreating(builder);
+            //builder.Ignore<Volunteer>();
+            builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r => r.CandidateId);
             builder.ConfigureManyToManyRelationships();
+
+            base.OnModelCreating(builder);
         }
         public async override Task<int> SaveChangesAsync
             (bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
@@ -54,8 +51,6 @@ namespace Repository.DAL
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         
-        static AppDbContext()
-            => NpgsqlConnection.GlobalTypeMapper.MapEnum<Statusenum>();
         public DbSet<Location> Locations { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }

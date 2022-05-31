@@ -9,12 +9,12 @@ namespace Assignment.Factory
             (
             int statusCode, 
             string? error = null,
-            object? result = null, 
+            object? value = null, 
             int? key = null
             )
         {
             return new ObjectResult(
-                new CustomJson { Error = error, Key = key, Result = result }
+                new CustomJson { Error = error, Key = key, Value = value }
                 ) { StatusCode = statusCode };
         }
     }

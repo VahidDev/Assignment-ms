@@ -3,7 +3,6 @@ using Assignment.Services.Abstraction;
 using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
-using DomainModels.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Repository.RepositoryServices.Abstraction;
 namespace Assignment.Services.Implementation
@@ -78,7 +77,7 @@ namespace Assignment.Services.Implementation
                 Volunteer updatedVolunteer = _mapper.Map<Volunteer>(volunteerDto);
                 updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
 
-                if (volunteerDto.Status == Statusenum.Free)
+                if (volunteerDto.Status == null)
                 {
                     updatedVolunteer.RoleOfferId = null;
                 }

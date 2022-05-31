@@ -1,5 +1,4 @@
-﻿using Assignment.Constants;
-using Assignment.Constants.FileConstants;
+﻿using Assignment.Constants.FileConstants;
 using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using Assignment.Utilities.FileUtilities;
@@ -9,7 +8,6 @@ using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Dtos.RoleOffeerDtos;
 using DomainModels.Models.Entities;
-using DomainModels.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Repository.RepositoryServices.Abstraction;
 
@@ -248,7 +246,7 @@ namespace Assignment.Services.Implementation
             foreach (Volunteer volunteer in freeVolunteers)
             {
                 volunteer.RoleOfferId = null;
-                volunteer.Status = Statusenum.Free;
+                volunteer.Status = null;
             }
 
             // Getting all distinct objects
