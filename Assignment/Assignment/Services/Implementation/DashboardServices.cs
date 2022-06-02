@@ -158,8 +158,7 @@ namespace Assignment.Services.Implementation
         public async Task<ObjectResult> GetVolunteersInfoAsync(RoleOfferVolunteerDto dto)
         {
             ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(v => !v.IsDeleted /*&& v.RoleOfferId!=null */
-                /*&& dto.RoleOfferIds.Contains((int)v.RoleOfferId)*/)).ToList();
+                .GetAllAsNoTrackingAsync(v => !v.IsDeleted )).ToList();
 
             GetVolunteerInfoDashboardDto dtoToSend = new();
             dtoToSend.OverallFemales = volunteers
@@ -170,26 +169,40 @@ namespace Assignment.Services.Implementation
                .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
                && v.Gender == GenderEnum.Male.ToString())
                .Count();
+            dtoToSend.OverallInternationals = volunteers
+                .Where(v => v.InternationalVolunteer == LocationEnum.International.ToString())
+                .Count();
+            dtoToSend.OverallLocals = volunteers
+                .Where(v => v.InternationalVolunteer == LocationEnum.Local.ToString())
+                .Count();
+
+            foreach (int age in dto.StartingAges)
+            {
+                dtoToSend.StartingAges.Add(new StartingAgeCountDto 
+                {Age = age
+                , Count = volunteers
+                .Where(v=>v.Age > age)
+                .Count() 
+                });
+            }
+
+            // Get All distinct countries names
             ICollection<string> countries = volunteers
                 .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
+
             List<CountryNameDto> countryNames = new();
+
+            // Get All country counts
             foreach (string country in countries)
             {
                 countryNames.Add(new CountryNameDto { Name = country 
                     ,Count =volunteers.Where(v=>v.Country==country).Count()});
             }
-            countryNames = countryNames.OrderByDescending(r=>r.Count).ToList();
-            for (int i = 0; i < dto.CountryCount; i++)
-            {
-                if (i < countryNames.Count)
-                {
-                    dtoToSend.CountryNameDtos.Add(countryNames[i]);
-                }
-                else
-                {
-                    break;
-                }
-            }
+            dtoToSend.CountryNameDtos = countryNames
+                .OrderByDescending(r => r.Count)
+                .Take(dto.CountryCount)
+                .ToList();
+            
             dtoToSend.Others = volunteers
                 .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
                 .Count();

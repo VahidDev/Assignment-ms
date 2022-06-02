@@ -16,5 +16,7 @@ namespace DomainModels.Dtos
         public byte CountryCount { get; set; }
         [Required]
         public AgeRangeDto[] AgeRanges { get; set; }
+        [Required]
+        public int[] StartingAges { get; set; }
     }
 }

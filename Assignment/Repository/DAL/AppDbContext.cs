@@ -18,8 +18,14 @@ namespace Repository.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // UnComment this section when migrating
+           
             //builder.Ignore<Volunteer>();
             builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r => r.CandidateId);
+            builder.Entity<History>()
+                .Ignore(r => r.IsDeleted)
+                .Ignore(r=>r.UpdatedAt)
+                .Ignore(r=>r.DeletedAt);
+
             builder.ConfigureManyToManyRelationships();
 
             base.OnModelCreating(builder);
@@ -62,5 +68,6 @@ namespace Repository.DAL
         public DbSet<FunctionalRequirement> FunctionalRequirements { get; set; }
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<History> Histories { get; set; }
     }
 }

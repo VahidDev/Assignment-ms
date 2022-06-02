@@ -12,12 +12,17 @@ namespace Assignment.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IJsonFactory _jsonFactory;
-        public AssignmentServices(IUnitOfWork unitOfWork,IMapper mapper, 
-            IJsonFactory jsonFactory)
+        private readonly IHistoryServices _historyServices;
+        public AssignmentServices
+            (IUnitOfWork unitOfWork
+            , IMapper mapper
+            , IJsonFactory jsonFactory
+            , IHistoryServices historyServices)
         {
             _unitOfWork = unitOfWork;
-            _mapper=mapper;
-            _jsonFactory=jsonFactory;
+            _mapper = mapper;
+            _jsonFactory = jsonFactory;
+            _historyServices = historyServices;
         }
         public async Task<ObjectResult> AssignOrWaitlistAsync
             (ICollection<AssignOrWaitlistVolunteerDto> volunteerDtos)
@@ -42,6 +47,8 @@ namespace Assignment.Services.Implementation
 
                 Volunteer updatedVolunteer =_mapper.Map<Volunteer>(volunteerDto);
                 
+                //Write History
+                _historyServices.WriteHistory(updatedVolunteer);
                 volunteers.Add(updatedVolunteer);
             }
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
@@ -87,6 +94,9 @@ namespace Assignment.Services.Implementation
                     }
                     updatedVolunteer.RoleOfferId = dbVolunteer.RoleOfferId;
                 }
+                //Write History
+                _historyServices.WriteHistory(updatedVolunteer);
+
                 volunteers.Add(updatedVolunteer);
             }
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);

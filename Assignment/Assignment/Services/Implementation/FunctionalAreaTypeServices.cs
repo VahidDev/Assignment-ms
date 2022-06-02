@@ -57,11 +57,13 @@ namespace Assignment.Services.Implementation
                         = new List<GetRequirementDto>();
                     location.RoleOffer.AssigneeDemand = volunteers
                         .Where(v => v.RoleOfferId == location.RoleOffer.Id
-                        && v.Status.ToLower() != StatusConstants.PreAssigned.ToLower())
+                        && StatusConstants.AssignedNamesList
+                        .Any(l=>l.ToLower() == v.Status.ToLower()))
                         .Count();
                     location.RoleOffer.WaitlistDemand = volunteers
                     .Where(v => v.RoleOfferId == location.RoleOffer.Id
-                    && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower())
+                    && StatusConstants.WaitlistNamesList
+                    .Any(l => l.ToLower() == v.Status.ToLower()))
                     .Count();
                     location.RoleOffer.OverallWaitlisted = volunteers
                     .Where(v => v.RoleOfferId == location.RoleOffer.Id

@@ -16,5 +16,11 @@
         public const string WaitlistDeclined = "WaitlistDeclined";
         public const string WaitlistAssigned = "WaitlistAssigned";
         public const string NotApproved = "NotApproved";
+        
+        public static IReadOnlyCollection<string> AssignedNamesList
+            = new List<string> { Assigned, PreAssigned, Pending, Accepted };
+
+        public static IReadOnlyCollection<string> WaitlistNamesList
+            = new List<string> { WaitlistOffered, WaitlistAccepted, WaitlistAssigned};
     }
 }

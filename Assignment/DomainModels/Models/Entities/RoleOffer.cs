@@ -36,5 +36,6 @@ namespace DomainModels.Models.Entities
         public int? WaitlistCount { get; set; } = 0;
         public ICollection<Volunteer> Volunteers { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
+        public ICollection<History> Histories { get; set; }
     }
 }

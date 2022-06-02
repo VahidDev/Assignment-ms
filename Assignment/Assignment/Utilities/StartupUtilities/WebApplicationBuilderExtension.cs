@@ -27,7 +27,9 @@ namespace Assignment.Utilities.Startup
                 {
                     builder.MigrationsAssembly(nameof(Repository));
                     builder.MigrationsHistoryTable("__ef_assignment_migrations_history");
-                }).ReplaceService<IHistoryRepository, EfMigrationsHistory>();
+                }).ReplaceService
+                <Microsoft.EntityFrameworkCore.Migrations.IHistoryRepository
+                    , EfMigrationsHistory>();
                 });
             return builder;
         }
@@ -53,7 +55,9 @@ namespace Assignment.Utilities.Startup
                 .AddScoped<IDashboardServices, DashboardServices>();
             builder.Services
                 .AddScoped<IReportServices, ReportServices>();
-            
+            builder.Services
+                .AddScoped<IHistoryServices, HistoryServices>();
+
             return builder;
         }
     }

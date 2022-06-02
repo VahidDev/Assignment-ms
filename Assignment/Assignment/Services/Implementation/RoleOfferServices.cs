@@ -19,16 +19,22 @@ namespace Assignment.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IFileServices _fileServices;
         private readonly IJsonFactory _jsonFactory;
+        private readonly IHistoryServices _historyServices;
 
-        public RoleOfferServices(IUnitOfWork unitOfWork, IMapper mapper
-            ,IFileServices fileServices, IJsonFactory jsonFactory)
+        public RoleOfferServices
+            (IUnitOfWork unitOfWork
+            , IMapper mapper
+            , IFileServices fileServices
+            , IJsonFactory jsonFactory
+            , IHistoryServices historyServices)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _fileServices = fileServices;
             _jsonFactory = jsonFactory;
+            _historyServices = historyServices;
         }
-        
+
 
         public async Task<ObjectResult> GetAllRoleOffersAsync()
         {
@@ -246,6 +252,9 @@ namespace Assignment.Services.Implementation
             {
                 volunteer.RoleOfferId = null;
                 volunteer.Status = null;
+
+                // Write to history
+                _historyServices.WriteHistory(volunteer);
             }
 
             // Getting all distinct objects

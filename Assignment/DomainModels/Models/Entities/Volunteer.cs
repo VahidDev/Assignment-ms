@@ -1,5 +1,6 @@
 ﻿using DomainModels.Models.Entities.Base;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,5 +26,6 @@ namespace DomainModels.Models.Entities
         public string Country { get; set; }
         [Column("gender")]
         public string Gender { get; set; }
+        public ICollection<History> Histories { get; set; }
     }
 }
