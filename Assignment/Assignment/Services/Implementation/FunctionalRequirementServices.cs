@@ -87,7 +87,7 @@ namespace Assignment.Services.Implementation
 
             dbFunctionalRequirement.RoleOffer.WaitlistFulfillment
                    = FulfilmentCalculator.CalculateWaitlistFulfilment
-                   (dto.WaitlistCount, (int)dto.TotalDemand);
+                   (dto.WaitlistCount);
             dbFunctionalRequirement.RoleOffer.RoleOfferFulfillment
                 = FulfilmentCalculator.CalculateRoleFulfilment
                 (dto.LevelOfConfidence, (int)dto.TotalDemand);
@@ -151,7 +151,7 @@ namespace Assignment.Services.Implementation
 
             ICollection<RoleOffer> updatedRoleOffers = (await _unitOfWork
                 .RoleOfferRepository
-                .GetAllSpecificRoleOffers(r=>!r.IsDeleted
+                .GetAllSpecificRoleOffersAsync(r=>!r.IsDeleted
                 && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
             List<FunctionalRequirement> functionalRequirements 
@@ -181,7 +181,7 @@ namespace Assignment.Services.Implementation
                 }
                 roleOffer.WaitlistFulfillment
                   = FulfilmentCalculator
-                  .CalculateWaitlistFulfilment(requirement.WaitlistCount, roleOffer.TotalDemand);
+                  .CalculateWaitlistFulfilment(requirement.WaitlistCount);
                 roleOffer.RoleOfferFulfillment
                 = FulfilmentCalculator
                  .CalculateRoleFulfilment(requirement.LevelOfConfidence, roleOffer.TotalDemand);

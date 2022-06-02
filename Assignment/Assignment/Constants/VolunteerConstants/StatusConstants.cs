@@ -3,7 +3,7 @@
     public static class StatusConstants
     {
         public const string Assigned = "Assigned";
-        public const string Preassigned = "Preassigned";
+        public const string PreAssigned = "Preassigned";
         public const string Pending = "Pending";
         public const string Accepted = "Accepted";
         public const string Confirmed = "Confirmed";

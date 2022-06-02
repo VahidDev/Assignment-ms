@@ -1,6 +1,7 @@
 ﻿using DomainModels.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Repository.Constants;
 using Repository.DAL;
 using Repository.RepositoryServices.Abstraction;
 using Repository.Utilities.GenericRepositoryUtilities;
@@ -37,7 +38,8 @@ namespace Repository.RepositoryServices.Implementation
             (IEnumerable<string> includingItems = null)
         {
             _querable = _querable.IncludeItemsIfExist(includingItems);
-            return await _querable.Where(t => !t.IsDeleted)
+            return await _querable.Where(t => !t.IsDeleted 
+            && !t.Name.Contains(TemplateDifferentiatorConstants.ReportTemplate))
                 .Include(t=>t.Filters.Where(f=>!f.IsDeleted)).ToListAsync();
         }
     }

@@ -1,4 +1,5 @@
-﻿using DomainModels.Models.Entities;
+﻿using DomainModels.Dtos;
+using DomainModels.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -13,7 +14,9 @@ namespace Repository.RepositoryServices.Abstraction
         Task<ICollection<RoleOffer>> GetAllAsNoTrackingIncludingItemsAsync
             (Expression<Func<RoleOffer, bool>> expression);
         Task<ICollection<RoleOffer>> GetAllIncludingItemsAsync();
-        Task<ICollection<RoleOffer>> GetAllSpecificRoleOffers
+        Task<ICollection<RoleOffer>> GetAllSpecificRoleOffersAsync
+            (Expression<Func<RoleOffer, bool>> expression);
+        Task<ICollection<AssigneeDemandWaitlistCountDto>> GetAllAssigneeDemandWaitlistCountsAsync
             (Expression<Func<RoleOffer, bool>> expression);
     }
 }

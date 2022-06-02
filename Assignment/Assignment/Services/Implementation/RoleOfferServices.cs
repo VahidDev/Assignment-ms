@@ -166,8 +166,7 @@ namespace Assignment.Services.Implementation
                         .CalculateRoleFulfilment((int)newExcelRoleOffer.LevelOfConfidence,
                         newExcelRoleOffer.TotalDemand);
                     newExcelRoleOffer.WaitlistFulfillment = FulfilmentCalculator
-                        .CalculateWaitlistFulfilment((int)newExcelRoleOffer.WaitlistCount,
-                        newExcelRoleOffer.TotalDemand);
+                        .CalculateWaitlistFulfilment((int)newExcelRoleOffer.WaitlistCount);
                 }
                 updatedOrAddedRoleOffers.Add(newExcelRoleOffer);
             }

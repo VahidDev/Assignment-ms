@@ -1,4 +1,5 @@
-﻿using DomainModels.Models.Entities;
+﻿using DomainModels.Dtos;
+using DomainModels.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.DAL;
@@ -63,10 +64,21 @@ namespace Repository.RepositoryServices.Implementation
                 .ToListAsync();
         }
 
-        public async Task<ICollection<RoleOffer>> GetAllSpecificRoleOffers
-            (Expression<Func<RoleOffer, bool>> expression)
+        public async Task<ICollection<RoleOffer>> 
+            GetAllSpecificRoleOffersAsync(Expression<Func<RoleOffer, bool>> expression)
         {
             return await dbSet.Where(expression).ToListAsync();
+        }
+
+        public async Task<ICollection<AssigneeDemandWaitlistCountDto>>
+         GetAllAssigneeDemandWaitlistCountsAsync(Expression<Func<RoleOffer, bool>> expression)
+        {
+            return await dbSet
+               .Select(r => new AssigneeDemandWaitlistCountDto
+               {
+                   AssigneeDemand = r.RoleOfferFulfillment,
+                   WaitlistCount = (int)r.WaitlistCount
+               }).AsNoTracking().ToListAsync();
         }
     }
 }

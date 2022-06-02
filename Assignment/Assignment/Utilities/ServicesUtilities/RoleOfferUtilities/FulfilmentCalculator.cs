@@ -5,12 +5,11 @@
         public static int CalculateRoleFulfilment(int levelOfConfidence, int totalDemand)
         {
             if (levelOfConfidence == 0) levelOfConfidence = 100;
-            return (totalDemand * 100) / levelOfConfidence;
+            return (int) (Math.Round((decimal)(levelOfConfidence / 100),2) * totalDemand);
         }
-        public static int CalculateWaitlistFulfilment(int waitlistCount, int totalDemand)
+        public static int CalculateWaitlistFulfilment(int waitlistCount)
         {
-            if(waitlistCount == 0) return 0;
-            return (totalDemand * 100) / waitlistCount;
+            return waitlistCount;
         }
     }
 }

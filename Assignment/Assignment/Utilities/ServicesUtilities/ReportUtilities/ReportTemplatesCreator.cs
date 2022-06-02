@@ -1,4 +1,5 @@
 ﻿using DomainModels.Models.Entities;
+using Repository.Constants;
 
 namespace Assignment.Utilities.ServicesUtilities.ReportUtilities
 {
@@ -8,7 +9,8 @@ namespace Assignment.Utilities.ServicesUtilities.ReportUtilities
         {
             return new Template
             {
-                Name = "Report " + nameof(Report.VolunteerTemplate),
+                Name = TemplateDifferentiatorConstants.ReportTemplate
+                + nameof(Report.VolunteerTemplate),
                 Filters = filters
             };
         }
@@ -16,7 +18,8 @@ namespace Assignment.Utilities.ServicesUtilities.ReportUtilities
         {
             return new Template
             {
-                Name = "Report " + nameof(Report.RoleOfferTemplate),
+                Name = TemplateDifferentiatorConstants.ReportTemplate 
+                + nameof(Report.RoleOfferTemplate),
                 Filters = filters
             };
         }
