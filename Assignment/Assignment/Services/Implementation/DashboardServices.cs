@@ -1,6 +1,7 @@
 ﻿using Assignment.Constants.VolunteerConstants;
 using Assignment.Factory;
 using Assignment.Services.Abstraction;
+using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,16 @@ namespace Assignment.Services.Implementation
     {
         private readonly IJsonFactory _jsonFactory;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public DashboardServices(IJsonFactory jsonFactory, IUnitOfWork unitOfWork)
+        public DashboardServices
+            (IJsonFactory jsonFactory
+            , IUnitOfWork unitOfWork
+            , IMapper mapper)
         {
             _jsonFactory = jsonFactory;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<ObjectResult> GetAllInfoAsync()
@@ -99,11 +105,52 @@ namespace Assignment.Services.Implementation
                 (waitlistOffered + waitlistAssigned + waitlistAccepted);
 
             dto.TotalAssigned 
-                = dto.Accepted + dto.Assigned + dto.Pending + dto.PreAssigned;
+                = (int) (dto.Accepted + dto.Assigned + dto.Pending + dto.PreAssigned);
             dto.TotalWaitlisted
-                = dto.WaitlistOffered + dto.WaitlistAccepted + dto.WaitlistAssigned;
+                = (int) (dto.WaitlistOffered + dto.WaitlistAccepted + dto.WaitlistAssigned);
 
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, dto);
+        }
+
+        public async Task<ObjectResult> GetRoleOffersAsync(int[] roleOfferIds)
+        {
+            ICollection<GetRoleOfferDashboardDto> roleOffers = _mapper
+                .Map<ICollection<GetRoleOfferDashboardDto>>
+                (await _unitOfWork.RoleOfferRepository
+                .GetAllAsNoTrackingIncludingItemsAsync(r => roleOfferIds.Contains(r.Id)));
+
+            if(roleOfferIds.Length != roleOffers.Count)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound
+                    ,"One of the RoleOffers was not found");
+            }
+
+            ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
+                .GetAllAsNoTrackingAsync(r => r.RoleOfferId !=null && !r.IsDeleted 
+                && roleOfferIds.Contains((int)r.RoleOfferId))).ToList();
+
+            foreach (GetRoleOfferDashboardDto roleOffer in roleOffers)
+            {
+                roleOffer.Assigned = volunteers
+                    .Where(v=>v.Status.ToLower() == StatusConstants.Assigned.ToLower())
+                    .Count();
+                roleOffer.PreAssigned = volunteers
+                    .Where(v => v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
+                    .Count();
+                roleOffer.Accepted = volunteers
+                    .Where(v => v.Status.ToLower() == StatusConstants.Accepted.ToLower())
+                    .Count();
+                roleOffer.WaitlistAccepted = volunteers
+                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistAccepted.ToLower())
+                    .Count();
+                roleOffer.WaitlistAssigned = volunteers
+                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistAssigned.ToLower())
+                    .Count();
+                roleOffer.WaitlistOffered = volunteers
+                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
+                    .Count();
+            }
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, roleOffers);
         }
     }
 }

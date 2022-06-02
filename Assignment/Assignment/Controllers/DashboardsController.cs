@@ -17,7 +17,13 @@ namespace Assignment.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllInfoAsync()
         {
-            return await _dashboardServices.GetAllInfoAsync();
+            return await _dashboardServices.GetAllInfoAsync(); 
+        }
+
+        [HttpGet("getroleoffers")]
+        public async Task<IActionResult> GetAllInfoAsync([FromBody] int[] roleOfferIds)
+        {
+            return await _dashboardServices.GetRoleOffersAsync(roleOfferIds); 
         }
     }
 }

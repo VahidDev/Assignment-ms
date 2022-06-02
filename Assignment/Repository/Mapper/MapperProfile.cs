@@ -19,16 +19,21 @@ namespace Repository.Mapper
                 .ForMember(r => r.CandidateId, r => r.MapFrom(r => r.Id));
             
             CreateMap<FunctionalArea, FunctionalAreaDto>().ReverseMap();
+            CreateMap<FunctionalArea, GetFunctionalAreaNameDto>().ReverseMap();
 
             CreateMap<Location, LocationDto>().ReverseMap();
+            CreateMap<Location, GetLocationNameDto>().ReverseMap();
 
             CreateMap<JobTitle, JobTitleDto>().ReverseMap();
+            CreateMap<JobTitle, GetJobTitleNameDto>().ReverseMap();
             
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
+            CreateMap<RoleOffer,GetRoleOfferDashboardDto>().ReverseMap();
             CreateMap<RoleOffer, NestedRoleOfferDto>().ReverseMap();
             CreateMap<NestedRoleOfferDto, RoleOfferDto>().ReverseMap();
 
             CreateMap<FunctionalAreaType,FunctionalAreaTypeDto>().ReverseMap();
+            CreateMap<FunctionalAreaType,GetFunctionalAreaTypeNameDto>().ReverseMap();
 
             CreateMap<Filter,CreateFilterDto>().ReverseMap()
                 .ForMember(r => r.Value, r => r.MapFrom<RequirementValueToStringConverter>());
