@@ -3,7 +3,9 @@ using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using AutoMapper;
 using DomainModels.Dtos;
+using DomainModels.Dtos.DashboardDtos;
 using DomainModels.Models.Entities;
+using DomainModels.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Repository.RepositoryServices.Abstraction;
 
@@ -151,6 +153,56 @@ namespace Assignment.Services.Implementation
                     .Count();
             }
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, roleOffers);
+        }
+
+        public async Task<ObjectResult> GetVolunteersInfoAsync(RoleOfferVolunteerDto dto)
+        {
+            ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
+                .GetAllAsNoTrackingAsync(v => !v.IsDeleted /*&& v.RoleOfferId!=null */
+                /*&& dto.RoleOfferIds.Contains((int)v.RoleOfferId)*/)).ToList();
+
+            GetVolunteerInfoDashboardDto dtoToSend = new();
+            dtoToSend.OverallFemales = volunteers
+                .Where(v => dto.Locations.Contains(v.InternationalVolunteer) 
+                && v.Gender == GenderEnum.Female.ToString())
+                .Count();
+            dtoToSend.OverallMales = volunteers
+               .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
+               && v.Gender == GenderEnum.Male.ToString())
+               .Count();
+            ICollection<string> countries = volunteers
+                .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
+            List<CountryNameDto> countryNames = new();
+            foreach (string country in countries)
+            {
+                countryNames.Add(new CountryNameDto { Name = country 
+                    ,Count =volunteers.Where(v=>v.Country==country).Count()});
+            }
+            countryNames = countryNames.OrderByDescending(r=>r.Count).ToList();
+            for (int i = 0; i < dto.CountryCount; i++)
+            {
+                if (i < countryNames.Count)
+                {
+                    dtoToSend.CountryNameDtos.Add(countryNames[i]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            dtoToSend.Others = volunteers
+                .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
+                .Count();
+            foreach (AgeRangeDto ageRange in dto.AgeRanges)
+            {
+                dtoToSend.AgeRanges.Add(new AgeRangeCountDto
+                { FromAge = ageRange.FromAge,ToAge = ageRange.ToAge
+                , Count = volunteers
+                .Where(v=>v.Age > ageRange.FromAge && v.Age < ageRange.ToAge)
+                .Count()
+                });
+            }
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,dtoToSend);
         }
     }
 }

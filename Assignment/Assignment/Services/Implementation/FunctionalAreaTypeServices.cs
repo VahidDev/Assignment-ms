@@ -1,4 +1,5 @@
-﻿using Assignment.Factory;
+﻿using Assignment.Constants.VolunteerConstants;
+using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using AutoMapper;
 using DomainModels.Dtos;
@@ -29,10 +30,14 @@ namespace Assignment.Services.Implementation
             List<FunctionalAreaTypeDto> functionalAreaTypes = 
                 _mapper.Map<List<FunctionalAreaTypeDto>>(await _unitOfWork
                 .FunctionalAreaTypeRepository.GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted));
+
             if(functionalAreaTypes.Count == 0)
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,functionalAreaTypes);
             }
+
+            IReadOnlyCollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
+                .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted)).ToList();
             foreach (RoleOffer roleOffer in dbRoleOffers)
             {
                 FunctionalAreaTypeDto functionalAreaType=functionalAreaTypes
@@ -46,8 +51,26 @@ namespace Assignment.Services.Implementation
                 location.RoleOffer=_mapper.Map<NestedRoleOfferDto>(roleOffer);
                 if (location.RoleOffer.FunctionalRequirement == null)
                 {
-                    location.RoleOffer.FunctionalRequirement = new GetFunctionalRequirementDto();
-                    location.RoleOffer.FunctionalRequirement.Requirements=new List<GetRequirementDto>();
+                    location.RoleOffer.FunctionalRequirement 
+                        = new GetFunctionalRequirementDto();
+                    location.RoleOffer.FunctionalRequirement.Requirements
+                        = new List<GetRequirementDto>();
+                    location.RoleOffer.AssigneeDemand = volunteers
+                        .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                        && v.Status.ToLower() != StatusConstants.PreAssigned.ToLower())
+                        .Count();
+                    location.RoleOffer.WaitlistDemand = volunteers
+                    .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                    && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower())
+                    .Count();
+                    location.RoleOffer.OverallWaitlisted = volunteers
+                    .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                    && v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
+                    .Count();
+                    location.RoleOffer.OverallAssigned = volunteers
+                       .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                       && v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
+                       .Count();
                 }
             }
            

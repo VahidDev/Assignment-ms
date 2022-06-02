@@ -13,6 +13,10 @@ namespace DomainModels.Dtos
         public int? LevelOfConfidence { get; set; }
         [JsonProperty("waitlist_count")]
         public int? WaitlistCount { get; set; }
-        public GetFunctionalRequirementDto FunctionalRequirement { get; set; } 
+        public GetFunctionalRequirementDto FunctionalRequirement { get; set; }
+        public int OverallAssigned { get; set; }
+        public int AssigneeDemand { get; set; }
+        public int WaitlistDemand { get; set; }
+        public int OverallWaitlisted { get; set; }
     }
 }

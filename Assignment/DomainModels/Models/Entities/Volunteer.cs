@@ -17,6 +17,13 @@ namespace DomainModels.Models.Entities
         public int? RoleOfferId { get; set; }
         [Column("status")]
         public string Status { get; set; }
-        
+        [Column("international_volunteer")]
+        public string InternationalVolunteer { get; set; }
+        [Column("age")]
+        public int Age { get; set; }
+        [Column("residence_country")]
+        public string Country { get; set; }
+        [Column("gender")]
+        public string Gender { get; set; }
     }
 }

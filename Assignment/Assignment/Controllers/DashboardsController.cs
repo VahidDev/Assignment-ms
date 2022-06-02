@@ -1,4 +1,5 @@
 ﻿using Assignment.Services.Abstraction;
+using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
@@ -20,10 +21,17 @@ namespace Assignment.Controllers
             return await _dashboardServices.GetAllInfoAsync(); 
         }
 
-        [HttpGet("getroleoffers")]
+        [HttpPost("getroleoffers")]
         public async Task<IActionResult> GetAllInfoAsync([FromBody] int[] roleOfferIds)
         {
             return await _dashboardServices.GetRoleOffersAsync(roleOfferIds); 
+        }
+
+        [HttpPost("getvolunteersinfo")]
+        public async Task<IActionResult> GetVolunteersInfoAsync
+            ([FromBody] RoleOfferVolunteerDto dto)
+        {
+            return await _dashboardServices.GetVolunteersInfoAsync(dto);
         }
     }
 }
