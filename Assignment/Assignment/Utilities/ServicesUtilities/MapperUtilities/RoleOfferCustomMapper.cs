@@ -7,8 +7,10 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
     public static class RoleOfferCustomMapper
     {
         public static RoleOffer MapExcelRoleOfferToDbRoleOffer
-            (RoleOffer dbRoleOffer, RoleOffer newExcelRoleOffer,
-            IReadOnlyCollection<RoleOffer> dbRoleOffers, IMapper mapper)
+            (RoleOffer dbRoleOffer
+            , RoleOffer newExcelRoleOffer
+            , IReadOnlyCollection<RoleOffer> dbRoleOffers
+            , IMapper mapper)
         {
             RoleOffer updatedOrNewRoleOffer = mapper.Map<RoleOffer>(newExcelRoleOffer);
             updatedOrNewRoleOffer.Id = dbRoleOffer.Id;
@@ -22,7 +24,9 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
             }
             else
             {
-                updatedOrNewRoleOffer.FunctionalArea = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                updatedOrNewRoleOffer.FunctionalArea 
+                    = MapExcelDataToDbDataIfExists
+                    (dbRoleOffers,
                     r=>r.FunctionalArea, f=>f.Code==updatedOrNewRoleOffer.FunctionalArea.Code,
                     updatedOrNewRoleOffer.FunctionalArea, mapper);
             }
@@ -32,7 +36,9 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
             }
             else
             {
-                updatedOrNewRoleOffer.JobTitle = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                updatedOrNewRoleOffer.JobTitle 
+                    = MapExcelDataToDbDataIfExists
+                    (dbRoleOffers,
                    r => r.JobTitle, j => j.Code == updatedOrNewRoleOffer.JobTitle.Code,
                    updatedOrNewRoleOffer.JobTitle, mapper);
             }
@@ -42,7 +48,9 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
             }
             else
             {
-                updatedOrNewRoleOffer.FunctionalAreaType = MapExcelDataToDbDataIfExists(dbRoleOffers,
+                updatedOrNewRoleOffer.FunctionalAreaType 
+                    = MapExcelDataToDbDataIfExists
+                    (dbRoleOffers,
                    r => r.FunctionalAreaType, f => f.Name
                     == updatedOrNewRoleOffer.FunctionalAreaType.Name,
                    updatedOrNewRoleOffer.FunctionalAreaType, mapper);
@@ -60,9 +68,13 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
             return updatedOrNewRoleOffer;
         }      
     
-        public static U MapExcelDataToDbDataIfExists<T,U>(IReadOnlyCollection<T>dbItems, 
-            Func<T,U>selectCallback, Func<U,bool>firstOrDefaultCallback, U dbItem,
-            IMapper mapper) where T : IEntity where U : IEntity
+        public static U MapExcelDataToDbDataIfExists<T,U>
+            (IReadOnlyCollection<T>dbItems
+            , Func<T,U>selectCallback
+            , Func<U,bool>firstOrDefaultCallback
+            , U dbItem
+            ,IMapper mapper) 
+            where T : IEntity where U : IEntity
         {
             U? item = dbItems
                    .Select(selectCallback)

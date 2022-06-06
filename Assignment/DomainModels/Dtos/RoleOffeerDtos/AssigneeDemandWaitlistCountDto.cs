@@ -3,6 +3,6 @@
     public class AssigneeDemandWaitlistCountDto
     {
         public int AssigneeDemand { get; set; }
-        public int WaitlistCount { get; set; }
+        public int WaitlistDemand { get; set; }
     }
 }

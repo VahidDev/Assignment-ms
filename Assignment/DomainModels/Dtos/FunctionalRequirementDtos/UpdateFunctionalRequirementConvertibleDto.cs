@@ -10,8 +10,8 @@ namespace DomainModels.Dtos
         public ICollection<UpdateRequirementConvertibleDto> Requirements { get; set; }
         [JsonProperty("level_of_confidence")]
         public int LevelOfConfidence { get; set; } = 100;
-        [JsonProperty("waitlist_count")]
-        public int WaitlistCount { get; set; } = 0;
+        [JsonProperty("waitlist_demand")]
+        public int WaitlistDemand { get; set; } = 0;
         [Required]
         [JsonProperty("total_demand")]
         public int? TotalDemand { get; set; }

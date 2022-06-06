@@ -14,7 +14,7 @@ namespace Repository.RepositoryServices.Abstraction
         Task<ICollection<RoleOffer>> GetAllAsNoTrackingIncludingItemsAsync
             (Expression<Func<RoleOffer, bool>> expression);
         Task<ICollection<RoleOffer>> GetAllIncludingItemsAsync();
-        Task<ICollection<RoleOffer>> GetAllSpecificRoleOffersAsync
+        Task<ICollection<RoleOffer>> GetAllSpecificRoleOffersAsNoTrackingAsync
             (Expression<Func<RoleOffer, bool>> expression);
         Task<ICollection<AssigneeDemandWaitlistCountDto>> GetAllAssigneeDemandWaitlistCountsAsync
             (Expression<Func<RoleOffer, bool>> expression);

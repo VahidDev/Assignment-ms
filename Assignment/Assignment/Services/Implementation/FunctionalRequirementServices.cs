@@ -52,9 +52,13 @@ namespace Assignment.Services.Implementation
         public async Task<ObjectResult> UpdateOrAddFunctionalRequirementAsync
             (UpdateFunctionalRequirementConvertibleDto convertibleDto)
         {
-            UpdateFunctionalRequirementDto dto=_mapper.Map<UpdateFunctionalRequirementDto>(convertibleDto);
+            UpdateFunctionalRequirementDto dto = _mapper
+                .Map<UpdateFunctionalRequirementDto>(convertibleDto);
+
             FunctionalRequirement dbFunctionalRequirement = new();
-            RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository.GetByIdAsNoTrackingAsync(dto.RoleOfferId);
+
+            RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository
+                .GetByIdAsNoTrackingAsync(dto.RoleOfferId);
 
             if (roleOffer == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
@@ -64,7 +68,9 @@ namespace Assignment.Services.Implementation
             {
                 dbFunctionalRequirement= await _unitOfWork
                     .FunctionalRequirementRepository
-                    .GetByIdAsNoTrackingIncludingItemsAsync(fr => fr.Id == dto.Id && !fr.RoleOffer.IsDeleted);
+                    .GetByIdAsNoTrackingIncludingItemsAsync
+                    (fr => fr.Id == dto.Id && !fr.RoleOffer.IsDeleted);
+
                 if(dbFunctionalRequirement == null)
                 {
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
@@ -80,16 +86,14 @@ namespace Assignment.Services.Implementation
             }
             dbFunctionalRequirement.RoleOffer = roleOffer;
             dbFunctionalRequirement.RoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
-            dbFunctionalRequirement.RoleOffer.WaitlistCount = dto.WaitlistCount;
+            dbFunctionalRequirement.RoleOffer.WaitlistDemand = dto.WaitlistDemand;
             dbFunctionalRequirement.RoleOffer.TotalDemand = dto.TotalDemand;
             roleOffer.FunctionalRequirement = dbFunctionalRequirement;  
-            dbFunctionalRequirement.RoleOffer.FunctionalRequirement=dbFunctionalRequirement;
+            dbFunctionalRequirement.RoleOffer.FunctionalRequirement 
+                = dbFunctionalRequirement;
 
-            dbFunctionalRequirement.RoleOffer.WaitlistFulfillment
-                   = FulfilmentCalculator.CalculateWaitlistFulfilment
-                   (dto.WaitlistCount);
-            dbFunctionalRequirement.RoleOffer.RoleOfferFulfillment
-                = FulfilmentCalculator.CalculateRoleFulfilment
+            dbFunctionalRequirement.RoleOffer.AssigneeDemand
+                = DemandCalculator.CalculateRoleOfferDemand
                 (dto.LevelOfConfidence, (int)dto.TotalDemand);
 
             List<UpdateRequirementDto> updatedDtos = new();
@@ -122,7 +126,9 @@ namespace Assignment.Services.Implementation
                     }
                 }
             }
-            dbFunctionalRequirement.Requirements = _mapper.Map<ICollection<Requirement>>(updatedDtos);
+            dbFunctionalRequirement.Requirements = _mapper
+                .Map<ICollection<Requirement>>(updatedDtos);
+
             _unitOfWork.FunctionalRequirementRepository.Update(dbFunctionalRequirement);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
@@ -147,47 +153,53 @@ namespace Assignment.Services.Implementation
                     .CreateJson(StatusCodes.Status404NotFound,
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
-            int[] roleOfferIds = newRequirements.Distinct().Select(x => x.RoleOfferId).ToArray();
+            int[] roleOfferIds = newRequirements
+                .Distinct()
+                .Select(x => x.RoleOfferId)
+                .ToArray();
 
             ICollection<RoleOffer> updatedRoleOffers = (await _unitOfWork
                 .RoleOfferRepository
-                .GetAllSpecificRoleOffersAsync(r=>!r.IsDeleted
+                .GetAllSpecificRoleOffersAsNoTrackingAsync(r=>!r.IsDeleted
                 && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
             List<FunctionalRequirement> functionalRequirements 
                 = (await _unitOfWork.FunctionalRequirementRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted
-                && roleOfferIds.Contains(fr.RoleOffer.Id))).ToList();
+                && roleOfferIds.Contains(fr.RoleOffer.RoleOfferId))).ToList();
 
             foreach (Requirement requirement in newRequirements)
             {
                 RoleOffer? roleOffer = updatedRoleOffers
                       .FirstOrDefault(r => r.RoleOfferId == requirement.RoleOfferId);
 
-                if (roleOffer==null)
+                if (roleOffer == null)
+                {
                     return _jsonFactory
                         .CreateJson(StatusCodes.Status400BadRequest,
                         $"RoleOffer with the ID {requirement.RoleOfferId} was not found");
-
-                FunctionalRequirement? fr=functionalRequirements
-                    .FirstOrDefault(r=>r.FunctionalRequirementId
+                }
+                FunctionalRequirement? fr = functionalRequirements
+                    .FirstOrDefault(r=>r.FunctionalRequirementId 
                     == requirement.FunctionalRequirementId);
                 
-                if( fr != null && fr.Requirements.Any(r=>r.RequirementName==requirement.RequirementName
-                && r.Operator == requirement.Operator && r.Value == requirement.Value))
+                if(fr != null && fr.Requirements
+                    .Any(r=>r.RequirementName == requirement.RequirementName
+                    && r.Operator == requirement.Operator && r.Value == requirement.Value))
                 {
                     return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                         $"The same requirement for {requirement.RequirementName} already exists");
                 }
-                roleOffer.WaitlistFulfillment
-                  = FulfilmentCalculator
-                  .CalculateWaitlistFulfilment(requirement.WaitlistCount);
-                roleOffer.RoleOfferFulfillment
-                = FulfilmentCalculator
-                 .CalculateRoleFulfilment(requirement.LevelOfConfidence, roleOffer.TotalDemand);
+                roleOffer.AssigneeDemand
+                = DemandCalculator
+                 .CalculateRoleOfferDemand(
+                    requirement.LevelOfConfidence, 
+                    roleOffer.TotalDemand
+                    );
 
-                roleOffer.WaitlistCount = requirement.WaitlistCount;
+                roleOffer.WaitlistDemand = requirement.WaitlistDemand;
                 roleOffer.LevelOfConfidence = requirement.LevelOfConfidence;
+
                 if (fr == null)
                 {
                     functionalRequirements.Add(new FunctionalRequirement

@@ -18,8 +18,9 @@ namespace Repository.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // UnComment this section when migrating
-           
+
             //builder.Ignore<Volunteer>();
+            //builder.Ignore<History>();
             builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r => r.CandidateId);
             builder.Entity<History>()
                 .Ignore(r => r.IsDeleted)

@@ -28,7 +28,7 @@ namespace DomainModels.Models.Entities
         [Display(Name = "Level Of Confidence")]
         public int LevelOfConfidence { get; set; } = 100;
         [NotMapped]
-        [Display(Name = "WaitList Count")]
-        public int WaitlistCount { get; set; } = 0;
+        [Display(Name = "WaitList Demand")]
+        public int WaitlistDemand { get; set; } = 0;
     }
 }

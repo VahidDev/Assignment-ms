@@ -84,11 +84,12 @@ namespace Assignment.Services.Implementation
             foreach (RoleOffer updatedRoleOffer in updatedRoleOffers)
             {
                 ImportRoleOfferDetailsDto dto = dtos.First(r => r.RoleOfferId == updatedRoleOffer.Id);
-                updatedRoleOffer.RoleOfferFulfillment = FulfilmentCalculator
-                    .CalculateRoleFulfilment(dto.LevelOfConfidence, updatedRoleOffer.TotalDemand);
-                updatedRoleOffer.WaitlistFulfillment = FulfilmentCalculator
-                    .CalculateRoleFulfilment(dto.WaitlistCount, updatedRoleOffer.TotalDemand);
-                updatedRoleOffer.WaitlistCount = dto.WaitlistCount;
+                updatedRoleOffer.AssigneeDemand = DemandCalculator
+                    .CalculateRoleOfferDemand(
+                    dto.LevelOfConfidence, 
+                    updatedRoleOffer.TotalDemand
+                    );
+                updatedRoleOffer.WaitlistDemand = dto.WaitlistDemand;
                 updatedRoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             }
             _unitOfWork.RoleOfferRepository.UpdateRange(updatedRoleOffers);
@@ -166,13 +167,13 @@ namespace Assignment.Services.Implementation
                     }
                 }
 
-                if (newExcelRoleOffer.LevelOfConfidence != null && newExcelRoleOffer.WaitlistCount != null)
+                if (newExcelRoleOffer.LevelOfConfidence != null) 
                 {
-                    newExcelRoleOffer.RoleOfferFulfillment = FulfilmentCalculator
-                        .CalculateRoleFulfilment((int)newExcelRoleOffer.LevelOfConfidence,
+                    newExcelRoleOffer.AssigneeDemand = DemandCalculator
+                        .CalculateRoleOfferDemand
+                        ((int) newExcelRoleOffer.LevelOfConfidence,
                         newExcelRoleOffer.TotalDemand);
-                    newExcelRoleOffer.WaitlistFulfillment = FulfilmentCalculator
-                        .CalculateWaitlistFulfilment((int)newExcelRoleOffer.WaitlistCount);
+                    newExcelRoleOffer.WaitlistDemand = newExcelRoleOffer.WaitlistDemand;
                 }
                 updatedOrAddedRoleOffers.Add(newExcelRoleOffer);
             }

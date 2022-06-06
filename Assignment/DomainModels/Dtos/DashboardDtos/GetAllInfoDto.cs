@@ -14,8 +14,8 @@
         public int TotalAssigned { get; set; }
         public int TotalWaitlisted { get; set; }
         public int OverallAssigneeDemand { get; set; }
-        public int OverallNoneAssigned { get; set; }
+        public int OverallAssigned { get; set; }
         public int OverallWaitlistDemand { get; set; }
-        public int OverallNoneWaitlisted { get; set; }
+        public int OverallWaitlisted { get; set; }
     }
 }

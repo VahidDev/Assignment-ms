@@ -13,6 +13,7 @@ namespace DomainModels.Models.Entities
         public string Name { get; set; }
         public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<FunctionalAreaTypeFunctionalArea> FunctionalAreaTypeFunctionalAreas { get; set; }
+        public ICollection<FunctionalAreaTypeFunctionalArea> 
+            FunctionalAreaTypeFunctionalAreas { get; set; }
     }
 }

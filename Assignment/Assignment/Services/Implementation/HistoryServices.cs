@@ -24,7 +24,7 @@ namespace Assignment.Services.Implementation
                     ,
                         RoleOfferId = volunteer.RoleOfferId
                     ,
-                        VolunteerId = volunteer.Id
+                        VolunteerId = volunteer.CandidateId
                     });
             return true;
         }

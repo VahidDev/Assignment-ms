@@ -29,7 +29,7 @@ namespace Repository.Mapper
             
             CreateMap<RoleOffer,RoleOfferDto>().ReverseMap();
             CreateMap<RoleOffer,GetRoleOfferDashboardDto>().ReverseMap();
-            CreateMap<RoleOffer, NestedRoleOfferDto>().ReverseMap();
+            CreateMap<NestedRoleOfferDto, RoleOffer>().ReverseMap();
             CreateMap<NestedRoleOfferDto, RoleOfferDto>().ReverseMap();
 
             CreateMap<FunctionalAreaType,FunctionalAreaTypeDto>().ReverseMap();

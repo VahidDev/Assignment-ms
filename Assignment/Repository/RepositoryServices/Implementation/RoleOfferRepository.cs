@@ -65,9 +65,10 @@ namespace Repository.RepositoryServices.Implementation
         }
 
         public async Task<ICollection<RoleOffer>> 
-            GetAllSpecificRoleOffersAsync(Expression<Func<RoleOffer, bool>> expression)
+            GetAllSpecificRoleOffersAsNoTrackingAsync
+            (Expression<Func<RoleOffer, bool>> expression)
         {
-            return await dbSet.Where(expression).ToListAsync();
+            return await dbSet.Where(expression).AsNoTracking().ToListAsync();
         }
 
         public async Task<ICollection<AssigneeDemandWaitlistCountDto>>
@@ -76,8 +77,8 @@ namespace Repository.RepositoryServices.Implementation
             return await dbSet
                .Select(r => new AssigneeDemandWaitlistCountDto
                {
-                   AssigneeDemand = r.RoleOfferFulfillment,
-                   WaitlistCount = (int)r.WaitlistCount
+                   AssigneeDemand = r.AssigneeDemand,
+                   WaitlistDemand = (int)r.WaitlistDemand
                }).AsNoTracking().ToListAsync();
         }
     }

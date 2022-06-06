@@ -38,38 +38,38 @@ namespace Assignment.Services.Implementation
             GetAllInfoDto dto = new ()
             {
                 OverallAssigneeDemand = countDtos.Sum(r=>r.AssigneeDemand),
-                OverallWaitlistDemand = countDtos.Sum(r=>r.WaitlistCount)
+                OverallWaitlistDemand = countDtos.Sum(r=>r.WaitlistDemand)
             };
 
             #region Getting all info
             int acceptedNumber = dbVolunteers
-                .Where(v => v.Status != null)
-                .DistinctBy(r => r.Status.ToLower() == StatusConstants.Accepted.ToLower())
+                .Where(v => v.Status != null 
+                && v.Status.ToLower() == StatusConstants.Accepted.ToLower())
                 .Count();
             int assignedNumber = dbVolunteers
-                .Where(v => v.Status != null)
-                .DistinctBy(r => r.Status.ToLower() == StatusConstants.Assigned.ToLower())
+                .Where(v => v.Status != null
+                && v.Status.ToLower() == StatusConstants.Assigned.ToLower())
                 .Count();
             int preAssigned = (dbVolunteers
-                .Where(v => v.Status != null)
-                .DistinctBy(r => r.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
+                .Where(v => v.Status != null
+                && v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
                 .Count());
             int pending = (dbVolunteers
-                .Where(v => v.Status != null)
-                .DistinctBy(r => r.Status.ToLower() == StatusConstants.Pending.ToLower())
+                .Where(v => v.Status != null
+                && v.Status.ToLower() == StatusConstants.Pending.ToLower())
                 .Count());
 
             int waitlistAccepted = (dbVolunteers
-              .Where(v => v.Status != null)
-              .DistinctBy(r => r.Status.ToLower() == StatusConstants.WaitlistAccepted.ToLower())
+              .Where(v => v.Status != null
+              && v.Status.ToLower() == StatusConstants.WaitlistAccepted.ToLower())
               .Count());
             int waitlistAssigned = (dbVolunteers
-             .Where(v => v.Status != null)
-             .DistinctBy(r => r.Status.ToLower() == StatusConstants.WaitlistAssigned.ToLower())
+             .Where(v => v.Status != null 
+             && v.Status.ToLower() == StatusConstants.WaitlistAssigned.ToLower())
              .Count());
             int waitlistOffered = (dbVolunteers
-             .Where(v => v.Status != null)
-             .DistinctBy(r => r.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
+             .Where(v => v.Status != null 
+             && v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
              .Count());
             #endregion 
 
@@ -101,10 +101,10 @@ namespace Assignment.Services.Implementation
             dto.WaitlistRest = 100 
                 - dto.WaitlistOffered - dto.WaitlistAccepted - dto.WaitlistAssigned;
 
-            dto.OverallNoneAssigned = dto.OverallAssigneeDemand -
-                (assignedNumber + acceptedNumber + pending + preAssigned);
-            dto.OverallNoneWaitlisted = dto.OverallAssigneeDemand -
-                (waitlistOffered + waitlistAssigned + waitlistAccepted);
+            dto.OverallAssigned 
+                = (assignedNumber + acceptedNumber + pending + preAssigned);
+
+            dto.OverallWaitlisted = (waitlistOffered + waitlistAssigned + waitlistAccepted);
 
             dto.TotalAssigned 
                 = (int) (dto.Accepted + dto.Assigned + dto.Pending + dto.PreAssigned);
@@ -151,6 +151,15 @@ namespace Assignment.Services.Implementation
                 roleOffer.WaitlistOffered = volunteers
                     .Where(v => v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
                     .Count();
+
+                roleOffer.RoleOfferFulfillment
+                    = ((roleOffer.Assigned + roleOffer.PreAssigned
+                    + roleOffer.Accepted + roleOffer.Pending) * 100) 
+                    / roleOffer.AssigneeDemand;
+
+                roleOffer.WaitlistFulfillment = 
+                    ((roleOffer.WaitlistOffered + roleOffer.WaitlistAccepted 
+                    + roleOffer.WaitlistAssigned) * 100) / roleOffer.WaitlistDemand;
             }
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, roleOffers);
         }
@@ -158,9 +167,12 @@ namespace Assignment.Services.Implementation
         public async Task<ObjectResult> GetVolunteersInfoAsync(RoleOfferVolunteerDto dto)
         {
             ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(v => !v.IsDeleted )).ToList();
+                .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
+                && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
+                .ToList();
 
             GetVolunteerInfoDashboardDto dtoToSend = new();
+
             dtoToSend.OverallFemales = volunteers
                 .Where(v => dto.Locations.Contains(v.InternationalVolunteer) 
                 && v.Gender == GenderEnum.Female.ToString())

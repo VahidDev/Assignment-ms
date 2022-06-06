@@ -16,6 +16,7 @@
         public int WaitlistOffered {get;set;}
         public int WaitlistAccepted {get;set;}
         public int WaitlistAssigned {get;set;}
-        public int WaitlistCount { get;set;}
+        public int WaitlistDemand {get;set;}
+        public int AssigneeDemand {get;set;}
     }
 }
