@@ -85,6 +85,12 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound
                     ,"Report is not found");
             }
+            if (await _unitOfWork.ReportRepository
+                .AnyAsync(r =>r.Id != dto.Id && r.Name == dto.Name))
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
+                    "The report name has already been used");
+            }
             Report updatedReport = UpdateReportMapper
                 .MapToReport(dto,dbReport,_mapper.Map<Report>(dto), _mapper);
 

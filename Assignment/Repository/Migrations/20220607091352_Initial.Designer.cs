@@ -12,7 +12,7 @@ using Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220531141208_Initial")]
+    [Migration("20220607091352_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -420,6 +420,10 @@ namespace Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AssigneeDemand")
+                        .HasColumnType("integer")
+                        .HasColumnName("assignee_demand");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
@@ -436,10 +440,6 @@ namespace Repository.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("level_of_confidence");
 
-                    b.Property<int>("RoleOfferFulfillment")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_offer_fulfillment");
-
                     b.Property<int>("RoleOfferId")
                         .HasColumnType("integer")
                         .HasColumnName("role_offer_id");
@@ -452,13 +452,9 @@ namespace Repository.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
 
-                    b.Property<int?>("WaitlistCount")
+                    b.Property<int>("WaitlistDemand")
                         .HasColumnType("integer")
-                        .HasColumnName("waitlist_count");
-
-                    b.Property<int>("WaitlistFulfillment")
-                        .HasColumnType("integer")
-                        .HasColumnName("waitlist_fulfillment");
+                        .HasColumnName("waitlist_demand");
 
                     b.Property<int?>("functional_area_id")
                         .HasColumnType("integer");

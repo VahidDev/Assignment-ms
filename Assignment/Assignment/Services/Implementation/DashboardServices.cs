@@ -134,7 +134,7 @@ namespace Assignment.Services.Implementation
             foreach (GetRoleOfferDashboardDto roleOffer in roleOffers)
             {
                 roleOffer.Assigned = volunteers
-                    .Where(v=>v.Status.ToLower() == StatusConstants.Assigned.ToLower())
+                    .Where(v => v.Status.ToLower() == StatusConstants.Assigned.ToLower())
                     .Count();
                 roleOffer.PreAssigned = volunteers
                     .Where(v => v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
@@ -151,15 +151,19 @@ namespace Assignment.Services.Implementation
                 roleOffer.WaitlistOffered = volunteers
                     .Where(v => v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
                     .Count();
-
-                roleOffer.RoleOfferFulfillment
-                    = ((roleOffer.Assigned + roleOffer.PreAssigned
-                    + roleOffer.Accepted + roleOffer.Pending) * 100) 
-                    / roleOffer.AssigneeDemand;
-
-                roleOffer.WaitlistFulfillment = 
-                    ((roleOffer.WaitlistOffered + roleOffer.WaitlistAccepted 
-                    + roleOffer.WaitlistAssigned) * 100) / roleOffer.WaitlistDemand;
+                if (roleOffer.AssigneeDemand != 0)
+                {
+                    roleOffer.RoleOfferFulfillment
+                        = ((roleOffer.Assigned + roleOffer.PreAssigned
+                        + roleOffer.Accepted + roleOffer.Pending) * 100)
+                        / roleOffer.AssigneeDemand;
+                }
+                if (roleOffer.WaitlistDemand != 0)
+                {
+                    roleOffer.WaitlistFulfillment =
+                        ((roleOffer.WaitlistOffered + roleOffer.WaitlistAccepted
+                        + roleOffer.WaitlistAssigned) * 100) / roleOffer.WaitlistDemand;
+                }
             }
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, roleOffers);
         }

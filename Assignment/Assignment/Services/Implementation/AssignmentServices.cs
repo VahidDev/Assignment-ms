@@ -32,13 +32,12 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             // Check if all statuses are valid
-            if (!volunteerDtos
-                .Any(v=>v.Status == null
-                || v.Status.ToLower() == StatusConstants.PreAssigned
-                || v.Status.ToLower() == StatusConstants.WaitlistOffered))
+            if (volunteerDtos
+                .Any(v=>v.Status.ToLower() != StatusConstants.PreAssigned.ToLower()
+                && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower()))
             {
-                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest
-                    ,"Invalid Status");
+                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
+                    "Invalid Status");
             }
 
             ICollection<Volunteer> dbVolunteers = (await _unitOfWork.VolunteerRepository
@@ -87,10 +86,10 @@ namespace Assignment.Services.Implementation
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
 
             // Check if all statuses are valid
-            if (!volunteerDtos
-                .Any(v => v.Status == null
-                || v.Status.ToLower() == StatusConstants.PreAssigned
-                || v.Status.ToLower() == StatusConstants.WaitlistOffered))
+            if (volunteerDtos
+                .Any(v => v.Status != null
+                && v.Status.ToLower() != StatusConstants.PreAssigned.ToLower()
+                && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower()))
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest
                     , "Invalid Status");

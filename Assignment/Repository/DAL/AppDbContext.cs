@@ -21,11 +21,12 @@ namespace Repository.DAL
 
             //builder.Ignore<Volunteer>();
             //builder.Ignore<History>();
+
             builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r => r.CandidateId);
             builder.Entity<History>()
                 .Ignore(r => r.IsDeleted)
-                .Ignore(r=>r.UpdatedAt)
-                .Ignore(r=>r.DeletedAt);
+                .Ignore(r => r.UpdatedAt)
+                .Ignore(r => r.DeletedAt);
 
             builder.ConfigureManyToManyRelationships();
 

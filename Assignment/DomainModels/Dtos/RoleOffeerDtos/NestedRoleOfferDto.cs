@@ -16,5 +16,7 @@ namespace DomainModels.Dtos
         public int AssigneeDemandPercentage { get; set; }
         public int WaitlistDemandPercentage { get; set; }
         public int OverallWaitlisted { get; set; }
+        [JsonProperty("role_offer_id")]
+        public int RoleOfferId { get; set; }
     }
 }

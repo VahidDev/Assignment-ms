@@ -1,10 +1,11 @@
-﻿using Assignment.Services.Abstraction;
+﻿using Assignment.Constants.RoutingConstants;
+using Assignment.Services.Abstraction;
 using DomainModels.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
 {
-    [Route("api/[controller]")]
+    [Route($"{RoutingConstants.Routing}/[controller]")]
     [ApiController]
     public class TemplatesController : ControllerBase
     {

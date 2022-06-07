@@ -36,8 +36,6 @@ app.UseCors(o =>
     .SetIsOriginAllowed(r=>true)
     .AllowCredentials();
 });
-//app.Seed();
-app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
