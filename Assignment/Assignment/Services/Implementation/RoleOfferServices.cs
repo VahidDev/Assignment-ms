@@ -61,6 +61,7 @@ namespace Assignment.Services.Implementation
         {
             if (file == null) return _jsonFactory
                     .CreateJson(StatusCodes.Status404NotFound,"The file is not provided");
+
             if (!file.IsExcelFile())
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status415UnsupportedMediaType,
@@ -69,29 +70,39 @@ namespace Assignment.Services.Implementation
             }
             ICollection<ImportRoleOfferDetailsDto>? dtos = _fileServices
                 .ReadCollectionFromExcelFile<ImportRoleOfferDetailsDto>(file);
+
             if (dtos == null || dtos.Count == 0)
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
+
             int[] roleOfferIds = dtos.Select(r => r.RoleOfferId).Distinct().ToArray();
-            IReadOnlyCollection<RoleOffer> updatedRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingAsync(r =>roleOfferIds.Contains(r.Id))).ToList();
+            IReadOnlyCollection<RoleOffer> updatedRoleOffers 
+                = (await _unitOfWork.RoleOfferRepository
+                .GetAllAsNoTrackingAsync(r =>roleOfferIds
+                .Contains(r.RoleOfferId)))
+                .ToList();
+
             if (updatedRoleOffers.Count != roleOfferIds.Length)
             {
-                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,"Role offer couldn't be found");
+                return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
+                    "Role offer couldn't be found");
             }
+
             foreach (RoleOffer updatedRoleOffer in updatedRoleOffers)
             {
-                ImportRoleOfferDetailsDto dto = dtos.First(r => r.RoleOfferId == updatedRoleOffer.Id);
+                ImportRoleOfferDetailsDto dto 
+                    = dtos.First(r => r.RoleOfferId == updatedRoleOffer.RoleOfferId);
+
                 updatedRoleOffer.AssigneeDemand = DemandCalculator
-                    .CalculateRoleOfferDemand(
-                    dto.LevelOfConfidence, 
-                    updatedRoleOffer.TotalDemand
-                    );
+                    .CalculateRoleOfferDemand(dto.LevelOfConfidence, 
+                    updatedRoleOffer.TotalDemand);
+
                 updatedRoleOffer.WaitlistDemand = dto.WaitlistDemand;
                 updatedRoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             }
+
             _unitOfWork.RoleOfferRepository.UpdateRange(updatedRoleOffers);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);

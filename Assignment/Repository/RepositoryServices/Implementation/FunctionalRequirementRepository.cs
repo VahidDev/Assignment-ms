@@ -21,9 +21,9 @@ namespace Repository.RepositoryServices.Implementation
             (Expression<Func<FunctionalRequirement, bool>> expression)
         {
             return await dbSet
-                .AsNoTracking()
                 .Include(fr=>fr.Requirements.Where(r=>!r.IsDeleted))
                 .Include(fr=>fr.RoleOffer)
+                .AsNoTracking()
                 .ToListAsync();
         }
 

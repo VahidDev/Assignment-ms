@@ -24,11 +24,5 @@ namespace DomainModels.Models.Entities
         [Display(Name ="Functional Requirement ID")]
         public int FunctionalRequirementId { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
-        [NotMapped]
-        [Display(Name = "Level Of Confidence")]
-        public int LevelOfConfidence { get; set; } = 100;
-        [NotMapped]
-        [Display(Name = "WaitList Demand")]
-        public int WaitlistDemand { get; set; } = 0;
     }
 }

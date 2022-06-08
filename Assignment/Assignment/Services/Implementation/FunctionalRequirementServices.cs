@@ -147,6 +147,7 @@ namespace Assignment.Services.Implementation
             // Get All RoleOffers from excel file
             ICollection<Requirement>? newRequirements = _fileServices
                 .ReadCollectionFromExcelFile<Requirement>(file);
+
             if (newRequirements == null || newRequirements.Count == 0)
             {
                 return _jsonFactory
@@ -154,7 +155,7 @@ namespace Assignment.Services.Implementation
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
             int[] roleOfferIds = newRequirements
-                .Distinct()
+                .DistinctBy(r=>r.RoleOfferId)
                 .Select(x => x.RoleOfferId)
                 .ToArray();
 
@@ -190,15 +191,6 @@ namespace Assignment.Services.Implementation
                     return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                         $"The same requirement for {requirement.RequirementName} already exists");
                 }
-                roleOffer.AssigneeDemand
-                = DemandCalculator
-                 .CalculateRoleOfferDemand(
-                    requirement.LevelOfConfidence, 
-                    roleOffer.TotalDemand
-                    );
-
-                roleOffer.WaitlistDemand = requirement.WaitlistDemand;
-                roleOffer.LevelOfConfidence = requirement.LevelOfConfidence;
 
                 if (fr == null)
                 {
