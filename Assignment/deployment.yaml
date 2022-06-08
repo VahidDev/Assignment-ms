@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vap-assignment
+  labels:
+    app: vap-assignment
+spec:
+  selector:
+    matchLabels:
+      lbtype: external
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        lbtype: external
+        app: vap-assignment
+    spec:
+      imagePullSecrets: 
+        - name: registry-credentials
+      containers:
+      - name: vap-assignment
+        image: registry.gitlab.com/kibrit/p7362/volunteer-assignment-platform/integration
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: Connection_String
+          value: "Host=vap-db.postgres.database.azure.com;Port=5432;Database=vap;Username=vapadmin;Password=DB.4.Vols;SSL Mode=Require;Trust Server Certificate=true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vap-assignment  
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: vap-assignment
