@@ -1,4 +1,5 @@
 ﻿using Assignment.Constants.FileConstants;
+using Assignment.Constants.ImportConstants;
 using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using Assignment.Utilities.FileUtilities;
@@ -11,9 +12,8 @@ using Repository.RepositoryServices.Abstraction;
 
 namespace Assignment.Services.Implementation
 {
-    public class FunctionalRequirementServices : IFunctionalRequirementServices, IExcelImportable
+    public class FunctionalRequirementServices : IFunctionalRequirementServices
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileServices _fileServices;
@@ -164,13 +164,15 @@ namespace Assignment.Services.Implementation
                 .GetAllSpecificRoleOffersAsNoTrackingAsync(r=>!r.IsDeleted
                 && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
-            List<FunctionalRequirement> functionalRequirements 
-                = (await _unitOfWork.FunctionalRequirementRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted
-                && roleOfferIds.Contains(fr.RoleOffer.RoleOfferId))).ToList();
+            List<FunctionalRequirement> functionalRequirements = new();
 
             foreach (Requirement requirement in newRequirements)
             {
+                if(requirement.Value == FRImportConstants.NullConstant)
+                {
+                    requirement.Value = null;
+                }
+
                 RoleOffer? roleOffer = updatedRoleOffers
                       .FirstOrDefault(r => r.RoleOfferId == requirement.RoleOfferId);
 

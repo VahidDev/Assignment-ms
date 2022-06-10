@@ -11,6 +11,8 @@ namespace DomainModels.Models.Entities
         public RoleOffer RoleOffer { get; set; }
         [Column("role_offer_id")]
         public int? RoleOfferId { get; set; }
+        [Column("recorded_by")]
+        public string Email { get; set; }
         [Column("status")]
         public string Status { get; set; }
     }

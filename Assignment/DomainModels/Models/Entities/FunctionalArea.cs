@@ -1,11 +1,12 @@
-﻿using DomainModels.Models.Entities.Base;
+﻿using DomainModels.Constants;
+using DomainModels.Models.Entities.Base;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainModels.Models.Entities
 {
-    [Table("functional_areas")]
+    [Table(TableNameConstants.FunctionalAreaTableName)]
     public class FunctionalArea : Entity
     {
         [Column("name")]

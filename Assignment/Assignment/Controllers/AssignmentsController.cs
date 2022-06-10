@@ -10,21 +10,26 @@ namespace Assignment.Controllers
     public class AssignmentsController:ControllerBase
     {
         private readonly IAssignmentServices _assignmentServices;
+        
         public AssignmentsController(IAssignmentServices assignmentServices)
         {
             _assignmentServices= assignmentServices;
         }
+
         [HttpPost("AssignOrWaitList")]
         public async Task<IActionResult> AssignOrWaitListAsync
-            ([FromBody]ICollection<AssignOrWaitlistVolunteerDto>volunteers)
+            ([FromBody]ICollection<AssignOrWaitlistVolunteerDto>volunteers, 
+            [FromQuery] string email)
         {
-            return await _assignmentServices.AssignOrWaitlistAsync(volunteers);
+            return await _assignmentServices.AssignOrWaitlistAsync(volunteers,email);
         }
+
         [HttpPost("ChangeToAnyStatus")]
         public async Task<IActionResult> ChangeToAnyStatusAsync
-            ([FromBody] ICollection<VolunteerChangeToAnyStatusDto> volunteers)
+            ([FromBody] ICollection<VolunteerChangeToAnyStatusDto> volunteers, 
+            [FromQuery] string email)
         {
-            return await _assignmentServices.ChangeToAnyStatusAsync(volunteers);
+            return await _assignmentServices.ChangeToAnyStatusAsync(volunteers,email);
         }
     }
 }

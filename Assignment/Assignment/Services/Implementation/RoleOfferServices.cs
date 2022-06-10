@@ -13,13 +13,15 @@ using Repository.RepositoryServices.Abstraction;
 
 namespace Assignment.Services.Implementation
 {
-    internal class RoleOfferServices : IRoleOfferServices, IExcelImportable
+    internal class RoleOfferServices : IRoleOfferServices
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileServices _fileServices;
         private readonly IJsonFactory _jsonFactory;
         private readonly IHistoryServices _historyServices;
+        
+        public string? Email { get; set; }
 
         public RoleOfferServices
             (IUnitOfWork unitOfWork
@@ -266,7 +268,7 @@ namespace Assignment.Services.Implementation
                 volunteer.Status = null;
 
                 // Write to history
-                _historyServices.WriteHistory(volunteer);
+                _historyServices.WriteHistory(volunteer,this.Email);
             }
 
             // Getting all distinct objects

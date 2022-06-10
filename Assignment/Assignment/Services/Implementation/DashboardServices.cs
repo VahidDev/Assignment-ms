@@ -119,7 +119,7 @@ namespace Assignment.Services.Implementation
             ICollection<GetRoleOfferDashboardDto> roleOffers = _mapper
                 .Map<ICollection<GetRoleOfferDashboardDto>>
                 (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r => roleOfferIds.Contains(r.Id)));
+                .GetAllAsNoTrackingIncludingItemsAsync(r => roleOfferIds.Contains(r.RoleOfferId)));
 
             if(roleOfferIds.Length != roleOffers.Count)
             {

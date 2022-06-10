@@ -13,7 +13,7 @@ namespace Assignment.Services.Implementation
             _unitOfWork = unitOfWork;
         }
 
-        public bool WriteHistory(Volunteer volunteer)
+        public bool WriteHistory(Volunteer volunteer, string? email)
         {
             _unitOfWork.HistoryRepository
                     .Add(new History
@@ -25,6 +25,8 @@ namespace Assignment.Services.Implementation
                         RoleOfferId = volunteer.RoleOfferId
                     ,
                         VolunteerId = volunteer.CandidateId
+                    ,
+                        Email = email
                     });
             return true;
         }

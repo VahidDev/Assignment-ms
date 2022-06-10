@@ -8,7 +8,7 @@
             )
         {
             if (levelOfConfidence == 0) levelOfConfidence = 100;
-            return (int) (Math.Round((decimal)(levelOfConfidence / 100),2) * totalDemand);
+            return (int) (((decimal)levelOfConfidence / 100) * totalDemand);
         }
     }
 }

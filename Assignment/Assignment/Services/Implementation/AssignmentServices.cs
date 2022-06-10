@@ -26,7 +26,7 @@ namespace Assignment.Services.Implementation
             _historyServices = historyServices;
         }
         public async Task<ObjectResult> AssignOrWaitlistAsync
-            (ICollection<AssignOrWaitlistVolunteerDto> volunteerDtos)
+            (ICollection<AssignOrWaitlistVolunteerDto> volunteerDtos, string email)
         {
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
@@ -50,27 +50,28 @@ namespace Assignment.Services.Implementation
                 .GetAllAsNoTrackingAsync(r=>!r.IsDeleted 
                 && volunteerDtos.Select(d=>d.RoleOfferId)
                 .ToArray()
-                .Contains(r.Id)))
+                .Contains(r.RoleOfferId)))
                 .ToList();
             List<Volunteer> volunteers =new ();
             foreach (AssignOrWaitlistVolunteerDto volunteerDto in volunteerDtos)
             {
                 Volunteer? updatedVolunteer = dbVolunteers
                     .FirstOrDefault(r => r.CandidateId == volunteerDto.Id);
+                RoleOffer? roleOffer = dbRoleOffers
+                    .FirstOrDefault(r => r.RoleOfferId == volunteerDto.RoleOfferId);
 
                 // Check if the volunteer and role offer exist
-                if (updatedVolunteer == null
-                    || !dbRoleOffers.Any(r => r.Id == volunteerDto.RoleOfferId))
+                if (updatedVolunteer == null || roleOffer == null)
                 {
                     return _jsonFactory
                         .CreateJson(StatusCodes.Status404NotFound,
                         "Volunteer or RoleOffer was not found");
                 }
-                updatedVolunteer.RoleOfferId = volunteerDto.RoleOfferId;
+                updatedVolunteer.RoleOfferId = roleOffer.RoleOfferId;
                 updatedVolunteer.Status = volunteerDto.Status;
 
                 //Write History
-                _historyServices.WriteHistory(updatedVolunteer);
+                _historyServices.WriteHistory(updatedVolunteer,email);
               
                 volunteers.Add(updatedVolunteer);
             }
@@ -80,7 +81,7 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK); ;
         }
         public async Task<ObjectResult> ChangeToAnyStatusAsync
-            (ICollection<VolunteerChangeToAnyStatusDto> volunteerDtos)
+            (ICollection<VolunteerChangeToAnyStatusDto> volunteerDtos, string email)
         {
             if (volunteerDtos.Count == 0)
                 return _jsonFactory.CreateJson(StatusCodes.Status204NoContent);
@@ -102,7 +103,9 @@ namespace Assignment.Services.Implementation
                .Contains(v.CandidateId)))
                .ToList();
             ICollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingAsync(r => !r.IsDeleted))
+                .GetAllSpecificRoleOffersAsNoTrackingAsync
+                (r => !r.IsDeleted 
+                && dbVolunteers.Any(v=>v.RoleOfferId == r.RoleOfferId)))
                 .ToList();
             List<Volunteer> volunteers = new ();
 
@@ -125,21 +128,33 @@ namespace Assignment.Services.Implementation
                 }
                 else
                 {
-                    // Check if the role offer exists
-                    if (updatedVolunteer.RoleOfferId == null 
-                        || !dbRoleOffers.Any(r => r.Id == (int)updatedVolunteer.RoleOfferId))
+                    if (updatedVolunteer.RoleOfferId != null) 
+                    {
+                        RoleOffer? roleOffer = dbRoleOffers
+                            .FirstOrDefault(r => r.Id == (int)updatedVolunteer.RoleOfferId);
+                        // Check if the role offer exists
+                        if (roleOffer == null)
+                        {
+                            return _jsonFactory
+                                .CreateJson(StatusCodes.Status404NotFound, 
+                                "RoleOffer is not found");
+                        }
+                        updatedVolunteer.RoleOfferId = roleOffer.RoleOfferId;
+                    }
+                    else // if there is status but not RoleOffer
                     {
                         return _jsonFactory
-                            .CreateJson(StatusCodes.Status404NotFound, "RoleOffer is not found");
+                                .CreateJson(StatusCodes.Status400BadRequest,
+                                "To set status, you need to include RoleOfferId");
                     }
                 }
                 //Write History
-                _historyServices.WriteHistory(updatedVolunteer);
+                _historyServices.WriteHistory(updatedVolunteer,email);
 
                 volunteers.Add(updatedVolunteer);
             }
-            _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
 
+            _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }

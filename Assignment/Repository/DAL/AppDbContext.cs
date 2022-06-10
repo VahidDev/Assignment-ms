@@ -17,6 +17,9 @@ namespace Repository.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // must always be on top
+            base.OnModelCreating(builder);
+
             // UnComment this section when migrating
 
             //builder.Ignore<Volunteer>();
@@ -29,8 +32,6 @@ namespace Repository.DAL
                 .Ignore(r => r.DeletedAt);
 
             builder.ConfigureManyToManyRelationships();
-
-            base.OnModelCreating(builder);
         }
         public async override Task<int> SaveChangesAsync
             (bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

@@ -30,7 +30,7 @@ namespace Assignment.Services.Implementation
             List<FunctionalAreaTypeDto> functionalAreaTypes = 
                 _mapper.Map<List<FunctionalAreaTypeDto>>(await _unitOfWork
                 .FunctionalAreaTypeRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted));
+                .GetAllWithItemsAsNoTrackingAsync(r=>!r.IsDeleted));
 
             if(functionalAreaTypes.Count == 0)
             {
@@ -60,13 +60,13 @@ namespace Assignment.Services.Implementation
                         = new List<GetRequirementDto>();
                 }
                 location.RoleOffer.OverallAssigned = volunteers
-                       .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                       .Where(v => v.RoleOfferId == location.RoleOffer.RoleOfferId
                        && StatusConstants.AssignedNamesList
                        .Any(l => l.ToLower() == v.Status.ToLower()))
                        .Count();
 
                 location.RoleOffer.OverallWaitlisted = volunteers
-                .Where(v => v.RoleOfferId == location.RoleOffer.Id
+                .Where(v => v.RoleOfferId == location.RoleOffer.RoleOfferId
                 && StatusConstants.WaitlistNamesList
                 .Any(l => l.ToLower() == v.Status.ToLower()))
                 .Count();

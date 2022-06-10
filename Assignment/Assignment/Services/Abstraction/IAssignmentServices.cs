@@ -6,8 +6,8 @@ namespace Assignment.Services.Abstraction
     public interface IAssignmentServices
     {
         Task<ObjectResult> AssignOrWaitlistAsync
-            (ICollection<AssignOrWaitlistVolunteerDto> volunteers); 
+            (ICollection<AssignOrWaitlistVolunteerDto> volunteers,string email); 
         Task<ObjectResult> ChangeToAnyStatusAsync
-            (ICollection<VolunteerChangeToAnyStatusDto> volunteers); 
+            (ICollection<VolunteerChangeToAnyStatusDto> volunteers,string email); 
     }
 }

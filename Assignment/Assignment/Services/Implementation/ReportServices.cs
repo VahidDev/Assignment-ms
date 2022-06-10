@@ -3,6 +3,7 @@ using Assignment.Services.Abstraction;
 using Assignment.Utilities.ServicesUtilities.MapperUtilities;
 using Assignment.Utilities.ServicesUtilities.ReportUtilities;
 using AutoMapper;
+using DomainModels.Constants;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,65 @@ namespace Assignment.Services.Implementation
             _unitOfWork.ReportRepository.Delete(dbReport);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
+        }
+
+        public async Task<ObjectResult> GetAllOptionsAsync()
+        {
+            GetAllOptionsDto dtoToSend = new();
+
+            ICollection<FunctionalAreaTypeDto> functionalAreaTypeDtos 
+                = _mapper.Map<ICollection<FunctionalAreaTypeDto>>
+                (await _unitOfWork.FunctionalAreaTypeRepository
+                .GetAllAsNoTrackingAsync(r=>!r.IsDeleted));
+
+            ICollection<FunctionalAreaDto> functionalAreas
+                = _mapper.Map<ICollection<FunctionalAreaDto>>
+                (await _unitOfWork.FunctionalAreaRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted));
+
+            ICollection<JobTitleDto> jobTitles
+                = _mapper.Map<ICollection<JobTitleDto>>
+                (await _unitOfWork.JobTitleRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted));
+
+            ICollection<LocationDto> locations
+                = _mapper.Map<ICollection<LocationDto>>
+                (await _unitOfWork.LocationRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted));
+
+            dtoToSend.EntityOptions.Name 
+                = TableNameConstants.FunctionalAreaTypeTableName;
+            dtoToSend.FunctionalAreaOptions.Name 
+                = TableNameConstants.FunctionalAreaTableName;
+            dtoToSend.JobTitleOptions.Name 
+                = TableNameConstants.JobTitleTableName;
+            dtoToSend.LocaionOptions.Name
+                = TableNameConstants.LocationTableName;
+
+            foreach (FunctionalAreaTypeDto fat in functionalAreaTypeDtos)
+            {
+                dtoToSend.EntityOptions.ValueOptions.Add(fat.Name);
+            }
+
+            foreach (FunctionalAreaDto fa in functionalAreas)
+            {
+                dtoToSend.FunctionalAreaOptions.ValueOptions.Add(fa.Name);
+            }
+
+            foreach (JobTitleDto jobTitle in jobTitles)
+            {
+                dtoToSend.JobTitleOptions.ValueOptions
+                    .Add(jobTitle.Name);
+            }
+
+            foreach (LocationDto location in locations)
+            {
+                dtoToSend.LocaionOptions.ValueOptions
+                    .Add(location.Name);
+            }
+
+
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK, null,dtoToSend);
         }
 
         public async Task<ObjectResult> GetAllReportsAsync()

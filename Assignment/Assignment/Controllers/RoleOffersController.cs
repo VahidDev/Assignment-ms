@@ -24,8 +24,10 @@ namespace Assignment.Controllers
             return await _roleOfferServices.GetRoleOfferAsync(id);
         }
         [HttpPost("import")]
-        public async Task<IActionResult> ImportRoleOffersAsync([FromForm]IFormFile file)
+        public async Task<IActionResult> ImportRoleOffersAsync
+            ([FromForm]IFormFile file, [FromQuery] string email)
         {
+            _roleOfferServices.Email = email;
             return await _roleOfferServices.ValidateExcelFileThenWriteToDbAsync(file);
         }
         [HttpPost("importDetails")]

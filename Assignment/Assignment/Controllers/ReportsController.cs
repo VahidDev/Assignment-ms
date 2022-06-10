@@ -39,5 +39,11 @@ namespace Assignment.Controllers
         {
             return await _reportServices.DeleteByIdAsync(id);
         }
+
+        [HttpGet("options")]
+        public async Task<IActionResult> GetAllOptionsAsync()
+        {
+            return await _reportServices.GetAllOptionsAsync();
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace Repository.RepositoryServices.Implementation
         public FunctionalAreaTypeRepository
            (AppDbContext context, ILogger logger) : base(context, logger) { }
 
-        public async Task<ICollection<FunctionalAreaType>> GetAllAsNoTrackingIncludingItemsAsync
+        public async Task<ICollection<FunctionalAreaType>> GetAllWithItemsAsNoTrackingAsync
            (Expression<Func<FunctionalAreaType, bool>> expression)
         {
             return await dbSet
@@ -28,7 +28,9 @@ namespace Repository.RepositoryServices.Implementation
                 .ThenInclude(r => r.RoleOffers.Where(r => !r.IsDeleted))
                 .ThenInclude(r=>r.FunctionalRequirement)
                 .ThenInclude(r=>r.Requirements.Where(r => !r.IsDeleted))
-                .Where(expression).AsNoTracking().ToListAsync();
+                .Where(expression)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

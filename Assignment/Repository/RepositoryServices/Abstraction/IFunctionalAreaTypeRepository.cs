@@ -8,7 +8,7 @@ namespace Repository.RepositoryServices.Abstraction
 {
     public interface IFunctionalAreaTypeRepository:IGenericRepository<FunctionalAreaType>
     {
-        public Task<ICollection<FunctionalAreaType>> GetAllAsNoTrackingIncludingItemsAsync
+        public Task<ICollection<FunctionalAreaType>> GetAllWithItemsAsNoTrackingAsync
           (Expression<Func<FunctionalAreaType, bool>> expression);
     }
 }
