@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 namespace Repository.RepositoryServices.Implementation
 {
     internal class RoleOfferRepository
-        : GenericRepository<RoleOffer>,IRoleOfferRepository
+        : GenericRepository<RoleOffer>
+        ,IRoleOfferRepository
     {
         public RoleOfferRepository(AppDbContext context, ILogger logger) 
             : base(context, logger){}
@@ -80,6 +81,12 @@ namespace Repository.RepositoryServices.Implementation
                    AssigneeDemand = r.AssigneeDemand,
                    WaitlistDemand = (int)r.WaitlistDemand
                }).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<ICollection<RoleOffer>> GetAllSpecificRoleOffersAsync
+            (Expression<Func<RoleOffer, bool>> expression)
+        {
+            return await dbSet.Where(expression).ToListAsync();
         }
     }
 }

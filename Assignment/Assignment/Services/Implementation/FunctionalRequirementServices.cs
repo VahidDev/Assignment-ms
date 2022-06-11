@@ -161,10 +161,17 @@ namespace Assignment.Services.Implementation
 
             ICollection<RoleOffer> updatedRoleOffers = (await _unitOfWork
                 .RoleOfferRepository
-                .GetAllSpecificRoleOffersAsNoTrackingAsync(r=>!r.IsDeleted
+                .GetAllAsNoTrackingAsync(r=>!r.IsDeleted
                 && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
-            List<FunctionalRequirement> functionalRequirements = new();
+            int[] dbRoleOfferIds = updatedRoleOffers
+                .Select(x => x.Id)
+                .ToArray();
+
+            ICollection<FunctionalRequirement> functionalRequirements 
+                = await _unitOfWork.FunctionalRequirementRepository 
+                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted 
+                && dbRoleOfferIds.Contains(r.RoleOfferId));
 
             foreach (Requirement requirement in newRequirements)
             {
@@ -183,8 +190,8 @@ namespace Assignment.Services.Implementation
                         $"RoleOffer with the ID {requirement.RoleOfferId} was not found");
                 }
                 FunctionalRequirement? fr = functionalRequirements
-                    .FirstOrDefault(r=>r.FunctionalRequirementId 
-                    == requirement.FunctionalRequirementId);
+                    .FirstOrDefault(r=>r.RoleOffer?.RoleOfferId 
+                    == requirement.RoleOfferId);
                 
                 if(fr != null && fr.Requirements
                     .Any(r=>r.RequirementName == requirement.RequirementName
@@ -198,9 +205,8 @@ namespace Assignment.Services.Implementation
                 {
                     functionalRequirements.Add(new FunctionalRequirement
                     {
-                        FunctionalRequirementId = requirement.FunctionalRequirementId,
-                        Requirements=new List<Requirement>() { requirement } ,
-                        RoleOffer=roleOffer
+                        Requirements = new List<Requirement>() { requirement },
+                        RoleOffer = roleOffer
                     });
                 }
                 else

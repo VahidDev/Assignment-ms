@@ -11,7 +11,5 @@ namespace DomainModels.Models.Entities
         public RoleOffer RoleOffer { get; set; }
         [Column("role_offer_id")]
         public int RoleOfferId { get; set; }
-        [NotMapped]
-        public int FunctionalRequirementId { get; set; }
     }
 }

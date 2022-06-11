@@ -23,6 +23,7 @@ namespace Repository.RepositoryServices.Implementation
             return await dbSet
                 .Include(fr=>fr.Requirements.Where(r=>!r.IsDeleted))
                 .Include(fr=>fr.RoleOffer)
+                .Where(expression)
                 .AsNoTracking()
                 .ToListAsync();
         }

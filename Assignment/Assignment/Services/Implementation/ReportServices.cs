@@ -1,9 +1,9 @@
-﻿using Assignment.Factory;
+﻿using Assignment.Constants.ReportConstants;
+using Assignment.Factory;
 using Assignment.Services.Abstraction;
 using Assignment.Utilities.ServicesUtilities.MapperUtilities;
 using Assignment.Utilities.ServicesUtilities.ReportUtilities;
 using AutoMapper;
-using DomainModels.Constants;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -90,13 +90,13 @@ namespace Assignment.Services.Implementation
                 .GetAllAsNoTrackingAsync(r => !r.IsDeleted));
 
             dtoToSend.EntityOptions.Name 
-                = TableNameConstants.FunctionalAreaTypeTableName;
+                = ReportFilterNameConstants.FunctionalAreaType;
             dtoToSend.FunctionalAreaOptions.Name 
-                = TableNameConstants.FunctionalAreaTableName;
+                = ReportFilterNameConstants.FunctionalArea;
             dtoToSend.JobTitleOptions.Name 
-                = TableNameConstants.JobTitleTableName;
+                = ReportFilterNameConstants.JobTitle;
             dtoToSend.LocaionOptions.Name
-                = TableNameConstants.LocationTableName;
+                = ReportFilterNameConstants.Location;
 
             foreach (FunctionalAreaTypeDto fat in functionalAreaTypeDtos)
             {

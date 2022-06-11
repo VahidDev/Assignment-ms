@@ -21,7 +21,6 @@ namespace DomainModels.Models.Entities
         [Display(Name = "Role Offer ID")]
         public int RoleOfferId { get; set; }
         [Column("functional_requirement_id")]
-        [Display(Name ="Functional Requirement ID")]
         public int FunctionalRequirementId { get; set; }
         public FunctionalRequirement FunctionalRequirement { get; set; }
     }
