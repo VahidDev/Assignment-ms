@@ -4,6 +4,7 @@ using AutoMapper;
 using DomainModels.Dtos;
 using DomainModels.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Constants;
 using Repository.RepositoryServices.Abstraction;
 
 namespace Assignment.Services.Implementation
@@ -57,7 +58,9 @@ namespace Assignment.Services.Implementation
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, 
                 null,
                 _mapper.Map<List<GetTemplateDto>>(await _unitOfWork.TemplateRepository
-                .GetAllAsync(new List<string> { nameof(Filter) + "s" })));
+                .GetAllAsNoTrackingAsync(r=> !r.Name
+                .Contains(TemplateDifferentiatorConstants.ReportTemplate)
+                ,new List<string> { nameof(Filter) + "s" })));
         }
 
         public async Task<ObjectResult> UpdateAsync(UpdateTemplateDto updatedTemplate)

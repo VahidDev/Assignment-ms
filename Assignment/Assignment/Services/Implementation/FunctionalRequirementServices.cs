@@ -154,6 +154,7 @@ namespace Assignment.Services.Implementation
                     .CreateJson(StatusCodes.Status404NotFound,
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
+
             int[] roleOfferIds = newRequirements
                 .DistinctBy(r=>r.RoleOfferId)
                 .Select(x => x.RoleOfferId)

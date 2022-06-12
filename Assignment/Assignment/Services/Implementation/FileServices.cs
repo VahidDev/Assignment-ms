@@ -44,6 +44,7 @@ namespace Assignment.Services.Implementation
             {
                 reader=ExcelReaderFactory.CreateOpenXmlReader(stream);
             }
+
             // The below dictionary will consist of all the headers 
             // with their indecies (column index)
             Dictionary<int,string> headersDict = new ();
@@ -82,7 +83,8 @@ namespace Assignment.Services.Implementation
                 {
                     // Check if the header cell or
                     // the current cell is empty or an empty string
-                    if (reader.GetValue(j) == null||string.IsNullOrEmpty(reader.GetValue(j).ToString()))
+                    if (reader.GetValue(j) == null
+                        || string.IsNullOrEmpty(reader.GetValue(j).ToString()))
                         continue;
                    
                     if (!headersDict.ContainsKey(j))
@@ -96,7 +98,13 @@ namespace Assignment.Services.Implementation
                     propNameAndValueDict.Add(headerCellValue, reader.GetValue(j));
                 }
                 if (propNameAndValueDict.Count == 0) continue;
-                if (propNameAndValueDict.Count ==headersDict.Count) 
+                
+                if(propNameAndValueDict.Count != displayAttributeNameAndPropDict.Count)
+                {
+                    return null;
+                }
+                
+                if (propNameAndValueDict.Count == headersDict.Count) 
                 {
                     items.Add(_runtimeServices.CreateCustomObject<T>(propNameAndValueDict));
 
