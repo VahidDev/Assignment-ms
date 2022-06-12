@@ -151,7 +151,7 @@ namespace Assignment.Services.Implementation
             if (newRequirements == null || newRequirements.Count == 0)
             {
                 return _jsonFactory
-                    .CreateJson(StatusCodes.Status404NotFound,
+                    .CreateJson(StatusCodes.Status400BadRequest,
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
 

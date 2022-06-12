@@ -25,6 +25,7 @@ namespace Assignment.Services.Implementation
             _jsonFactory = jsonFactory;
             _historyServices = historyServices;
         }
+
         public async Task<ObjectResult> AssignOrWaitlistAsync
             (ICollection<AssignOrWaitlistVolunteerDto> volunteerDtos, string email)
         {
@@ -80,6 +81,7 @@ namespace Assignment.Services.Implementation
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK); ;
         }
+        
         public async Task<ObjectResult> ChangeToAnyStatusAsync
             (ICollection<VolunteerChangeToAnyStatusDto> volunteerDtos, string email)
         {
@@ -102,10 +104,15 @@ namespace Assignment.Services.Implementation
                .ToArray()
                .Contains(v.CandidateId)))
                .ToList();
+
+            int[] volunteerRoleOfferIds = dbVolunteers
+                .Where(v => v.RoleOfferId != null)
+                .Select(v => (int) v.RoleOfferId)
+                .ToArray();
+
             ICollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
                 .GetAllSpecificRoleOffersAsNoTrackingAsync
-                (r => !r.IsDeleted 
-                && dbVolunteers.Any(v=>v.RoleOfferId == r.RoleOfferId)))
+                (r => !r.IsDeleted && volunteerRoleOfferIds.Contains(r.RoleOfferId)))
                 .ToList();
             List<Volunteer> volunteers = new ();
 
