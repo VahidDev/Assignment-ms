@@ -6,8 +6,10 @@ namespace Assignment.Utilities.RuntimeUtilities
     internal static class DisplayAttributeAndPropDictGenerator
     {
         public static Dictionary<string, PropertyInfo> CreateDict
-            (IReadOnlyCollection<PropertyInfo> props,
-            Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict)
+            (
+            IReadOnlyCollection<PropertyInfo> props, 
+            Dictionary<string, PropertyInfo> displayAttributeNameAndPropDict
+            )
         {
             foreach (PropertyInfo prop in props)
             {
@@ -17,8 +19,8 @@ namespace Assignment.Utilities.RuntimeUtilities
                     continue;
                 if (prop.IsInNamespace(nameof(DomainModels)))
                 {
-                    CreateDict(prop.PropertyType.GetProperties()
-                        , displayAttributeNameAndPropDict);
+                    CreateDict(prop.PropertyType.GetProperties(), 
+                        displayAttributeNameAndPropDict);
                 }
                 displayAttributeNameAndPropDict.Add(name, prop);
             }

@@ -2,6 +2,7 @@
 using Assignment.Services.Abstraction;
 using Assignment.Utilities.FileUtilities;
 using Assignment.Utilities.RuntimeUtilities;
+using DomainModels.Constants;
 using ExcelDataReader;
 using System.Reflection;
 
@@ -99,7 +100,11 @@ namespace Assignment.Services.Implementation
                 }
                 if (propNameAndValueDict.Count == 0) continue;
                 
-                if(propNameAndValueDict.Count != displayAttributeNameAndPropDict.Count)
+                // Check the object has all the needed props (exclude Custom object Props)
+                if(propNameAndValueDict.Count != displayAttributeNameAndPropDict
+                    .Where(d => !d.Key
+                    .Contains(DisplayAttributeConstants.CustomObject.ToLower()))
+                    .Count())
                 {
                     return null;
                 }
