@@ -170,67 +170,93 @@ namespace Assignment.Services.Implementation
 
         public async Task<ObjectResult> GetVolunteersInfoAsync(RoleOfferVolunteerDto dto)
         {
-            ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
-                && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
-                .ToList();
-
             GetVolunteerInfoDashboardDto dtoToSend = new();
 
-            dtoToSend.OverallFemales = volunteers
-                .Where(v => dto.Locations.Contains(v.InternationalVolunteer) 
-                && v.Gender == GenderEnum.Female.ToString())
-                .Count();
-            dtoToSend.OverallMales = volunteers
-               .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
-               && v.Gender == GenderEnum.Male.ToString())
-               .Count();
+            ICollection<Volunteer> volunteers;
+
+            if (dto.RoleOfferIds.Count() == 0)
+            {
+                volunteers = (await _unitOfWork.VolunteerRepository
+                    .GetAllAsNoTrackingAsync(v=>!v.IsDeleted 
+                    && dto.Statuses.Contains(v.Status)
+                    && dto.Locations.Contains(v.InternationalVolunteer)))
+                    .ToList();
+            }
+            else
+            {
+                volunteers = (await _unitOfWork.VolunteerRepository
+                    .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
+                    && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
+                    .ToList();
+
+                dtoToSend.OverallFemales = volunteers
+                    .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
+                    && v.Gender == GenderEnum.Female.ToString())
+                    .Count();
+                dtoToSend.OverallMales = volunteers
+                   .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
+                   && v.Gender == GenderEnum.Male.ToString())
+                   .Count();
+               
+                foreach (int age in dto.StartingAges)
+                {
+                    dtoToSend.StartingAges.Add(new StartingAgeCountDto
+                    {
+                        Age = age
+                    ,
+                        Count = volunteers
+                    .Where(v => v.Age > age)
+                    .Count()
+                    });
+                }
+
+                // Get All distinct countries names
+                ICollection<string> countries = volunteers
+                    .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
+
+                List<CountryNameDto> countryNames = new();
+
+                // Get All country counts
+                foreach (string country in countries)
+                {
+                    countryNames.Add(new CountryNameDto
+                    {
+                        Name = country
+                        ,
+                        Count = volunteers.Where(v => v.Country == country).Count()
+                    });
+                }
+
+                dtoToSend.CountryNameDtos = countryNames
+                    .OrderByDescending(r => r.Count)
+                    .Take(dto.CountryCount)
+                    .ToList();
+
+                dtoToSend.Others = volunteers
+                    .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
+                    .Count();
+
+                foreach (AgeRangeDto ageRange in dto.AgeRanges)
+                {
+                    dtoToSend.AgeRanges.Add(new AgeRangeCountDto
+                    {
+                        FromAge = ageRange.FromAge,
+                        ToAge = ageRange.ToAge
+                    ,
+                        Count = volunteers
+                    .Where(v => v.Age > ageRange.FromAge && v.Age < ageRange.ToAge)
+                    .Count()
+                    });
+                }
+            }
+
             dtoToSend.OverallInternationals = volunteers
-                .Where(v => v.InternationalVolunteer == LocationEnum.International.ToString())
-                .Count();
+                   .Where(v => v.InternationalVolunteer == LocationEnum.International.ToString())
+                   .Count();
             dtoToSend.OverallLocals = volunteers
                 .Where(v => v.InternationalVolunteer == LocationEnum.Local.ToString())
                 .Count();
 
-            foreach (int age in dto.StartingAges)
-            {
-                dtoToSend.StartingAges.Add(new StartingAgeCountDto 
-                {Age = age
-                , Count = volunteers
-                .Where(v=>v.Age > age)
-                .Count() 
-                });
-            }
-
-            // Get All distinct countries names
-            ICollection<string> countries = volunteers
-                .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
-
-            List<CountryNameDto> countryNames = new();
-
-            // Get All country counts
-            foreach (string country in countries)
-            {
-                countryNames.Add(new CountryNameDto { Name = country 
-                    ,Count =volunteers.Where(v=>v.Country==country).Count()});
-            }
-            dtoToSend.CountryNameDtos = countryNames
-                .OrderByDescending(r => r.Count)
-                .Take(dto.CountryCount)
-                .ToList();
-            
-            dtoToSend.Others = volunteers
-                .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
-                .Count();
-            foreach (AgeRangeDto ageRange in dto.AgeRanges)
-            {
-                dtoToSend.AgeRanges.Add(new AgeRangeCountDto
-                { FromAge = ageRange.FromAge,ToAge = ageRange.ToAge
-                , Count = volunteers
-                .Where(v=>v.Age > ageRange.FromAge && v.Age < ageRange.ToAge)
-                .Count()
-                });
-            }
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,dtoToSend);
         }
     }
