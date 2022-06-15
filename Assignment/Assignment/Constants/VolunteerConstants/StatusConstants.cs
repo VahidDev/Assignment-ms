@@ -11,11 +11,11 @@
         public const string Declined = "Declined";
         public const string Removed = "Removed";
         public const string Expired = "Expired";
-        public const string WaitlistOffered = "WaitlistOffered";
-        public const string WaitlistAccepted = "WaitlistAccepted";
-        public const string WaitlistDeclined = "WaitlistDeclined";
-        public const string WaitlistAssigned = "WaitlistAssigned";
-        public const string NotApproved = "NotApproved";
+        public const string WaitlistOffered = "Waitlist Offered";
+        public const string WaitlistAccepted = "Waitlist Accepted";
+        public const string WaitlistDeclined = "Waitlist Declined";
+        public const string WaitlistAssigned = "Waitlist Assigned";
+        public const string NotApproved = "Not Approved";
         
         public static IReadOnlyCollection<string> AssignedNamesList
             = new List<string> { Assigned, PreAssigned, Pending, Accepted, Confirmed };

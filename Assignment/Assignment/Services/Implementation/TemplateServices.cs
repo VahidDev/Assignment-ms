@@ -57,10 +57,8 @@ namespace Assignment.Services.Implementation
         {
             return _jsonFactory.CreateJson(StatusCodes.Status200OK, 
                 null,
-                _mapper.Map<List<GetTemplateDto>>(await _unitOfWork.TemplateRepository
-                .GetAllAsNoTrackingAsync(r=> !r.Name
-                .Contains(TemplateDifferentiatorConstants.ReportTemplate)
-                ,new List<string> { nameof(Filter) + "s" })));
+                _mapper.Map<List<GetTemplateDto>>
+                (await _unitOfWork.TemplateRepository.GetAllAsync()));
         }
 
         public async Task<ObjectResult> UpdateAsync(UpdateTemplateDto updatedTemplate)

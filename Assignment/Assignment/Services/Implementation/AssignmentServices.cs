@@ -34,8 +34,8 @@ namespace Assignment.Services.Implementation
 
             // Check if all statuses are valid
             if (volunteerDtos
-                .Any(v=>v.Status.ToLower() != StatusConstants.PreAssigned.ToLower()
-                && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower()))
+                .Any(v=>v.Status != StatusConstants.PreAssigned
+                && v.Status != StatusConstants.WaitlistOffered))
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     "Invalid Status");
@@ -91,8 +91,8 @@ namespace Assignment.Services.Implementation
             // Check if all statuses are valid
             if (volunteerDtos
                 .Any(v => v.Status != null
-                && v.Status.ToLower() != StatusConstants.PreAssigned.ToLower()
-                && v.Status.ToLower() != StatusConstants.WaitlistOffered.ToLower()))
+                && v.Status != StatusConstants.PreAssigned
+                && v.Status != StatusConstants.WaitlistOffered))
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest
                     , "Invalid Status");

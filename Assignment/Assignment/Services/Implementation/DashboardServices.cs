@@ -44,32 +44,32 @@ namespace Assignment.Services.Implementation
             #region Getting all info
             int acceptedNumber = dbVolunteers
                 .Where(v => v.Status != null 
-                && v.Status.ToLower() == StatusConstants.Accepted.ToLower())
+                && v.Status == StatusConstants.Accepted)
                 .Count();
             int assignedNumber = dbVolunteers
                 .Where(v => v.Status != null
-                && v.Status.ToLower() == StatusConstants.Assigned.ToLower())
+                && v.Status == StatusConstants.Assigned)
                 .Count();
             int preAssigned = (dbVolunteers
                 .Where(v => v.Status != null
-                && v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
+                && v.Status == StatusConstants.PreAssigned)
                 .Count());
             int pending = (dbVolunteers
                 .Where(v => v.Status != null
-                && v.Status.ToLower() == StatusConstants.Pending.ToLower())
+                && v.Status == StatusConstants.Pending)
                 .Count());
 
             int waitlistAccepted = (dbVolunteers
               .Where(v => v.Status != null
-              && v.Status.ToLower() == StatusConstants.WaitlistAccepted.ToLower())
+              && v.Status == StatusConstants.WaitlistAccepted)
               .Count());
             int waitlistAssigned = (dbVolunteers
              .Where(v => v.Status != null 
-             && v.Status.ToLower() == StatusConstants.WaitlistAssigned.ToLower())
+             && v.Status == StatusConstants.WaitlistAssigned)
              .Count());
             int waitlistOffered = (dbVolunteers
              .Where(v => v.Status != null 
-             && v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
+             && v.Status == StatusConstants.WaitlistOffered)
              .Count());
             #endregion 
 
@@ -134,22 +134,22 @@ namespace Assignment.Services.Implementation
             foreach (GetRoleOfferDashboardDto roleOffer in roleOffers)
             {
                 roleOffer.Assigned = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.Assigned.ToLower())
+                    .Where(v => v.Status == StatusConstants.Assigned)
                     .Count();
                 roleOffer.PreAssigned = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.PreAssigned.ToLower())
+                    .Where(v => v.Status == StatusConstants.PreAssigned)
                     .Count();
                 roleOffer.Accepted = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.Accepted.ToLower())
+                    .Where(v => v.Status == StatusConstants.Accepted)
                     .Count();
                 roleOffer.WaitlistAccepted = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistAccepted.ToLower())
+                    .Where(v => v.Status == StatusConstants.WaitlistAccepted)
                     .Count();
                 roleOffer.WaitlistAssigned = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistAssigned.ToLower())
+                    .Where(v => v.Status == StatusConstants.WaitlistAssigned)
                     .Count();
                 roleOffer.WaitlistOffered = volunteers
-                    .Where(v => v.Status.ToLower() == StatusConstants.WaitlistOffered.ToLower())
+                    .Where(v => v.Status == StatusConstants.WaitlistOffered)
                     .Count();
                 if (roleOffer.AssigneeDemand != 0)
                 {
