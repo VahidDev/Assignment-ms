@@ -14,13 +14,17 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
         {
             RoleOffer updatedOrNewRoleOffer = mapper.Map<RoleOffer>(newExcelRoleOffer);
             updatedOrNewRoleOffer.Id = dbRoleOffer.Id;
+            updatedOrNewRoleOffer.CreatedAt = dbRoleOffer.CreatedAt;
 
             // Check if the given excel item is the same as dbRoleOffer's item
             // if yes then just set id of excel item to dbRoleOffer item 
             // if no then find dbItem(if exists) and set this id to it and the same goes for others
+
             if (dbRoleOffer.FunctionalArea.Code == updatedOrNewRoleOffer.FunctionalArea.Code)
             {
-                updatedOrNewRoleOffer.FunctionalArea.Id = dbRoleOffer.FunctionalArea.Id;
+                //updatedOrNewRoleOffer.FunctionalArea.Id = dbRoleOffer.FunctionalArea.Id;
+                MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.FunctionalArea, 
+                    dbRoleOffer.FunctionalArea.Id, dbRoleOffer.FunctionalArea.CreatedAt);
             }
             else
             {
@@ -30,9 +34,11 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                     r=>r.FunctionalArea, f=>f.Code==updatedOrNewRoleOffer.FunctionalArea.Code,
                     updatedOrNewRoleOffer.FunctionalArea, mapper);
             }
+
             if (dbRoleOffer.JobTitle.Code == updatedOrNewRoleOffer.JobTitle.Code)
             {
-                updatedOrNewRoleOffer.JobTitle.Id = dbRoleOffer.JobTitle.Id;
+                MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.JobTitle, 
+                    dbRoleOffer.JobTitle.Id, dbRoleOffer.JobTitle.CreatedAt);
             }
             else
             {
@@ -42,9 +48,11 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                    r => r.JobTitle, j => j.Code == updatedOrNewRoleOffer.JobTitle.Code,
                    updatedOrNewRoleOffer.JobTitle, mapper);
             }
+
             if (dbRoleOffer.FunctionalAreaType.Name == updatedOrNewRoleOffer.FunctionalAreaType.Name)
             {
-                updatedOrNewRoleOffer.FunctionalAreaType.Id = dbRoleOffer.FunctionalAreaType.Id;
+                MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.FunctionalAreaType, 
+                    dbRoleOffer.FunctionalAreaType.Id, dbRoleOffer.FunctionalAreaType.CreatedAt);
             }
             else
             {
@@ -55,9 +63,11 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                     == updatedOrNewRoleOffer.FunctionalAreaType.Name,
                    updatedOrNewRoleOffer.FunctionalAreaType, mapper);
             }
+
             if (dbRoleOffer.Location.Code == updatedOrNewRoleOffer.Location.Code)
             {
-                updatedOrNewRoleOffer.Location.Id = dbRoleOffer.Location.Id;
+                MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.Location, 
+                    dbRoleOffer.Location.Id, dbRoleOffer.Location.CreatedAt);
             }
             else
             {
@@ -85,9 +95,16 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                 int itemId = item.Id;
                 item = mapper.Map<U>(dbItem);
                 item.Id = itemId;
+                item.CreatedAt = dbItem.CreatedAt;
                 return item;
             }
             return dbItem;
+        }
+
+        public static void MapEntityIdAndCreatedAt(Entity entity,int id, DateTime? createdAt)
+        {
+            entity.Id = id;
+            entity.CreatedAt = createdAt;
         }
     }
 }

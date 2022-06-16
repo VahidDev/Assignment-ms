@@ -50,12 +50,6 @@ namespace Repository.DAL
                 {
                     entity.Entity.DeletedAt = DateTime.Now;
                 }
-                // if the entity is not added (which means it is only modified)
-                // then ignore changes on CreatedAt prop
-                if (entity.State != EntityState.Added)
-                {
-                    entity.Property<DateTime?>(nameof(Entity.CreatedAt)).IsModified = false;
-                }
             }
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }

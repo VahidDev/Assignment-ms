@@ -130,8 +130,8 @@ namespace Assignment.Services.Implementation
             }
 
             IReadOnlyCollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted 
-                && excelRoleOffers.Select(e=>e.RoleOfferId).ToArray().Contains(r.RoleOfferId))).ToList();
+                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted))
+                .ToList();
 
             List<RoleOffer> updatedOrAddedRoleOffers=new();
 
@@ -188,6 +188,7 @@ namespace Assignment.Services.Implementation
                         newExcelRoleOffer.TotalDemand);
                     newExcelRoleOffer.WaitlistDemand = newExcelRoleOffer.WaitlistDemand;
                 }
+
                 updatedOrAddedRoleOffers.Add(newExcelRoleOffer);
             }
             List<RoleOffer> removedRoleOffers = new();
