@@ -27,6 +27,7 @@ namespace Assignment.Services.Implementation
         {
             IReadOnlyCollection<RoleOffer>dbRoleOffers=(await _unitOfWork.RoleOfferRepository
                 .GetAllIncludingItemsAsync()).ToList();
+
             List<FunctionalAreaTypeDto> functionalAreaTypes = 
                 _mapper.Map<List<FunctionalAreaTypeDto>>(await _unitOfWork
                 .FunctionalAreaTypeRepository
@@ -38,19 +39,22 @@ namespace Assignment.Services.Implementation
             }
 
             IReadOnlyCollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted)).ToList();
+                .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted))
+                .ToList();
+
             foreach (RoleOffer roleOffer in dbRoleOffers)
             {
-                FunctionalAreaTypeDto functionalAreaType=functionalAreaTypes
-                    .First(r=>r.Id == roleOffer.FunctionalAreaType.Id);
+                FunctionalAreaTypeDto functionalAreaType = functionalAreaTypes
+                    .First(r => r.Id == roleOffer.FunctionalAreaType.Id);
                 FunctionalAreaDto functionalArea = functionalAreaType.FunctionalAreas
                      .First(r => r.Id == roleOffer.FunctionalArea.Id);
                 JobTitleDto jobTitle = functionalArea.JobTitles
                     .First(j => j.Id == roleOffer.JobTitle.Id);
-                LocationDto location=jobTitle.Locations
-                    .First(l=>l.Id == roleOffer.Location.Id);
+                LocationDto location = jobTitle.Locations
+                    .First(l => l.Id == roleOffer.Location.Id);
 
-                location.RoleOffer=_mapper.Map<NestedRoleOfferDto>(roleOffer);
+                location.RoleOffer = _mapper.Map<NestedRoleOfferDto>(roleOffer);
+
 
                 if (location.RoleOffer.FunctionalRequirement == null)
                 {
@@ -59,6 +63,7 @@ namespace Assignment.Services.Implementation
                     location.RoleOffer.FunctionalRequirement.Requirements
                         = new List<GetRequirementDto>();
                 }
+
                 location.RoleOffer.OverallAssigned = volunteers
                        .Where(v => v.RoleOfferId == location.RoleOffer.RoleOfferId
                        && StatusConstants.AssignedNamesList

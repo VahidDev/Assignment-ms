@@ -162,18 +162,22 @@ namespace Assignment.Services.Implementation
                     JobTitle? dbJobTitle = dbRoleOffers
                         .Select(r => r.JobTitle)
                         .FirstOrDefault(j => j.Code == newExcelRoleOffer.JobTitle.Code);
+
                     if (dbLocation != null)
                     {
                         newExcelRoleOffer.Location.Id = dbLocation.Id;
                     }
+
                     if (dbExcelEntity!=null)
                     {
                         newExcelRoleOffer.FunctionalAreaType.Id = dbExcelEntity.Id;
                     }
+
                     if (dbFunctionalArea!=null)
                     {
                         newExcelRoleOffer.FunctionalArea.Id = dbFunctionalArea.Id;
                     }
+
                     if (dbJobTitle!=null)
                     {
                         newExcelRoleOffer.JobTitle.Id = dbJobTitle.Id;

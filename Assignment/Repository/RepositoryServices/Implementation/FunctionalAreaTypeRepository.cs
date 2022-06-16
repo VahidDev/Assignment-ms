@@ -32,5 +32,15 @@ namespace Repository.RepositoryServices.Implementation
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<ICollection<FunctionalAreaType>> GetAllWithFAsAsNoTrackingAsync
+           (Expression<Func<FunctionalAreaType, bool>> expression)
+        {
+            return await dbSet
+                .Include(r => r.FunctionalAreas.Where(r => !r.IsDeleted))
+                .Where(expression)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

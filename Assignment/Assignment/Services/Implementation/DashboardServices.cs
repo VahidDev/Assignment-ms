@@ -185,69 +185,69 @@ namespace Assignment.Services.Implementation
             else
             {
                 volunteers = (await _unitOfWork.VolunteerRepository
-                    .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
-                    && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
-                    .ToList();
+                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
+                   && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
+                   .ToList();
+            }
 
-                dtoToSend.OverallFemales = volunteers
+            dtoToSend.OverallFemales = volunteers
                     .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
                     && v.Gender == GenderEnum.Female.ToString())
                     .Count();
-                dtoToSend.OverallMales = volunteers
-                   .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
-                   && v.Gender == GenderEnum.Male.ToString())
-                   .Count();
-               
-                foreach (int age in dto.StartingAges)
+            dtoToSend.OverallMales = volunteers
+               .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
+               && v.Gender == GenderEnum.Male.ToString())
+               .Count();
+
+            foreach (int age in dto.StartingAges)
+            {
+                dtoToSend.StartingAges.Add(new StartingAgeCountDto
                 {
-                    dtoToSend.StartingAges.Add(new StartingAgeCountDto
-                    {
-                        Age = age
+                    Age = age
+                ,
+                    Count = volunteers
+                .Where(v => v.Age > age)
+                .Count()
+                });
+            }
+
+            // Get All distinct countries names
+            ICollection<string> countries = volunteers
+                .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
+
+            List<CountryNameDto> countryNames = new();
+
+            // Get All country counts
+            foreach (string country in countries)
+            {
+                countryNames.Add(new CountryNameDto
+                {
+                    Name = country
                     ,
-                        Count = volunteers
-                    .Where(v => v.Age > age)
-                    .Count()
-                    });
-                }
+                    Count = volunteers.Where(v => v.Country == country).Count()
+                });
+            }
 
-                // Get All distinct countries names
-                ICollection<string> countries = volunteers
-                    .DistinctBy(v => v.Country).Select(v => v.Country).ToList();
+            dtoToSend.CountryNameDtos = countryNames
+                .OrderByDescending(r => r.Count)
+                .Take(dto.CountryCount)
+                .ToList();
 
-                List<CountryNameDto> countryNames = new();
+            dtoToSend.Others = volunteers
+                .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
+                .Count();
 
-                // Get All country counts
-                foreach (string country in countries)
+            foreach (AgeRangeDto ageRange in dto.AgeRanges)
+            {
+                dtoToSend.AgeRanges.Add(new AgeRangeCountDto
                 {
-                    countryNames.Add(new CountryNameDto
-                    {
-                        Name = country
-                        ,
-                        Count = volunteers.Where(v => v.Country == country).Count()
-                    });
-                }
-
-                dtoToSend.CountryNameDtos = countryNames
-                    .OrderByDescending(r => r.Count)
-                    .Take(dto.CountryCount)
-                    .ToList();
-
-                dtoToSend.Others = volunteers
-                    .Where(v => !dtoToSend.CountryNameDtos.Any(c => c.Name == v.Country))
-                    .Count();
-
-                foreach (AgeRangeDto ageRange in dto.AgeRanges)
-                {
-                    dtoToSend.AgeRanges.Add(new AgeRangeCountDto
-                    {
-                        FromAge = ageRange.FromAge,
-                        ToAge = ageRange.ToAge
-                    ,
-                        Count = volunteers
-                    .Where(v => v.Age > ageRange.FromAge && v.Age < ageRange.ToAge)
-                    .Count()
-                    });
-                }
+                    FromAge = ageRange.FromAge,
+                    ToAge = ageRange.ToAge
+                ,
+                    Count = volunteers
+                .Where(v => v.Age > ageRange.FromAge && v.Age < ageRange.ToAge)
+                .Count()
+                });
             }
 
             dtoToSend.OverallInternationals = volunteers
