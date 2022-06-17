@@ -128,7 +128,7 @@ namespace Assignment.Services.Implementation
             }
 
             ICollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
-                .GetAllAsNoTrackingAsync(r => r.RoleOfferId !=null && !r.IsDeleted 
+                .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted
                 && roleOfferIds.Contains((int)r.RoleOfferId))).ToList();
 
             foreach (GetRoleOfferDashboardDto roleOffer in roleOffers)

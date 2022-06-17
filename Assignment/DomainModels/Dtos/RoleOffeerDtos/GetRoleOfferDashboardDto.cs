@@ -1,7 +1,11 @@
-﻿namespace DomainModels.Dtos
+﻿using Newtonsoft.Json;
+
+namespace DomainModels.Dtos
 {
     public class GetRoleOfferDashboardDto
     {
+        [JsonProperty("role_offer_id")]
+        public int RoleOfferId { get; set; }
         public GetFunctionalAreaTypeNameDto FunctionalAreaType { get; set; }
         public GetFunctionalAreaNameDto FunctionalArea { get; set; }
         public GetJobTitleNameDto JobTitle { get; set; }
