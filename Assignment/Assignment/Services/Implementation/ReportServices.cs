@@ -28,11 +28,6 @@ namespace Assignment.Services.Implementation
         {
             Report report = _mapper.Map<Report>(dto);
 
-            if (await _unitOfWork.ReportRepository.AnyAsync(r => r.Name == dto.Name))
-            {
-                return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
-                    "The report name has already been used");
-            }
             if (dto.VolunteerFilters != null)
             {
                 report.VolunteerTemplate = ReportTemplatesCreator

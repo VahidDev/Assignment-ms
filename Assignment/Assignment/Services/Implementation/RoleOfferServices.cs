@@ -42,7 +42,7 @@ namespace Assignment.Services.Implementation
         {
            ICollection<RoleOfferDto> roleOffers=_mapper
                 .Map<ICollection<RoleOfferDto>>(await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(e=>!e.IsDeleted));
+                .GetAllAsNoTrackingWithItemsAsync(e=>!e.IsDeleted));
 
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,null, roleOffers);
         }
@@ -130,7 +130,7 @@ namespace Assignment.Services.Implementation
             }
 
             IReadOnlyCollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted))
+                .GetAllAsNoTrackingWithItemsAsync(r=>!r.IsDeleted))
                 .ToList();
 
             List<RoleOffer> updatedOrAddedRoleOffers=new();

@@ -32,7 +32,7 @@ namespace Repository.RepositoryServices.Implementation
                 .FirstOrDefaultAsync(expression);
         }
 
-        public async Task<ICollection<RoleOffer>> GetAllAsNoTrackingIncludingItemsAsync
+        public async Task<ICollection<RoleOffer>> GetAllAsNoTrackingWithItemsAsync
             (Expression<Func<RoleOffer, bool>> expression)
         {
             return await dbSet

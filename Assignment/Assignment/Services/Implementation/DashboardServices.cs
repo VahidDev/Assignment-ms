@@ -119,7 +119,7 @@ namespace Assignment.Services.Implementation
             ICollection<GetRoleOfferDashboardDto> roleOffers = _mapper
                 .Map<ICollection<GetRoleOfferDashboardDto>>
                 (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingIncludingItemsAsync(r => roleOfferIds.Contains(r.RoleOfferId)));
+                .GetAllAsNoTrackingWithItemsAsync(r => roleOfferIds.Contains(r.RoleOfferId)));
 
             if(roleOfferIds.Length != roleOffers.Count)
             {
@@ -134,22 +134,28 @@ namespace Assignment.Services.Implementation
             foreach (GetRoleOfferDashboardDto roleOffer in roleOffers)
             {
                 roleOffer.Assigned = volunteers
-                    .Where(v => v.Status == StatusConstants.Assigned)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId 
+                    && v.Status == StatusConstants.Assigned)
                     .Count();
                 roleOffer.PreAssigned = volunteers
-                    .Where(v => v.Status == StatusConstants.PreAssigned)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId
+                    && v.Status == StatusConstants.PreAssigned)
                     .Count();
                 roleOffer.Accepted = volunteers
-                    .Where(v => v.Status == StatusConstants.Accepted)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId
+                    && v.Status == StatusConstants.Accepted)
                     .Count();
                 roleOffer.WaitlistAccepted = volunteers
-                    .Where(v => v.Status == StatusConstants.WaitlistAccepted)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId
+                    && v.Status == StatusConstants.WaitlistAccepted)
                     .Count();
                 roleOffer.WaitlistAssigned = volunteers
-                    .Where(v => v.Status == StatusConstants.WaitlistAssigned)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId
+                    && v.Status == StatusConstants.WaitlistAssigned)
                     .Count();
                 roleOffer.WaitlistOffered = volunteers
-                    .Where(v => v.Status == StatusConstants.WaitlistOffered)
+                    .Where(v => v.RoleOfferId == roleOffer.RoleOfferId
+                    && v.Status == StatusConstants.WaitlistOffered)
                     .Count();
                 if (roleOffer.AssigneeDemand != 0)
                 {
@@ -172,23 +178,7 @@ namespace Assignment.Services.Implementation
         {
             GetVolunteerInfoDashboardDto dtoToSend = new();
 
-            ICollection<Volunteer> volunteers;
-
-            if (dto.RoleOfferIds.Count() == 0)
-            {
-                volunteers = (await _unitOfWork.VolunteerRepository
-                    .GetAllAsNoTrackingAsync(v=>!v.IsDeleted 
-                    && dto.Statuses.Contains(v.Status)
-                    && dto.Locations.Contains(v.InternationalVolunteer)))
-                    .ToList();
-            }
-            else
-            {
-                volunteers = (await _unitOfWork.VolunteerRepository
-                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted && v.RoleOfferId != null
-                   && dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
-                   .ToList();
-            }
+            ICollection<Volunteer> volunteers = await GetVolunteersAsync(dto);
 
             dtoToSend.OverallFemales = volunteers
                     .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
@@ -258,6 +248,64 @@ namespace Assignment.Services.Implementation
                 .Count();
 
             return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,dtoToSend);
+        }
+
+        private async Task<ICollection<Volunteer>> GetVolunteersAsync(RoleOfferVolunteerDto dto)
+        {
+            ICollection<Volunteer> volunteers;
+
+            if (dto.RoleOfferIds.Count() == 0)
+            {
+                if(dto.Locations.Count() == 0)
+                {
+                    volunteers = (await _unitOfWork.VolunteerRepository
+                    .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                    && dto.Statuses.Contains(v.Status)))
+                    .ToList();
+                }
+                else if(dto.Statuses.Count() == 0)
+                {
+                    volunteers = (await _unitOfWork.VolunteerRepository
+                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                   && dto.Locations.Contains(v.InternationalVolunteer)))
+                   .ToList();
+                } 
+                else if (dto.Statuses.Count() != 0 && dto.Locations.Count() != 0)
+                {
+                    volunteers = (await _unitOfWork.VolunteerRepository
+                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                   && dto.Locations.Contains(v.InternationalVolunteer)
+                   && dto.Statuses.Contains(v.Status)))
+                   .ToList();
+                }
+                else
+                {
+                    volunteers = new List<Volunteer>();
+                }
+            }
+            else
+            {
+                if (dto.Statuses.Contains(StatusConstants.Free))
+                {
+                    volunteers = (await _unitOfWork.VolunteerRepository
+                        .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                        && (v.RoleOfferId == null ? true : (dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
+                        && dto.Statuses.Contains(v.Status)
+                        && dto.Locations.Contains(v.InternationalVolunteer)))
+                        .ToList();
+                }
+                else
+                {
+                    volunteers = (await _unitOfWork.VolunteerRepository
+                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                   && v.RoleOfferId != null 
+                   && dto.RoleOfferIds.Contains((int)v.RoleOfferId)
+                   && dto.Statuses.Contains(v.Status)
+                    && dto.Locations.Contains(v.InternationalVolunteer)))
+                   .ToList();
+                }
+            }
+            return volunteers;
         }
     }
 }

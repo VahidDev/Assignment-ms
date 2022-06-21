@@ -16,6 +16,7 @@
         public const string WaitlistDeclined = "Waitlist Declined";
         public const string WaitlistAssigned = "Waitlist Assigned";
         public const string NotApproved = "Not Approved";
+        public const string Free = "Free";
         
         public static IReadOnlyCollection<string> AssignedNamesList
             = new List<string> { Assigned, PreAssigned, Pending, Accepted, Confirmed };
