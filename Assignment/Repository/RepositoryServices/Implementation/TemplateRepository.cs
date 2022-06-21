@@ -40,7 +40,9 @@ namespace Repository.RepositoryServices.Implementation
             _querable = _querable.IncludeItemsIfExist(includingItems);
             return await _querable.Where(t => !t.IsDeleted 
             && !t.Name.Contains(TemplateDifferentiatorConstants.ReportTemplate))
-                .Include(t=>t.Filters.Where(f=>!f.IsDeleted)).ToListAsync();
+                .Include(t=>t.Filters.Where(f=>!f.IsDeleted).OrderBy(f=>f.Requirement))
+                .OrderBy(t=>t.Name)
+                .ToListAsync();
         }
     }
 }
