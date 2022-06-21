@@ -35,7 +35,7 @@ namespace Assignment.Services.Implementation
             // Check if all statuses are valid
             if (volunteerDtos
                 .Any(v=>v.Status != StatusConstants.PreAssigned
-                && v.Status != StatusConstants.WaitlistOffered))
+                && v.Status != StatusConstants.WaitlistAssigned))
             {
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
                     "Invalid Status");
