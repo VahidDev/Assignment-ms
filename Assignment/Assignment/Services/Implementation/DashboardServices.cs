@@ -258,10 +258,20 @@ namespace Assignment.Services.Implementation
             {
                 if(dto.Locations.Count() == 0)
                 {
-                    volunteers = (await _unitOfWork.VolunteerRepository
-                    .GetAllAsNoTrackingAsync(v => !v.IsDeleted
-                    && dto.Statuses.Contains(v.Status)))
-                    .ToList();
+                    if (dto.Statuses.Contains(StatusConstants.Free))
+                    {
+                        volunteers = (await _unitOfWork.VolunteerRepository
+                            .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                            && (v.Status == null || dto.Statuses.Contains(v.Status))))
+                            .ToList();
+                    }
+                    else
+                    {
+                        volunteers = (await _unitOfWork.VolunteerRepository
+                            .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                            && dto.Statuses.Contains(v.Status)))
+                            .ToList();
+                    }
                 }
                 else if(dto.Statuses.Count() == 0)
                 {
@@ -272,11 +282,22 @@ namespace Assignment.Services.Implementation
                 } 
                 else if (dto.Statuses.Count() != 0 && dto.Locations.Count() != 0)
                 {
-                    volunteers = (await _unitOfWork.VolunteerRepository
-                   .GetAllAsNoTrackingAsync(v => !v.IsDeleted
-                   && dto.Locations.Contains(v.InternationalVolunteer)
-                   && dto.Statuses.Contains(v.Status)))
-                   .ToList();
+                    if (dto.Statuses.Contains(StatusConstants.Free))
+                    {
+                        volunteers = (await _unitOfWork.VolunteerRepository
+                        .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                        && dto.Locations.Contains(v.InternationalVolunteer)
+                        && (v.Status == null || dto.Statuses.Contains(v.Status))))
+                        .ToList();
+                    }
+                    else
+                    {
+                        volunteers = (await _unitOfWork.VolunteerRepository
+                        .GetAllAsNoTrackingAsync(v => !v.IsDeleted
+                        && dto.Locations.Contains(v.InternationalVolunteer)
+                        && dto.Statuses.Contains(v.Status)))
+                        .ToList();
+                    }
                 }
                 else
                 {
@@ -289,7 +310,7 @@ namespace Assignment.Services.Implementation
                 {
                     volunteers = (await _unitOfWork.VolunteerRepository
                         .GetAllAsNoTrackingAsync(v => !v.IsDeleted
-                        && (v.RoleOfferId == null ? true : (dto.RoleOfferIds.Contains((int)v.RoleOfferId)))
+                        && (v.Status == null || dto.Statuses.Contains(v.Status))
                         && dto.Statuses.Contains(v.Status)
                         && dto.Locations.Contains(v.InternationalVolunteer)))
                         .ToList();
