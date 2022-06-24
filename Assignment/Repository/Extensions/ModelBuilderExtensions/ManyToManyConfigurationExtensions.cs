@@ -8,14 +8,14 @@ namespace Repository.Extensions.ModelBuilderExtensions
         public static void ConfigureManyToManyRelationships(this ModelBuilder builder)
         {
 
-            // Many to Many between FunctionalArea and ExcelEntity
+            // Many to Many between FunctionalArea and FunctionalAreaType
             builder.Entity<FunctionalAreaType>()
             .HasMany(p => p.FunctionalAreas)
             .WithMany(p => p.FunctionalAreaTypes)
             .UsingEntity<FunctionalAreaTypeFunctionalArea>(
                 j => j
                     .HasOne(pt => pt.FunctionalArea)
-                    .WithMany(t => t.ExcelEntityFunctionalAreas)
+                    .WithMany(t => t.FunctionalAreaTypeFunctionalAreas)
                     .HasForeignKey(pt => pt.FunctionalAreaId),
                 j => j
                     .HasOne(pt => pt.FunctionalAreaType)
@@ -44,18 +44,18 @@ namespace Repository.Extensions.ModelBuilderExtensions
                     j.HasKey(t => new { t.JobTitleId, t.FunctionalAreaId });
                 });
 
-            // Many to Many between JobTitle and Venues
+            // Many to Many between JobTitle and Locations
             builder.Entity<Location>()
             .HasMany(p => p.JobTitles)
             .WithMany(p => p.Locations)
             .UsingEntity<JobTitleLocation>(
                 j => j
                     .HasOne(pt => pt.JobTitle)
-                    .WithMany(t => t.JobTitleVenues)
+                    .WithMany(t => t.JobTitleLocations)
                     .HasForeignKey(pt => pt.JobTitleId),
                 j => j
                     .HasOne(pt => pt.Location)
-                    .WithMany(p => p.JobTitleVenues)
+                    .WithMany(p => p.JobTitleLocations)
                     .HasForeignKey(pt => pt.LocationId),
                 j =>
                 {

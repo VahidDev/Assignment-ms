@@ -17,6 +17,6 @@ namespace DomainModels.Models.Entities
         public string Code { get; set; }
         public ICollection<JobTitle> JobTitles { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<JobTitleLocation> JobTitleVenues { get; set; }
+        public ICollection<JobTitleLocation> JobTitleLocations { get; set; }
     }
 }

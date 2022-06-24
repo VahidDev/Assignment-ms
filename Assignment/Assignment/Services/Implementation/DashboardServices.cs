@@ -181,12 +181,11 @@ namespace Assignment.Services.Implementation
             ICollection<Volunteer> volunteers = await GetVolunteersAsync(dto);
 
             dtoToSend.OverallFemales = volunteers
-                    .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
-                    && v.Gender == GenderEnum.Female.ToString())
+                    .Where(v => v.Gender == GenderEnum.Female.ToString())
                     .Count();
+
             dtoToSend.OverallMales = volunteers
-               .Where(v => dto.Locations.Contains(v.InternationalVolunteer)
-               && v.Gender == GenderEnum.Male.ToString())
+               .Where(v => v.Gender == GenderEnum.Male.ToString())
                .Count();
 
             foreach (int age in dto.StartingAges)

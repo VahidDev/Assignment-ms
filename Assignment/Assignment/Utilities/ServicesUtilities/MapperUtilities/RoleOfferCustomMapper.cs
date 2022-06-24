@@ -20,7 +20,7 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
             // if yes then just set id of excel item to dbRoleOffer item 
             // if no then find dbItem(if exists) and set this id to it and the same goes for others
 
-            if (dbRoleOffer.FunctionalArea.Code == updatedOrNewRoleOffer.FunctionalArea.Code)
+            if (dbRoleOffers.Any(r=>r.FunctionalArea.Code == updatedOrNewRoleOffer.FunctionalArea.Code))
             {
                 //updatedOrNewRoleOffer.FunctionalArea.Id = dbRoleOffer.FunctionalArea.Id;
                 MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.FunctionalArea, 
@@ -35,7 +35,7 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                     updatedOrNewRoleOffer.FunctionalArea, mapper);
             }
 
-            if (dbRoleOffer.JobTitle.Code == updatedOrNewRoleOffer.JobTitle.Code)
+            if (dbRoleOffers.Any(r => r.JobTitle.Code == updatedOrNewRoleOffer.JobTitle.Code))
             {
                 MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.JobTitle, 
                     dbRoleOffer.JobTitle.Id, dbRoleOffer.JobTitle.CreatedAt);
@@ -49,7 +49,7 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                    updatedOrNewRoleOffer.JobTitle, mapper);
             }
 
-            if (dbRoleOffer.FunctionalAreaType.Name == updatedOrNewRoleOffer.FunctionalAreaType.Name)
+            if (dbRoleOffers.Any(r => r.FunctionalAreaType.Name == updatedOrNewRoleOffer.FunctionalAreaType.Name))
             {
                 MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.FunctionalAreaType, 
                     dbRoleOffer.FunctionalAreaType.Id, dbRoleOffer.FunctionalAreaType.CreatedAt);
@@ -64,7 +64,7 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                    updatedOrNewRoleOffer.FunctionalAreaType, mapper);
             }
 
-            if (dbRoleOffer.Location.Code == updatedOrNewRoleOffer.Location.Code)
+            if (dbRoleOffers.Any(r => r.Location.Code == updatedOrNewRoleOffer.Location.Code))
             {
                 MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.Location, 
                     dbRoleOffer.Location.Id, dbRoleOffer.Location.CreatedAt);

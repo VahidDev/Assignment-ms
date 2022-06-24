@@ -18,7 +18,7 @@ namespace DomainModels.Models.Entities
         public ICollection<FunctionalAreaType> FunctionalAreaTypes { get; set; }
         public ICollection<JobTitle> JobTitles { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
-        public ICollection<FunctionalAreaTypeFunctionalArea> ExcelEntityFunctionalAreas { get; set; }
+        public ICollection<FunctionalAreaTypeFunctionalArea> FunctionalAreaTypeFunctionalAreas { get; set; }
         public ICollection<FunctionalAreaJobTitle> FunctionalAreaJobTitles { get; set; }
 
     }

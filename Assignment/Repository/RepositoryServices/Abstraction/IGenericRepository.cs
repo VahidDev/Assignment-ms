@@ -9,7 +9,7 @@ namespace Repository.RepositoryServices.Abstraction
     public interface IGenericRepository<T> where T : class, IEntity
     {
         Task<IEnumerable<T>> GetAllAsync(IEnumerable<string> includingItems = null);
-        Task<IEnumerable<T>> GetAllAsNoTrackingAsync(Expression<Func<T, bool>> predicate = null,
+        Task<IEnumerable<T>> GetAllAsNoTrackingAsync(Expression<Func<T, bool>> predicate,
             IEnumerable<string> includingItems = null);
         Task<T> GetByIdAsync(int id, IEnumerable<string> includingItems = null);
         Task<T> GetByIdAsNoTrackingAsync(int id);

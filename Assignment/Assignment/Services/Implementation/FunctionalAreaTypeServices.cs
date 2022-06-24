@@ -28,19 +28,64 @@ namespace Assignment.Services.Implementation
             IReadOnlyCollection<RoleOffer>dbRoleOffers=(await _unitOfWork.RoleOfferRepository
                 .GetAllIncludingItemsAsync()).ToList();
 
-            List<FunctionalAreaTypeDto> functionalAreaTypes = 
-                _mapper.Map<List<FunctionalAreaTypeDto>>(await _unitOfWork
-                .FunctionalAreaTypeRepository
-                .GetAllWithItemsAsNoTrackingAsync(r=>!r.IsDeleted));
-
-            if(functionalAreaTypes.Count == 0)
-            {
-                return _jsonFactory.CreateJson(StatusCodes.Status200OK,null,functionalAreaTypes);
-            }
-
             IReadOnlyCollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
                 .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted))
                 .ToList();
+
+            List<FunctionalAreaType> distinctFunctionalAreaTypes = dbRoleOffers
+           .Select(r => r.FunctionalAreaType)
+           .DistinctBy(r => r.Name)
+           .ToList();
+            List<FunctionalArea> distinctFunctionalAreas = dbRoleOffers
+               .Select(r => r.FunctionalArea)
+               .DistinctBy(r => r.Code)
+               .ToList();
+            List<Location> distinctLocations = dbRoleOffers
+                .Select(r => r.Location)
+                .DistinctBy(r => r.Code)
+                .ToList();
+            List<JobTitle> distinctJobTitles = dbRoleOffers
+                .Select(r => r.JobTitle)
+                .DistinctBy(r => r.Code)
+                .ToList();
+
+            foreach (FunctionalAreaType functionalAreaType in distinctFunctionalAreaTypes)
+            {
+                ICollection<FunctionalArea> functionalAreas = dbRoleOffers
+                    .Where(r => r.FunctionalAreaType.Name == functionalAreaType.Name)
+                    .DistinctBy(r => r.FunctionalArea.Name)
+                    .Select(r => r.FunctionalArea)
+                    .ToList();
+                functionalAreaType.FunctionalAreas = functionalAreas;
+            }
+
+            foreach (FunctionalArea functionalArea in distinctFunctionalAreas)
+            {
+                ICollection<JobTitle> jobTitles = dbRoleOffers
+                .Where(r => r.FunctionalArea.Code == functionalArea.Code)
+                .DistinctBy(r => r.JobTitle.Code)
+                .Select(r => r.JobTitle)
+                .ToList();
+                functionalArea.JobTitles = jobTitles;
+            }
+
+            foreach (JobTitle jobTitle in distinctJobTitles)
+            {
+                ICollection<Location> locations = dbRoleOffers
+                    .Where(r => r.JobTitle.Code == jobTitle.Code)
+                    .DistinctBy(r => r.Location.Code)
+                    .Select(r => r.Location)
+                    .ToList();
+                jobTitle.Locations = locations;
+            }
+
+            List<FunctionalAreaTypeDto> functionalAreaTypes = _mapper
+                .Map<List<FunctionalAreaTypeDto>>(distinctFunctionalAreaTypes);
+
+            if (functionalAreaTypes.Count == 0)
+            {
+                return _jsonFactory.CreateJson(StatusCodes.Status200OK, null, functionalAreaTypes);
+            }
 
             foreach (RoleOffer roleOffer in dbRoleOffers)
             {
@@ -54,7 +99,6 @@ namespace Assignment.Services.Implementation
                     .First(l => l.Id == roleOffer.Location.Id);
 
                 location.RoleOffer = _mapper.Map<NestedRoleOfferDto>(roleOffer);
-
 
                 if (location.RoleOffer.FunctionalRequirement == null)
                 {

@@ -50,6 +50,11 @@ namespace Repository.RepositoryServices.Implementation
             await _context.SaveChangesAsync();
         }
 
+        public void ClearChangs()
+        {
+            _context.ChangeTracker.Clear();
+        }
+
         public void Dispose() => _context.Dispose();
     }
 }

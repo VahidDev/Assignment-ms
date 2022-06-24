@@ -19,7 +19,7 @@ namespace DomainModels.Models.Entities
         public ICollection<FunctionalArea> FunctionalAreas { get; set; }
         public ICollection<RoleOffer> RoleOffers { get; set; }
         public ICollection<FunctionalAreaJobTitle> FunctionalAreaJobTitles { get; set; }
-        public ICollection<JobTitleLocation> JobTitleVenues { get; set; }
+        public ICollection<JobTitleLocation> JobTitleLocations { get; set; }
 
     }
 }

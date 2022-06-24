@@ -66,7 +66,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("template_id");
 
-                    b.ToTable("filters");
+                    b.ToTable("filters", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalArea", b =>
@@ -104,7 +104,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_areas");
+                    b.ToTable("functional_areas", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaJobTitle", b =>
@@ -121,7 +121,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("FunctionalAreaId");
 
-                    b.ToTable("functional_area_job_titles");
+                    b.ToTable("functional_area_job_titles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaType", b =>
@@ -155,7 +155,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("functional_area_types");
+                    b.ToTable("functional_area_types", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalAreaTypeFunctionalArea", b =>
@@ -172,7 +172,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("FunctionalAreaId");
 
-                    b.ToTable("functional_area_type_functional_areas");
+                    b.ToTable("functional_area_type_functional_areas", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.FunctionalRequirement", b =>
@@ -209,7 +209,7 @@ namespace Repository.Migrations
                     b.HasIndex("RoleOfferId")
                         .IsUnique();
 
-                    b.ToTable("functional_requirements");
+                    b.ToTable("functional_requirements", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitle", b =>
@@ -247,7 +247,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("job_titles");
+                    b.ToTable("job_titles", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.JobTitleLocation", b =>
@@ -264,7 +264,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("job_title_locations");
+                    b.ToTable("job_title_locations", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Location", b =>
@@ -302,7 +302,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("locations");
+                    b.ToTable("locations", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Report", b =>
@@ -354,7 +354,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("volunteer_template_id");
 
-                    b.ToTable("reports");
+                    b.ToTable("reports", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Requirement", b =>
@@ -402,7 +402,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("FunctionalRequirementId");
 
-                    b.ToTable("requirements");
+                    b.ToTable("requirements", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.RoleOffer", b =>
@@ -472,7 +472,7 @@ namespace Repository.Migrations
 
                     b.HasIndex("location_id");
 
-                    b.ToTable("role_offers");
+                    b.ToTable("role_offers", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Template", b =>
@@ -506,7 +506,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("templates");
+                    b.ToTable("templates", (string)null);
                 });
 
             modelBuilder.Entity("DomainModels.Models.Entities.Filter", b =>

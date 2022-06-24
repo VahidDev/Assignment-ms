@@ -17,6 +17,7 @@ namespace Repository.RepositoryServices.Abstraction
         public IReportRepository ReportRepository { get;}
         public IHistoryRepository HistoryRepository { get;}
         Task CompleteAsync();
+        void ClearChangs();
         void Dispose();
     }
 }

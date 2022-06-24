@@ -133,7 +133,7 @@ namespace Assignment.Services.Implementation
                 .GetAllAsNoTrackingWithItemsAsync(r=>!r.IsDeleted))
                 .ToList();
 
-            List<RoleOffer> updatedOrAddedRoleOffers=new();
+            List<RoleOffer> updatedOrAddRoleOffers=new();
 
             foreach (RoleOffer newExcelRoleOffer in excelRoleOffers)
             {
@@ -166,21 +166,25 @@ namespace Assignment.Services.Implementation
                     if (dbLocation != null)
                     {
                         newExcelRoleOffer.Location.Id = dbLocation.Id;
+                        newExcelRoleOffer.Location.CreatedAt = dbLocation.CreatedAt;
                     }
 
                     if (dbExcelEntity!=null)
                     {
                         newExcelRoleOffer.FunctionalAreaType.Id = dbExcelEntity.Id;
+                        newExcelRoleOffer.FunctionalAreaType.CreatedAt = dbExcelEntity.CreatedAt;
                     }
 
                     if (dbFunctionalArea!=null)
                     {
                         newExcelRoleOffer.FunctionalArea.Id = dbFunctionalArea.Id;
+                        newExcelRoleOffer.FunctionalArea.CreatedAt = dbFunctionalArea.CreatedAt;
                     }
 
                     if (dbJobTitle!=null)
                     {
                         newExcelRoleOffer.JobTitle.Id = dbJobTitle.Id;
+                        newExcelRoleOffer.JobTitle.CreatedAt = dbJobTitle.CreatedAt;
                     }
                 }
 
@@ -193,8 +197,9 @@ namespace Assignment.Services.Implementation
                     newExcelRoleOffer.WaitlistDemand = newExcelRoleOffer.WaitlistDemand;
                 }
 
-                updatedOrAddedRoleOffers.Add(newExcelRoleOffer);
+                updatedOrAddRoleOffers.Add(newExcelRoleOffer);
             }
+
             List<RoleOffer> removedRoleOffers = new();
             List<FunctionalAreaType> removedFunctionalAreaTypes = new();
             List<Location> removedLocations= new(); 
@@ -204,6 +209,81 @@ namespace Assignment.Services.Implementation
             List<Volunteer> freeVolunteers= new();
             List<Volunteer> volunteersWithRoleOffer= new();
 
+            List<FunctionalAreaType> distinctFunctionalAreaTypes = excelRoleOffers
+             .Select(r => r.FunctionalAreaType)
+             .DistinctBy(r => r.Name)
+             .ToList();
+            List<FunctionalArea> distinctFunctionalAreas = excelRoleOffers
+               .Select(r => r.FunctionalArea)
+               .DistinctBy(r => r.Code)
+               .ToList();
+            List<Location> distinctLocations = excelRoleOffers
+                .Select(r => r.Location)
+                .DistinctBy(r => r.Code)
+                .ToList();
+            List<JobTitle> distinctJobTitles = excelRoleOffers
+                .Select(r => r.JobTitle)
+                .DistinctBy(r => r.Code)
+                .ToList();
+
+            // Setting the fields of RoleOffer. The fields are F.A.T., F.A., J.T. etc.
+            foreach (RoleOffer roleOffer in excelRoleOffers)
+            {
+                FunctionalAreaType functionalAreaType = distinctFunctionalAreaTypes
+                    .First(f => f.Name == roleOffer.FunctionalAreaType.Name);
+                FunctionalArea functionalArea = distinctFunctionalAreas
+                    .First(f => f.Code == roleOffer.FunctionalArea.Code);
+                JobTitle jobTitle = distinctJobTitles
+                    .First(j => j.Code == roleOffer.JobTitle.Code);
+                Location location = distinctLocations
+                    .First(l => l.Code == roleOffer.Location.Code);
+
+                roleOffer.FunctionalAreaType = functionalAreaType;
+                roleOffer.FunctionalArea = functionalArea;
+
+                roleOffer.JobTitle = jobTitle;
+                roleOffer.Location = location;
+            }
+
+            // these loops are for the EF to help it understand the relations
+            // for example, these FuntionalAreaTypes have these FunctionalAreas
+            // Thus we need to set them so that EF understands
+            // Also note that we are only doing this for the new ones so that
+            // the realations can be created. If the relations already exist in db EF will understand it
+            // So we do it only for the new ones (the ones that don't have id)
+
+            foreach (FunctionalAreaType functionalAreaType
+                in distinctFunctionalAreaTypes.Where(r=>r.Id == 0))
+            {
+                ICollection<FunctionalArea> functionalAreas = excelRoleOffers
+                    .Where(r => r.FunctionalAreaType.Name == functionalAreaType.Name)
+                    .DistinctBy(r => r.FunctionalArea.Name)
+                    .Select(r => r.FunctionalArea)
+                    .ToList();
+                functionalAreaType.FunctionalAreas = functionalAreas;
+            }
+
+            foreach (FunctionalArea functionalArea in distinctFunctionalAreas.Where(r => r.Id == 0))
+            {
+                ICollection<JobTitle> jobTitles = excelRoleOffers
+                .Where(r => r.FunctionalArea.Code == functionalArea.Code)
+                .DistinctBy(r => r.JobTitle.Code)
+                .Select(r => r.JobTitle)
+                .ToList();
+                functionalArea.JobTitles = jobTitles;
+            }
+
+            foreach (JobTitle jobTitle in distinctJobTitles.Where(r=>r.Id == 0))
+            {
+                ICollection<Location> locations = excelRoleOffers
+                    .Where(r => r.JobTitle.Code == jobTitle.Code)
+                    .DistinctBy(r => r.Location.Code)
+                    .Select(r => r.Location)
+                    .ToList();
+                jobTitle.Locations = locations;
+            }
+            
+
             // isVolunteersRequestSent variable is used for perfomance improvement purposes
             // if one RoleOffer is not found in excel then this means that 
             // this RoleOffer has to be removed and volunteers with this RoleOffer
@@ -212,21 +292,25 @@ namespace Assignment.Services.Implementation
             // if even one removal of RoleOffer actually happened causes poor perfomance 
             // so this variable determines if the volunteers already brought from db or not
             bool isVolunteersRequestSent = false;
-
             foreach (RoleOffer dbRoleOffer in dbRoleOffers)
             {
-                if (!updatedOrAddedRoleOffers
+                if (!excelRoleOffers
                     .Any(r => r.RoleOfferId == dbRoleOffer.RoleOfferId)
                     &&!removedRoleOffers.Any(r=>r.Id == dbRoleOffer.Id))
                 {
+                    // Send volunteer request if not sent yet
                     if (!isVolunteersRequestSent)
                     {
+                        int[] roleOfferIds = dbRoleOffers
+                            .Select(r => r.Id)
+                            .ToArray();
                         volunteersWithRoleOffer = (
                             await _unitOfWork.VolunteerRepository
                             .GetAllAsNoTrackingAsync
                             (v => v.RoleOfferId != null && !v.IsDeleted
-                            && dbRoleOffers.Select(r=>r.Id).ToArray().Contains((int)v.RoleOfferId))
-                            ).ToList();
+                            && roleOfferIds
+                            .Contains((int)v.RoleOfferId)))
+                            .ToList();
                         isVolunteersRequestSent = true;
                     }
                     // We don't need the entire RoleOffer since it has other references too
@@ -236,22 +320,22 @@ namespace Assignment.Services.Implementation
                         volunteersWithRoleOffer.Where
                         (v =>v.RoleOfferId == dbRoleOffer.Id));
                 }
-                if (!updatedOrAddedRoleOffers
+                if (!excelRoleOffers
                     .Any(r => r.Location.Code == dbRoleOffer.Location.Code)
                     && !removedLocations.Any(l =>l.Id == dbRoleOffer.Location.Id))
                 {
                     removedLocations.Add(new Location 
                     { Id= dbRoleOffer.Location.Id, IsDeleted=true});
                 }
-                if (!updatedOrAddedRoleOffers
-                    .Any(r => r.FunctionalArea.Name == dbRoleOffer.FunctionalArea.Name)
+                if (!excelRoleOffers
+                    .Any(r => r.FunctionalArea.Code == dbRoleOffer.FunctionalArea.Code)
                     && !removedFunctionalAreas.Any(f => f.Id == dbRoleOffer.FunctionalArea.Id))
                 {
                     removedFunctionalAreas
                         .Add(new FunctionalArea 
                         { Id = dbRoleOffer.FunctionalArea.Id, IsDeleted = true });
                 }
-                if (!updatedOrAddedRoleOffers
+                if (!excelRoleOffers
                     .Any(r => r.FunctionalAreaType.Name == dbRoleOffer.FunctionalAreaType.Name)
                     && !removedFunctionalAreaTypes.Any(f => f.Id == dbRoleOffer.FunctionalAreaType.Id))
                 {
@@ -259,7 +343,7 @@ namespace Assignment.Services.Implementation
                         .Add(new FunctionalAreaType 
                         { Id = dbRoleOffer.FunctionalAreaType.Id, IsDeleted = true });
                 }
-                if (!updatedOrAddedRoleOffers
+                if (!excelRoleOffers
                     .Any(r => r.JobTitle.Code == dbRoleOffer.JobTitle.Code)
                     && !removedJobTitles.Any(j => j.Id == dbRoleOffer.JobTitle.Id))
                 {
@@ -267,6 +351,7 @@ namespace Assignment.Services.Implementation
                     { Id = dbRoleOffer.JobTitle.Id, IsDeleted = true });
                 }
             }
+
             foreach (Volunteer volunteer in freeVolunteers)
             {
                 volunteer.RoleOfferId = null;
@@ -276,110 +361,50 @@ namespace Assignment.Services.Implementation
                 _historyServices.WriteHistory(volunteer,this.Email);
             }
 
-            // Getting all distinct objects
-            List<FunctionalAreaType> distinctFunctionalAreaTypes = updatedOrAddedRoleOffers
-              .Select(r => r.FunctionalAreaType)
-              .DistinctBy(r => r.Name)
-              .ToList();
-            List<FunctionalArea> distinctFunctionalAreas = updatedOrAddedRoleOffers
-               .Select(r => r.FunctionalArea)
-               .DistinctBy(r => r.Code)
-               .ToList();
-            List<Location> distinctLocations = updatedOrAddedRoleOffers
-                .Select(r => r.Location)
-                .DistinctBy(r => r.Code)
-                .ToList();
-            List<JobTitle> distinctJobTitles = updatedOrAddedRoleOffers
-                .Select(r => r.JobTitle)
-                .DistinctBy(r => r.Code)
-                .ToList();
-            List<FunctionalAreaType> functionalAreaTypes = new();
-            List<int> roleOfferIds = new();
-
-            // Setting the fields of RoleOffer. The fields are F.A.T., F.A., J.T. etc.
-            foreach (RoleOffer roleOffer in updatedOrAddedRoleOffers)
-            {
-                FunctionalAreaType functionalAreaType = distinctFunctionalAreaTypes
-                    .First(f => f.Name == roleOffer.FunctionalAreaType.Name);
-                FunctionalArea functionalAreaa = distinctFunctionalAreas
-                    .First(f => f.Code
-                    == roleOffer.FunctionalArea.Code);
-                JobTitle jobTitle = distinctJobTitles
-                    .First(j => j.Code == roleOffer.JobTitle.Code);
-                Location location = distinctLocations
-                    .First(l => l.Code == roleOffer.Location.Code);
-
-                roleOffer.FunctionalAreaType = functionalAreaType;
-                roleOffer.FunctionalArea=functionalAreaa;
-
-                roleOffer.JobTitle = jobTitle;
-                roleOffer.Location = location;
-            }
-            // these loops are for the EF to help it understand the relations
-            // for example, these FuntionalAreaTypes have these FunctionalAreas
-            // Thus we need to set them so that EF understands
-            // Also note that we are only doing this for the new ones so that
-            // the realations can be created. If the relations already exist in db EF will understand it
-            // So we do it only for the new ones (the ones that don't have id)
-            foreach (FunctionalAreaType functionalAreaType 
-                in distinctFunctionalAreaTypes.Where(r=>r.Id==0))
-            {
-                ICollection<FunctionalArea> functionalAreas = updatedOrAddedRoleOffers
-                    .Where(r => r.FunctionalAreaType.Name == functionalAreaType.Name)
-                    .DistinctBy(r => r.FunctionalArea.Name)
-                    .Select(r => r.FunctionalArea)
-                    .ToList();
-                functionalAreaType.FunctionalAreas = functionalAreas;
-            }
-            foreach (FunctionalArea functionalArea in distinctFunctionalAreas.Where(r => r.Id == 0))
-            {
-                ICollection<JobTitle> jobTitles = updatedOrAddedRoleOffers
-                .Where(r => r.FunctionalArea.Code == functionalArea.Code)
-                .DistinctBy(r => r.JobTitle.Code)
-                .Select(r => r.JobTitle)
-                .ToList();
-                functionalArea.JobTitles = jobTitles;
-
-            }
-            foreach (JobTitle jobTitle in distinctJobTitles.Where(r => r.Id == 0))
-            {
-                ICollection<Location> locations = updatedOrAddedRoleOffers
-                    .Where(r => r.JobTitle.Code == jobTitle.Code)
-                    .DistinctBy(r => r.Location.Code)
-                    .Select(r => r.Location)
-                    .ToList();
-                jobTitle.Locations = locations;
-            }
-
             // remove items that weren't in excel
             // first remove RoleOffers if there is any 
             // Remove it first because it has references to other objects (F.A.T, F.A. etc.)
+
             if (removedRoleOffers.Count > 0)
             {
                 _unitOfWork.RoleOfferRepository.RemoveRangePermanently(removedRoleOffers);
+                await _unitOfWork.CompleteAsync();
+            }
+            _unitOfWork.RoleOfferRepository.UpdateRange(excelRoleOffers);
+            await _unitOfWork.CompleteAsync();
+
+            if (removedLocations.Count > 0)
+            {
+                _unitOfWork.LocationRepository
+                    .RemoveRangePermanently(removedLocations);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            if (removedJobTitles.Count > 0)
+            {
+                _unitOfWork.JobTitleRepository.RemoveRangePermanently(removedJobTitles);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            if (removedFunctionalAreas.Count > 0)
+            {
+                _unitOfWork.FunctionalAreaRepository
+                    .RemoveRangePermanently(removedFunctionalAreas);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            if (removedFunctionalAreaTypes.Count > 0)
+            {
+                _unitOfWork.FunctionalAreaTypeRepository
+                    .RemoveRangePermanently(removedFunctionalAreaTypes);
                 await _unitOfWork.CompleteAsync();
             }
 
             if (freeVolunteers.Count > 0)
                 _unitOfWork.VolunteerRepository.UpdateRange(freeVolunteers);
 
-            if (removedFunctionalAreaTypes.Count > 0)
-                _unitOfWork.FunctionalAreaTypeRepository
-                    .RemoveRangePermanently(removedFunctionalAreaTypes);
-
-            if (removedFunctionalAreas.Count > 0)
-                _unitOfWork.FunctionalAreaRepository
-                    .RemoveRangePermanently(removedFunctionalAreas);
-
-            if (removedJobTitles.Count > 0)
-                _unitOfWork.JobTitleRepository.RemoveRangePermanently(removedJobTitles);
-
-            if (removedLocations.Count > 0)
-                _unitOfWork.LocationRepository
-                    .RemoveRangePermanently(removedLocations);
-
-            _unitOfWork.RoleOfferRepository.UpdateRange(updatedOrAddedRoleOffers);
             await _unitOfWork.CompleteAsync();
+
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
     }

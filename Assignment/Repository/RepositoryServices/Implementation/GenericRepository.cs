@@ -122,6 +122,7 @@ namespace Repository.RepositoryServices.Implementation
 
         public bool RemoveRangePermanently(ICollection<T>items)
         {
+            context.ChangeTracker.Clear();
             dbSet.RemoveRange(items);
             return true;
         }
