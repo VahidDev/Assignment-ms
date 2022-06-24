@@ -302,7 +302,7 @@ namespace Assignment.Services.Implementation
                     if (!isVolunteersRequestSent)
                     {
                         int[] roleOfferIds = dbRoleOffers
-                            .Select(r => r.Id)
+                            .Select(r => r.RoleOfferId)
                             .ToArray();
                         volunteersWithRoleOffer = (
                             await _unitOfWork.VolunteerRepository
@@ -318,7 +318,7 @@ namespace Assignment.Services.Implementation
                     removedRoleOffers.Add(new RoleOffer { Id=dbRoleOffer.Id,IsDeleted=true});
                     freeVolunteers.AddRange(
                         volunteersWithRoleOffer.Where
-                        (v =>v.RoleOfferId == dbRoleOffer.Id));
+                        (v =>v.RoleOfferId == dbRoleOffer.RoleOfferId));
                 }
                 if (!excelRoleOffers
                     .Any(r => r.Location.Code == dbRoleOffer.Location.Code)

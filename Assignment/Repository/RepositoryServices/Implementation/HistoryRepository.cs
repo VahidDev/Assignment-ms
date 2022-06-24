@@ -14,10 +14,7 @@ namespace Repository.RepositoryServices.Implementation
             : base( context,logger) { }
         public bool Add(History entity)
         {
-            Task.Run(() =>
-            {
-                dbSet.Add(entity);
-            });
+            dbSet.Add(entity);
             return true;
         }
     }
