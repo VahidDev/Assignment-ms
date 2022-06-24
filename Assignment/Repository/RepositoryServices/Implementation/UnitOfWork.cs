@@ -56,5 +56,10 @@ namespace Repository.RepositoryServices.Implementation
         }
 
         public void Dispose() => _context.Dispose();
+
+        public void Complete()
+        {
+            _context.SaveChanges();
+        }
     }
 }

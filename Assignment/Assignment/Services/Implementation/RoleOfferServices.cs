@@ -360,6 +360,7 @@ namespace Assignment.Services.Implementation
                 // Write to history
                 _historyServices.WriteHistory(volunteer,this.Email);
             }
+            _unitOfWork.Complete();
 
             // remove items that weren't in excel
             // first remove RoleOffers if there is any 
