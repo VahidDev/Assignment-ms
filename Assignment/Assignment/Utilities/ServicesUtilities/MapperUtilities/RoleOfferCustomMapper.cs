@@ -75,6 +75,7 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
                    r => r.Location, l => l.Code == updatedOrNewRoleOffer.Location.Code,
                    updatedOrNewRoleOffer.Location, mapper);
             }
+
             return updatedOrNewRoleOffer;
         }      
     

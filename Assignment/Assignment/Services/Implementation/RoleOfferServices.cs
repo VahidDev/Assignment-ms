@@ -133,8 +133,6 @@ namespace Assignment.Services.Implementation
                 .GetAllAsNoTrackingWithItemsAsync(r=>!r.IsDeleted))
                 .ToList();
 
-            List<RoleOffer> updatedOrAddRoleOffers=new();
-
             foreach (RoleOffer newExcelRoleOffer in excelRoleOffers)
             {
                 RoleOffer? dbRoleOffer = dbRoleOffers
@@ -150,15 +148,18 @@ namespace Assignment.Services.Implementation
                 {
                     // if the given Roleoffer doesn't exist then check if other items (F.A.,J.T.) 
                     // already exist in db. If yes then set excel items id to db items id
-                    FunctionalAreaType? dbExcelEntity = dbRoleOffers
+                    FunctionalAreaType? dbFunctionalAreaType = dbRoleOffers
                         .Select(r => r.FunctionalAreaType)
                         .FirstOrDefault(f => f.Name == newExcelRoleOffer.FunctionalAreaType.Name);
+
                     FunctionalArea? dbFunctionalArea = dbRoleOffers
                         .Select(r => r.FunctionalArea)
                         .FirstOrDefault(f => f.Code == newExcelRoleOffer.FunctionalArea.Code);
+
                     Location? dbLocation = dbRoleOffers
                         .Select(r => r.Location)
                         .FirstOrDefault(l => l.Code == newExcelRoleOffer.Location.Code);
+
                     JobTitle? dbJobTitle = dbRoleOffers
                         .Select(r => r.JobTitle)
                         .FirstOrDefault(j => j.Code == newExcelRoleOffer.JobTitle.Code);
@@ -169,19 +170,19 @@ namespace Assignment.Services.Implementation
                         newExcelRoleOffer.Location.CreatedAt = dbLocation.CreatedAt;
                     }
 
-                    if (dbExcelEntity!=null)
+                    if (dbFunctionalAreaType != null)
                     {
-                        newExcelRoleOffer.FunctionalAreaType.Id = dbExcelEntity.Id;
-                        newExcelRoleOffer.FunctionalAreaType.CreatedAt = dbExcelEntity.CreatedAt;
+                        newExcelRoleOffer.FunctionalAreaType.Id = dbFunctionalAreaType.Id;
+                        newExcelRoleOffer.FunctionalAreaType.CreatedAt = dbFunctionalAreaType.CreatedAt;
                     }
 
-                    if (dbFunctionalArea!=null)
+                    if (dbFunctionalArea != null)
                     {
                         newExcelRoleOffer.FunctionalArea.Id = dbFunctionalArea.Id;
                         newExcelRoleOffer.FunctionalArea.CreatedAt = dbFunctionalArea.CreatedAt;
                     }
 
-                    if (dbJobTitle!=null)
+                    if (dbJobTitle != null)
                     {
                         newExcelRoleOffer.JobTitle.Id = dbJobTitle.Id;
                         newExcelRoleOffer.JobTitle.CreatedAt = dbJobTitle.CreatedAt;
@@ -196,8 +197,6 @@ namespace Assignment.Services.Implementation
                         newExcelRoleOffer.TotalDemand);
                     newExcelRoleOffer.WaitlistDemand = newExcelRoleOffer.WaitlistDemand;
                 }
-
-                updatedOrAddRoleOffers.Add(newExcelRoleOffer);
             }
 
             List<RoleOffer> removedRoleOffers = new();
@@ -282,7 +281,15 @@ namespace Assignment.Services.Implementation
                     .ToList();
                 jobTitle.Locations = locations;
             }
-            
+
+            foreach (Location location in distinctLocations.Where(r => r.Id == 0))
+            {
+                ICollection<RoleOffer> roleOffers = excelRoleOffers
+                    .Where(r => r.Location.Code == location.Code)
+                    .ToList();
+                location.RoleOffers = roleOffers;
+            }
+
 
             // isVolunteersRequestSent variable is used for perfomance improvement purposes
             // if one RoleOffer is not found in excel then this means that 
@@ -324,8 +331,8 @@ namespace Assignment.Services.Implementation
                     .Any(r => r.Location.Code == dbRoleOffer.Location.Code)
                     && !removedLocations.Any(l =>l.Id == dbRoleOffer.Location.Id))
                 {
-                    removedLocations.Add(new Location 
-                    { Id= dbRoleOffer.Location.Id, IsDeleted=true});
+                    removedLocations.Add(new Location
+                    { Id = dbRoleOffer.Location.Id, IsDeleted = true });
                 }
                 if (!excelRoleOffers
                     .Any(r => r.FunctionalArea.Code == dbRoleOffer.FunctionalArea.Code)
@@ -360,6 +367,7 @@ namespace Assignment.Services.Implementation
                 // Write to history
                 _historyServices.WriteHistory(volunteer,this.Email);
             }
+
             _unitOfWork.Complete();
 
             // remove items that weren't in excel
@@ -371,35 +379,35 @@ namespace Assignment.Services.Implementation
                 _unitOfWork.RoleOfferRepository.RemoveRangePermanently(removedRoleOffers);
                 await _unitOfWork.CompleteAsync();
             }
-            _unitOfWork.RoleOfferRepository.UpdateRange(excelRoleOffers);
+            _unitOfWork.FunctionalAreaTypeRepository.UpdateRange(distinctFunctionalAreaTypes);
             await _unitOfWork.CompleteAsync();
 
-            if (removedLocations.Count > 0)
-            {
-                _unitOfWork.LocationRepository
-                    .RemoveRangePermanently(removedLocations);
-                await _unitOfWork.CompleteAsync();
-            }
+            //if (removedLocations.Count > 0)
+            //{
+            //    _unitOfWork.LocationRepository
+            //        .RemoveRangePermanently(removedLocations);
+            //    await _unitOfWork.CompleteAsync();
+            //}
 
-            if (removedJobTitles.Count > 0)
-            {
-                _unitOfWork.JobTitleRepository.RemoveRangePermanently(removedJobTitles);
-                await _unitOfWork.CompleteAsync();
-            }
+            //if (removedJobTitles.Count > 0)
+            //{
+            //    _unitOfWork.JobTitleRepository.RemoveRangePermanently(removedJobTitles);
+            //    await _unitOfWork.CompleteAsync();
+            //}
 
-            if (removedFunctionalAreas.Count > 0)
-            {
-                _unitOfWork.FunctionalAreaRepository
-                    .RemoveRangePermanently(removedFunctionalAreas);
-                await _unitOfWork.CompleteAsync();
-            }
+            //if (removedFunctionalAreas.Count > 0)
+            //{
+            //    _unitOfWork.FunctionalAreaRepository
+            //        .RemoveRangePermanently(removedFunctionalAreas);
+            //    await _unitOfWork.CompleteAsync();
+            //}
 
-            if (removedFunctionalAreaTypes.Count > 0)
-            {
-                _unitOfWork.FunctionalAreaTypeRepository
-                    .RemoveRangePermanently(removedFunctionalAreaTypes);
-                await _unitOfWork.CompleteAsync();
-            }
+            //if (removedFunctionalAreaTypes.Count > 0)
+            //{
+            //    _unitOfWork.FunctionalAreaTypeRepository
+            //        .RemoveRangePermanently(removedFunctionalAreaTypes);
+            //    await _unitOfWork.CompleteAsync();
+            //}
 
             if (freeVolunteers.Count > 0)
                 _unitOfWork.VolunteerRepository.UpdateRange(freeVolunteers);
