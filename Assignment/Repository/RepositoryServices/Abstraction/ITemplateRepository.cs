@@ -9,5 +9,7 @@ namespace Repository.RepositoryServices.Abstraction
     {
         Task<Template> GetTemplatesWithFiltersAsNoTrackingAsync
             (Expression<Func<Template,bool>>expression);
+        Task<Template> GetTemplatesWithFiltersAsync
+            (Expression<Func<Template, bool>> expression);
     }
 }

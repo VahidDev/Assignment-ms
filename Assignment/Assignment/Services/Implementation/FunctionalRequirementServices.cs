@@ -62,7 +62,7 @@ namespace Assignment.Services.Implementation
             FunctionalRequirement dbFunctionalRequirement = new();
 
             RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository
-                .GetByRoleOfferIdAsNoTrackingAsync(dto.RoleOfferId);
+                .GetByIdAsNoTrackingAsync(dto.RoleOfferId);
 
             if (roleOffer == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
@@ -70,8 +70,8 @@ namespace Assignment.Services.Implementation
 
             if (dto.Id != null)
             {
-                dbFunctionalRequirement= await _unitOfWork
-                    .FunctionalRequirementRepository
+                dbFunctionalRequirement 
+                    = await _unitOfWork.FunctionalRequirementRepository
                     .GetByIdAsNoTrackingIncludingItemsAsync(fr => fr.Id == dto.Id);
 
                 if(dbFunctionalRequirement == null)
@@ -79,9 +79,6 @@ namespace Assignment.Services.Implementation
                     return _jsonFactory.CreateJson(StatusCodes.Status404NotFound,
                         $"Functional Requirement was not found");
                 }
-                if (dbFunctionalRequirement.RoleOfferId != dto.RoleOfferId)
-                    return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
-                        $"RoleOffer ID is invalid");
             }
             else
             {
@@ -170,14 +167,10 @@ namespace Assignment.Services.Implementation
                 .GetAllAsNoTrackingAsync(r=>!r.IsDeleted
                 && roleOfferIds.Contains(r.RoleOfferId))).ToList();
 
-            int[] dbRoleOfferIds = updatedRoleOffers
-                .Select(x => x.Id)
-                .ToArray();
-
             ICollection<FunctionalRequirement> functionalRequirements 
                 = await _unitOfWork.FunctionalRequirementRepository 
                 .GetAllAsNoTrackingIncludingItemsAsync(r=>!r.IsDeleted 
-                && dbRoleOfferIds.Contains(r.RoleOfferId));
+                && roleOfferIds.Contains(r.RoleOfferId));
 
             foreach (Requirement requirement in newRequirements)
             {
@@ -196,8 +189,7 @@ namespace Assignment.Services.Implementation
                         $"RoleOffer with the ID {requirement.RoleOfferId} was not found");
                 }
                 FunctionalRequirement? fr = functionalRequirements
-                    .FirstOrDefault(r=>r.RoleOffer?.RoleOfferId 
-                    == requirement.RoleOfferId);
+                    .FirstOrDefault(r=>r.RoleOffer.RoleOfferId == requirement.RoleOfferId);
                 
                 if(fr != null && fr.Requirements
                     .Any(r=>r.RequirementName == requirement.RequirementName

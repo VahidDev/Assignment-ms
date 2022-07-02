@@ -64,22 +64,32 @@ namespace Assignment.Services.Implementation
         public async Task<ObjectResult> UpdateAsync(UpdateTemplateDto updatedTemplate)
         {
             Template dbTemplate = await _unitOfWork.TemplateRepository
-                .GetTemplatesWithFiltersAsNoTrackingAsync(t => !t.IsDeleted
-                && t.Id==updatedTemplate.Id);
+                .GetTemplatesWithFiltersAsNoTrackingAsync
+                (t => !t.IsDeleted && t.Id == updatedTemplate.Id);
 
             if (dbTemplate == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
 
+            foreach (UpdateFilterDto filterDto in updatedTemplate.Filters)
+            {
+                if(filterDto.Id == 0)
+                {
+                    filterDto.Id = null;
+                }
+            }
+
             ICollection<UpdateFilterDto> updatedFilters = updatedTemplate.Filters;
-            Template template=_mapper.Map<Template>(updatedTemplate);
+            Template template = _mapper.Map<Template>(updatedTemplate);
+
             foreach (Filter dbFilter in dbTemplate.Filters)
             {
                 if (!updatedFilters.Any(f => f.Id == dbFilter.Id))
                 {
-                    dbFilter.IsDeleted=true;
+                    dbFilter.IsDeleted = true;
                     template.Filters.Add(dbFilter);
                 }
             }
+
             _unitOfWork.TemplateRepository.Update(template);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);

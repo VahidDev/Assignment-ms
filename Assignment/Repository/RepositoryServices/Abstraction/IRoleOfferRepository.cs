@@ -21,6 +21,5 @@ namespace Repository.RepositoryServices.Abstraction
             (Expression<Func<RoleOffer, bool>> expression);
         Task<ICollection<AssigneeDemandWaitlistCountDto>> GetAllAssigneeDemandWaitlistCountsAsync
             (Expression<Func<RoleOffer, bool>> expression);
-        Task<RoleOffer> GetByRoleOfferIdAsNoTrackingAsync(int id);
     }
 }

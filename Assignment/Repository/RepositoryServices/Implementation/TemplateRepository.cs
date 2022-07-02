@@ -13,10 +13,14 @@ using System.Threading.Tasks;
 
 namespace Repository.RepositoryServices.Implementation
 {
-    public class TemplateRepository:GenericRepository<Template>,ITemplateRepository
+    public class TemplateRepository
+        : GenericRepository<Template>
+        , ITemplateRepository
     {
+
         public TemplateRepository(AppDbContext context, ILogger logger ) 
-            : base(context, logger){}
+            : base(context, logger) {}
+
         public override bool Delete(Template template)
         {
             foreach (var filter in template.Filters)
@@ -31,9 +35,12 @@ namespace Repository.RepositoryServices.Implementation
         public async Task<Template> GetTemplatesWithFiltersAsNoTrackingAsync
             (Expression<Func<Template,bool>> expression)
         {
-            return await dbSet.Include(t => t.Filters.Where(f => !f.IsDeleted))
-                .AsNoTracking().FirstOrDefaultAsync(expression);
+            return await dbSet
+                .AsNoTracking()
+                .Include(t => t.Filters.Where(f => !f.IsDeleted))
+                .FirstOrDefaultAsync(expression);
         }
+
         public async override Task<IEnumerable<Template>> GetAllAsync
             (IEnumerable<string> includingItems = null)
         {
@@ -43,6 +50,14 @@ namespace Repository.RepositoryServices.Implementation
                 .Include(t=>t.Filters.Where(f=>!f.IsDeleted).OrderBy(f=>f.Requirement))
                 .OrderBy(t=>t.Name)
                 .ToListAsync();
+        }
+
+        public async Task<Template> GetTemplatesWithFiltersAsync
+            (Expression<Func<Template, bool>> expression)
+        {
+            return await dbSet
+                .Include(t => t.Filters.Where(f => !f.IsDeleted))
+                .FirstOrDefaultAsync(expression);
         }
     }
 }

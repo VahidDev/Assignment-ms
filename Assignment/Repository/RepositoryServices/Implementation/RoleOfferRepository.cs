@@ -108,12 +108,5 @@ namespace Repository.RepositoryServices.Implementation
         {
             return await dbSet.Where(expression).ToListAsync();
         }
-
-        public async Task<RoleOffer> GetByRoleOfferIdAsNoTrackingAsync(int id)
-        {
-            return await dbSet
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.RoleOfferId == id);
-        }
     }
 }
