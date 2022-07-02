@@ -13,5 +13,6 @@ namespace Repository.RepositoryServices.Abstraction
            (Expression<Func<FunctionalRequirement, bool>> expression);
         Task<FunctionalRequirement> GetByIdAsNoTrackingIncludingItemsAsync
             (Expression<Func<FunctionalRequirement, bool>> expression);
+        Task<FunctionalRequirement> GetByRoleOfferIdAsNoTrackingAsync(int roleOfferId);
     }
 }

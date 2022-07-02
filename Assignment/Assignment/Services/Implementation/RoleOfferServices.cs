@@ -37,7 +37,6 @@ namespace Assignment.Services.Implementation
             _historyServices = historyServices;
         }
 
-
         public async Task<ObjectResult> GetAllRoleOffersAsync()
         {
            ICollection<RoleOfferDto> roleOffers=_mapper
@@ -129,81 +128,37 @@ namespace Assignment.Services.Implementation
                     FileErrorMessageConstants.NotInCorrectFormat);
             }
 
-            IReadOnlyCollection<RoleOffer> dbRoleOffers = (await _unitOfWork.RoleOfferRepository
-                .GetAllAsNoTrackingWithItemsAsync(r=>!r.IsDeleted))
+            ICollection<RoleOffer> dbRoleOffers 
+                = (await _unitOfWork.RoleOfferRepository
+                .GetAllAsync())
                 .ToList();
 
-            foreach (RoleOffer newExcelRoleOffer in excelRoleOffers)
+
+            //ICollection<FunctionalRequirement> functionalRequirements
+            //    = (await _unitOfWork.FunctionalRequirementRepository
+            //    .GetAllAsNoTrackingAsync(r=>!r.IsDeleted))
+            //    .ToList();
+
+            //foreach (FunctionalRequirement functionalRequirement in functionalRequirements)
+            //{
+            //    RoleOffer roleOffer = dbRoleOffers
+            //        .First(r => r.Id == functionalRequirement.RoleOfferId);
+
+            //    functionalRequirement.RoleOfferId = roleOffer.RoleOfferId;
+            //}
+            //_unitOfWork.FunctionalRequirementRepository.UpdateRange(functionalRequirements);
+            //await _unitOfWork.CompleteAsync();
+
+            foreach (RoleOffer excelRoleOffer in excelRoleOffers)
             {
-                RoleOffer? dbRoleOffer = dbRoleOffers
-                    .FirstOrDefault(r => r.RoleOfferId == newExcelRoleOffer.RoleOfferId);
-                if (dbRoleOffer != null)
+                if (excelRoleOffer.LevelOfConfidence != null) 
                 {
-                    // if it exists in db then we update
-                    dbRoleOffer = RoleOfferCustomMapper
-                        .MapExcelRoleOfferToDbRoleOffer(dbRoleOffer, newExcelRoleOffer, 
-                        dbRoleOffers ,_mapper);
-                }
-                else
-                {
-                    // if the given Roleoffer doesn't exist then check if other items (F.A.,J.T.) 
-                    // already exist in db. If yes then set excel items id to db items id
-                    FunctionalAreaType? dbFunctionalAreaType = dbRoleOffers
-                        .Select(r => r.FunctionalAreaType)
-                        .FirstOrDefault(f => f.Name == newExcelRoleOffer.FunctionalAreaType.Name);
-
-                    FunctionalArea? dbFunctionalArea = dbRoleOffers
-                        .Select(r => r.FunctionalArea)
-                        .FirstOrDefault(f => f.Code == newExcelRoleOffer.FunctionalArea.Code);
-
-                    Location? dbLocation = dbRoleOffers
-                        .Select(r => r.Location)
-                        .FirstOrDefault(l => l.Code == newExcelRoleOffer.Location.Code);
-
-                    JobTitle? dbJobTitle = dbRoleOffers
-                        .Select(r => r.JobTitle)
-                        .FirstOrDefault(j => j.Code == newExcelRoleOffer.JobTitle.Code);
-
-                    if (dbLocation != null)
-                    {
-                        newExcelRoleOffer.Location.Id = dbLocation.Id;
-                        newExcelRoleOffer.Location.CreatedAt = dbLocation.CreatedAt;
-                    }
-
-                    if (dbFunctionalAreaType != null)
-                    {
-                        newExcelRoleOffer.FunctionalAreaType.Id = dbFunctionalAreaType.Id;
-                        newExcelRoleOffer.FunctionalAreaType.CreatedAt = dbFunctionalAreaType.CreatedAt;
-                    }
-
-                    if (dbFunctionalArea != null)
-                    {
-                        newExcelRoleOffer.FunctionalArea.Id = dbFunctionalArea.Id;
-                        newExcelRoleOffer.FunctionalArea.CreatedAt = dbFunctionalArea.CreatedAt;
-                    }
-
-                    if (dbJobTitle != null)
-                    {
-                        newExcelRoleOffer.JobTitle.Id = dbJobTitle.Id;
-                        newExcelRoleOffer.JobTitle.CreatedAt = dbJobTitle.CreatedAt;
-                    }
-                }
-
-                if (newExcelRoleOffer.LevelOfConfidence != null) 
-                {
-                    newExcelRoleOffer.AssigneeDemand = DemandCalculator
+                    excelRoleOffer.AssigneeDemand = DemandCalculator
                         .CalculateRoleOfferDemand
-                        ((int) newExcelRoleOffer.LevelOfConfidence,
-                        newExcelRoleOffer.TotalDemand);
-                    newExcelRoleOffer.WaitlistDemand = newExcelRoleOffer.WaitlistDemand;
+                        ((int)excelRoleOffer.LevelOfConfidence,
+                        excelRoleOffer.TotalDemand);
                 }
             }
-
-            List<RoleOffer> removedRoleOffers = new();
-            List<FunctionalAreaType> removedFunctionalAreaTypes = new();
-            List<Location> removedLocations= new(); 
-            List<FunctionalArea> removedFunctionalAreas= new();
-            List<JobTitle> removedJobTitles= new();
             
             List<Volunteer> freeVolunteers= new();
             List<Volunteer> volunteersWithRoleOffer= new();
@@ -241,7 +196,7 @@ namespace Assignment.Services.Implementation
                 roleOffer.FunctionalArea = functionalArea;
 
                 roleOffer.JobTitle = jobTitle;
-                roleOffer.Location = location;
+                roleOffer.Location = location;  
             }
 
             // these loops are for the EF to help it understand the relations
@@ -252,7 +207,7 @@ namespace Assignment.Services.Implementation
             // So we do it only for the new ones (the ones that don't have id)
 
             foreach (FunctionalAreaType functionalAreaType
-                in distinctFunctionalAreaTypes.Where(r=>r.Id == 0))
+                in distinctFunctionalAreaTypes)
             {
                 ICollection<FunctionalArea> functionalAreas = excelRoleOffers
                     .Where(r => r.FunctionalAreaType.Name == functionalAreaType.Name)
@@ -262,7 +217,7 @@ namespace Assignment.Services.Implementation
                 functionalAreaType.FunctionalAreas = functionalAreas;
             }
 
-            foreach (FunctionalArea functionalArea in distinctFunctionalAreas.Where(r => r.Id == 0))
+            foreach (FunctionalArea functionalArea in distinctFunctionalAreas)
             {
                 ICollection<JobTitle> jobTitles = excelRoleOffers
                 .Where(r => r.FunctionalArea.Code == functionalArea.Code)
@@ -272,7 +227,7 @@ namespace Assignment.Services.Implementation
                 functionalArea.JobTitles = jobTitles;
             }
 
-            foreach (JobTitle jobTitle in distinctJobTitles.Where(r=>r.Id == 0))
+            foreach (JobTitle jobTitle in distinctJobTitles)
             {
                 ICollection<Location> locations = excelRoleOffers
                     .Where(r => r.JobTitle.Code == jobTitle.Code)
@@ -281,15 +236,6 @@ namespace Assignment.Services.Implementation
                     .ToList();
                 jobTitle.Locations = locations;
             }
-
-            foreach (Location location in distinctLocations.Where(r => r.Id == 0))
-            {
-                ICollection<RoleOffer> roleOffers = excelRoleOffers
-                    .Where(r => r.Location.Code == location.Code)
-                    .ToList();
-                location.RoleOffers = roleOffers;
-            }
-
 
             // isVolunteersRequestSent variable is used for perfomance improvement purposes
             // if one RoleOffer is not found in excel then this means that 
@@ -302,8 +248,7 @@ namespace Assignment.Services.Implementation
             foreach (RoleOffer dbRoleOffer in dbRoleOffers)
             {
                 if (!excelRoleOffers
-                    .Any(r => r.RoleOfferId == dbRoleOffer.RoleOfferId)
-                    &&!removedRoleOffers.Any(r=>r.Id == dbRoleOffer.Id))
+                    .Any(r => r.RoleOfferId == dbRoleOffer.RoleOfferId))
                 {
                     // Send volunteer request if not sent yet
                     if (!isVolunteersRequestSent)
@@ -320,42 +265,9 @@ namespace Assignment.Services.Implementation
                             .ToList();
                         isVolunteersRequestSent = true;
                     }
-                    // We don't need the entire RoleOffer since it has other references too
-                    // if we add the entire RoleOffer it will cause reference problems
-                    removedRoleOffers.Add(new RoleOffer { Id=dbRoleOffer.Id,IsDeleted=true});
                     freeVolunteers.AddRange(
                         volunteersWithRoleOffer.Where
                         (v =>v.RoleOfferId == dbRoleOffer.RoleOfferId));
-                }
-                if (!excelRoleOffers
-                    .Any(r => r.Location.Code == dbRoleOffer.Location.Code)
-                    && !removedLocations.Any(l =>l.Id == dbRoleOffer.Location.Id))
-                {
-                    removedLocations.Add(new Location
-                    { Id = dbRoleOffer.Location.Id, IsDeleted = true });
-                }
-                if (!excelRoleOffers
-                    .Any(r => r.FunctionalArea.Code == dbRoleOffer.FunctionalArea.Code)
-                    && !removedFunctionalAreas.Any(f => f.Id == dbRoleOffer.FunctionalArea.Id))
-                {
-                    removedFunctionalAreas
-                        .Add(new FunctionalArea 
-                        { Id = dbRoleOffer.FunctionalArea.Id, IsDeleted = true });
-                }
-                if (!excelRoleOffers
-                    .Any(r => r.FunctionalAreaType.Name == dbRoleOffer.FunctionalAreaType.Name)
-                    && !removedFunctionalAreaTypes.Any(f => f.Id == dbRoleOffer.FunctionalAreaType.Id))
-                {
-                    removedFunctionalAreaTypes
-                        .Add(new FunctionalAreaType 
-                        { Id = dbRoleOffer.FunctionalAreaType.Id, IsDeleted = true });
-                }
-                if (!excelRoleOffers
-                    .Any(r => r.JobTitle.Code == dbRoleOffer.JobTitle.Code)
-                    && !removedJobTitles.Any(j => j.Id == dbRoleOffer.JobTitle.Id))
-                {
-                    removedJobTitles.Add(new JobTitle 
-                    { Id = dbRoleOffer.JobTitle.Id, IsDeleted = true });
                 }
             }
 
@@ -374,44 +286,51 @@ namespace Assignment.Services.Implementation
             // first remove RoleOffers if there is any 
             // Remove it first because it has references to other objects (F.A.T, F.A. etc.)
 
-            if (removedRoleOffers.Count > 0)
-            {
-                _unitOfWork.RoleOfferRepository.RemoveRangePermanently(removedRoleOffers);
-                await _unitOfWork.CompleteAsync();
-            }
-            _unitOfWork.FunctionalAreaTypeRepository.UpdateRange(distinctFunctionalAreaTypes);
+             _unitOfWork.RoleOfferRepository
+                .RemoveRangePermanently(dbRoleOffers);
             await _unitOfWork.CompleteAsync();
 
-            //if (removedLocations.Count > 0)
-            //{
-            //    _unitOfWork.LocationRepository
-            //        .RemoveRangePermanently(removedLocations);
-            //    await _unitOfWork.CompleteAsync();
-            //}
+            List<FunctionalAreaType> removedFunctionalAreaTypes
+                = (await _unitOfWork.FunctionalAreaTypeRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted))
+                .ToList();
 
-            //if (removedJobTitles.Count > 0)
-            //{
-            //    _unitOfWork.JobTitleRepository.RemoveRangePermanently(removedJobTitles);
-            //    await _unitOfWork.CompleteAsync();
-            //}
+            List<FunctionalArea> removedFunctionalAreas
+                = (await _unitOfWork.FunctionalAreaRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted))
+                .ToList();
 
-            //if (removedFunctionalAreas.Count > 0)
-            //{
-            //    _unitOfWork.FunctionalAreaRepository
-            //        .RemoveRangePermanently(removedFunctionalAreas);
-            //    await _unitOfWork.CompleteAsync();
-            //}
+            List<JobTitle> removedJobTitles
+                = (await _unitOfWork.JobTitleRepository
+                .GetAllAsNoTrackingAsync(r => !r.IsDeleted))
+                .ToList();
 
-            //if (removedFunctionalAreaTypes.Count > 0)
-            //{
-            //    _unitOfWork.FunctionalAreaTypeRepository
-            //        .RemoveRangePermanently(removedFunctionalAreaTypes);
-            //    await _unitOfWork.CompleteAsync();
-            //}
+            List<Location> removedLocations
+               = (await _unitOfWork.LocationRepository
+               .GetAllAsNoTrackingAsync(r => !r.IsDeleted))
+               .ToList();
+
+            _unitOfWork.FunctionalAreaTypeRepository
+                .RemoveRangePermanently(removedFunctionalAreaTypes);
+
+            _unitOfWork.FunctionalAreaRepository
+                .RemoveRangePermanently(removedFunctionalAreas);
+            
+            _unitOfWork.JobTitleRepository
+                .RemoveRangePermanently(removedJobTitles);
+
+            _unitOfWork.LocationRepository
+                .RemoveRangePermanently(removedLocations);
 
             if (freeVolunteers.Count > 0)
-                _unitOfWork.VolunteerRepository.UpdateRange(freeVolunteers);
+            {
+                _unitOfWork.VolunteerRepository
+                    .UpdateRange(freeVolunteers);
+            }
 
+            await _unitOfWork.RoleOfferRepository
+                .AddRangeAsync(excelRoleOffers);
+            
             await _unitOfWork.CompleteAsync();
 
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);

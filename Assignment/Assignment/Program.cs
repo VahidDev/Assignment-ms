@@ -22,7 +22,6 @@ builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.AddAppDbContext(builder.Configuration);
 builder.AddRepository();
 builder.AddCustomServices();
-
 WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

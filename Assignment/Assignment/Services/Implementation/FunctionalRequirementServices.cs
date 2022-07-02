@@ -30,9 +30,9 @@ namespace Assignment.Services.Implementation
 
         public async Task<ObjectResult> GetAllFunctionalRequirementsAsync()
         {
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK,
-                null,
-                _mapper.Map<List<GetFunctionalRequirementDto>>
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK
+                ,null
+                ,_mapper.Map<List<GetFunctionalRequirementDto>>
                 (await _unitOfWork.FunctionalRequirementRepository
                 .GetAllAsNoTrackingIncludingItemsAsync(fr => !fr.IsDeleted)));
         }
@@ -41,12 +41,16 @@ namespace Assignment.Services.Implementation
         {
             FunctionalRequirement functionalRequirement
                 = await _unitOfWork.FunctionalRequirementRepository
-                .GetByIdAsNoTrackingIncludingItemsAsync(r => r.RoleOfferId == id && !r.IsDeleted);
+                .GetByRoleOfferIdAsNoTrackingAsync(id);
+
             if (functionalRequirement == null)
+            {
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK,
-                null,
-                _mapper.Map<GetFunctionalRequirementDto>(functionalRequirement));
+            }
+
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK
+                ,null
+                ,_mapper.Map<GetFunctionalRequirementDto>(functionalRequirement));
         }
 
         public async Task<ObjectResult> UpdateOrAddFunctionalRequirementAsync
@@ -58,7 +62,7 @@ namespace Assignment.Services.Implementation
             FunctionalRequirement dbFunctionalRequirement = new();
 
             RoleOffer roleOffer = await _unitOfWork.RoleOfferRepository
-                .GetByIdAsNoTrackingAsync(dto.RoleOfferId);
+                .GetByRoleOfferIdAsNoTrackingAsync(dto.RoleOfferId);
 
             if (roleOffer == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status400BadRequest,
@@ -68,8 +72,7 @@ namespace Assignment.Services.Implementation
             {
                 dbFunctionalRequirement= await _unitOfWork
                     .FunctionalRequirementRepository
-                    .GetByIdAsNoTrackingIncludingItemsAsync
-                    (fr => fr.Id == dto.Id && !fr.RoleOffer.IsDeleted);
+                    .GetByIdAsNoTrackingIncludingItemsAsync(fr => fr.Id == dto.Id);
 
                 if(dbFunctionalRequirement == null)
                 {
@@ -84,7 +87,9 @@ namespace Assignment.Services.Implementation
             {
                 dbFunctionalRequirement = new();
             }
+
             dbFunctionalRequirement.RoleOffer = roleOffer;
+            dbFunctionalRequirement.RoleOfferId = roleOffer.RoleOfferId;
             dbFunctionalRequirement.RoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
             dbFunctionalRequirement.RoleOffer.WaitlistDemand = dto.WaitlistDemand;
             dbFunctionalRequirement.RoleOffer.TotalDemand = dto.TotalDemand;
@@ -207,7 +212,8 @@ namespace Assignment.Services.Implementation
                     functionalRequirements.Add(new FunctionalRequirement
                     {
                         Requirements = new List<Requirement>() { requirement },
-                        RoleOffer = roleOffer
+                        RoleOffer = roleOffer,
+                        RoleOfferId = roleOffer.RoleOfferId
                     });
                 }
                 else

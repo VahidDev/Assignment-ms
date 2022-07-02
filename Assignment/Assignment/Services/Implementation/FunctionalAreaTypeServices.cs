@@ -25,17 +25,21 @@ namespace Assignment.Services.Implementation
 
         public async Task<ObjectResult> GetAllIncludingItemsAsync()
         {
-            IReadOnlyCollection<RoleOffer>dbRoleOffers=(await _unitOfWork.RoleOfferRepository
-                .GetAllIncludingItemsAsync()).ToList();
+            IReadOnlyCollection<RoleOffer> dbRoleOffers 
+                = (await _unitOfWork.RoleOfferRepository
+                .GetAllIncludingItemsAsync())
+                .ToList();
 
-            IReadOnlyCollection<Volunteer> volunteers = (await _unitOfWork.VolunteerRepository
+            IReadOnlyCollection<Volunteer> volunteers 
+                = (await _unitOfWork.VolunteerRepository
                 .GetAllAsNoTrackingAsync(r => r.RoleOfferId != null && !r.IsDeleted))
                 .ToList();
 
-            List<FunctionalAreaType> distinctFunctionalAreaTypes = dbRoleOffers
-           .Select(r => r.FunctionalAreaType)
-           .DistinctBy(r => r.Name)
-           .ToList();
+            List<FunctionalAreaType> distinctFunctionalAreaTypes 
+                = dbRoleOffers
+                .Select(r => r.FunctionalAreaType)
+                .DistinctBy(r => r.Name)
+                .ToList();
             List<FunctionalArea> distinctFunctionalAreas = dbRoleOffers
                .Select(r => r.FunctionalArea)
                .DistinctBy(r => r.Code)

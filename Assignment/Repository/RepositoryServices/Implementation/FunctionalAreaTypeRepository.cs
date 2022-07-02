@@ -26,8 +26,6 @@ namespace Repository.RepositoryServices.Implementation
                 .ThenInclude(f => f.JobTitles.Where(r => !r.IsDeleted))
                 .ThenInclude(j => j.Locations.Where(r => !r.IsDeleted))
                 .ThenInclude(r => r.RoleOffers.Where(r => !r.IsDeleted))
-                .ThenInclude(r=>r.FunctionalRequirement)
-                .ThenInclude(r=>r.Requirements.Where(r => !r.IsDeleted))
                 .Where(expression)
                 .AsNoTracking()
                 .ToListAsync();

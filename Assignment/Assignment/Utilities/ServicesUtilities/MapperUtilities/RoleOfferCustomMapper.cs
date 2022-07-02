@@ -22,7 +22,6 @@ namespace Assignment.Utilities.ServicesUtilities.MapperUtilities
 
             if (dbRoleOffers.Any(r=>r.FunctionalArea.Code == updatedOrNewRoleOffer.FunctionalArea.Code))
             {
-                //updatedOrNewRoleOffer.FunctionalArea.Id = dbRoleOffer.FunctionalArea.Id;
                 MapEntityIdAndCreatedAt(updatedOrNewRoleOffer.FunctionalArea, 
                     dbRoleOffer.FunctionalArea.Id, dbRoleOffer.FunctionalArea.CreatedAt);
             }

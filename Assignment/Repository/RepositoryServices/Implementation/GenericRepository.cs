@@ -39,7 +39,10 @@ namespace Repository.RepositoryServices.Implementation
             IEnumerable<string> includingItems = null)
         {
             _querable = _querable.IncludeItemsIfExist(includingItems);
-            return await _querable.Where(predicate).AsNoTracking().ToListAsync();
+            return await _querable
+                .Where(predicate)
+                .AsNoTracking()
+                .ToListAsync();
         }
         public virtual async Task<T> GetByIdAsync
             (int id, IEnumerable<string> includingItems = null)
@@ -122,7 +125,6 @@ namespace Repository.RepositoryServices.Implementation
 
         public bool RemoveRangePermanently(ICollection<T>items)
         {
-            context.ChangeTracker.Clear();
             dbSet.RemoveRange(items);
             return true;
         }

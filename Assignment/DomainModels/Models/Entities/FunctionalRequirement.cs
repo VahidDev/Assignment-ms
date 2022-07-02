@@ -8,6 +8,7 @@ namespace DomainModels.Models.Entities
     public class FunctionalRequirement : Entity
     {
         public ICollection<Requirement> Requirements { get; set; }
+        [NotMapped]
         public RoleOffer RoleOffer { get; set; }
         [Column("role_offer_id")]
         public int RoleOfferId { get; set; }

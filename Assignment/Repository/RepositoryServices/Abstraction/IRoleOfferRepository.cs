@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Repository.RepositoryServices.Abstraction
 {
     public interface IRoleOfferRepository
-        :IGenericRepository<RoleOffer>
+        : IGenericRepository<RoleOffer>
     {
         Task<RoleOffer> FirstOrDefaultIncludingItemsAsync
             (Expression<Func<RoleOffer,bool>>expression);
@@ -21,5 +21,6 @@ namespace Repository.RepositoryServices.Abstraction
             (Expression<Func<RoleOffer, bool>> expression);
         Task<ICollection<AssigneeDemandWaitlistCountDto>> GetAllAssigneeDemandWaitlistCountsAsync
             (Expression<Func<RoleOffer, bool>> expression);
+        Task<RoleOffer> GetByRoleOfferIdAsNoTrackingAsync(int id);
     }
 }

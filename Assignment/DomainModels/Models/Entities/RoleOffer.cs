@@ -34,6 +34,7 @@ namespace DomainModels.Models.Entities
         [Column("level_of_confidence")]
         public int? LevelOfConfidence { get; set; } = 100;
         public ICollection<Volunteer> Volunteers { get; set; }
+        [NotMapped]
         public FunctionalRequirement FunctionalRequirement { get; set; }
         public ICollection<History> Histories { get; set; }
     }
