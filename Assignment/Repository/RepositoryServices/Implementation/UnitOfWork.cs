@@ -35,13 +35,11 @@ namespace Repository.RepositoryServices.Implementation
             TemplateRepository = new TemplateRepository(context, _logger);
             JobTitleRepository = new JobTitleReposiotry(context, _logger);
             LocationRepository = new LocationRepository(context, _logger);
-            FunctionalAreaTypeRepository 
-                = new FunctionalAreaTypeRepository(context, _logger);
+            FunctionalAreaTypeRepository = new FunctionalAreaTypeRepository(context, _logger);
             FunctionalAreaRepository = new FunctionalAreaRepository(context, _logger);
             RequirementRepository = new RequirementRepository(context, _logger);
             ReportRepository = new ReportRepository(context, _logger);
-            FunctionalRequirementRepository
-                = new FunctionalRequirementRepository(context, _logger);
+            FunctionalRequirementRepository = new FunctionalRequirementRepository(context, _logger);
             HistoryRepository = new HistoryRepository(context, _logger);
         }
 

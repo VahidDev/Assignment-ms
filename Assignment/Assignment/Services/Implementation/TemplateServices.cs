@@ -70,25 +70,16 @@ namespace Assignment.Services.Implementation
             if (dbTemplate == null)
                 return _jsonFactory.CreateJson(StatusCodes.Status404NotFound);
 
-            foreach (UpdateFilterDto filterDto in updatedTemplate.Filters)
-            {
-                if(filterDto.Id == 0)
-                {
-                    filterDto.Id = null;
-                }
-            }
-
-            ICollection<UpdateFilterDto> updatedFilters = updatedTemplate.Filters;
             Template template = _mapper.Map<Template>(updatedTemplate);
 
             foreach (Filter dbFilter in dbTemplate.Filters)
             {
-                if (!updatedFilters.Any(f => f.Id == dbFilter.Id))
+                if (!updatedTemplate.Filters.Any(f => f.Id == dbFilter.Id))
                 {
                     dbFilter.IsDeleted = true;
                     template.Filters.Add(dbFilter);
                 }
-            }
+            }   
 
             _unitOfWork.TemplateRepository.Update(template);
             await _unitOfWork.CompleteAsync();
