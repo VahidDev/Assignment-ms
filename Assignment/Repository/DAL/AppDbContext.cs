@@ -25,7 +25,11 @@ namespace Repository.DAL
             //builder.Ignore<Volunteer>();
             //builder.Ignore<History>();
 
-            builder.Entity<Volunteer>().Ignore(r => r.Id).HasKey(r => r.CandidateId);
+            // Comment this section when migrating
+            builder.Entity<Volunteer>()
+                .Ignore(r => r.Id)
+                .HasKey(r => r.CandidateId);
+
             builder.Entity<History>()
                 .Ignore(r => r.IsDeleted)
                 .Ignore(r => r.UpdatedAt)

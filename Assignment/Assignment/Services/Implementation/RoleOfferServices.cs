@@ -133,22 +133,6 @@ namespace Assignment.Services.Implementation
                 .GetAllAsync())
                 .ToList();
 
-
-            //ICollection<FunctionalRequirement> functionalRequirements
-            //    = (await _unitOfWork.FunctionalRequirementRepository
-            //    .GetAllAsNoTrackingAsync(r=>!r.IsDeleted))
-            //    .ToList();
-
-            //foreach (FunctionalRequirement functionalRequirement in functionalRequirements)
-            //{
-            //    RoleOffer roleOffer = dbRoleOffers
-            //        .First(r => r.Id == functionalRequirement.RoleOfferId);
-
-            //    functionalRequirement.RoleOfferId = roleOffer.RoleOfferId;
-            //}
-            //_unitOfWork.FunctionalRequirementRepository.UpdateRange(functionalRequirements);
-            //await _unitOfWork.CompleteAsync();
-
             foreach (RoleOffer excelRoleOffer in excelRoleOffers)
             {
                 if (excelRoleOffer.LevelOfConfidence != null) 

@@ -19,6 +19,7 @@ namespace Assignment.Utilities.Startup
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             return builder;
         }
+
         public static WebApplicationBuilder AddAppDbContext
             (this WebApplicationBuilder builder,IConfiguration configuration)
         {
@@ -33,6 +34,7 @@ namespace Assignment.Utilities.Startup
                 });
             return builder;
         }
+
         public static WebApplicationBuilder AddCustomServices(this WebApplicationBuilder builder)
         {
             builder.Services
