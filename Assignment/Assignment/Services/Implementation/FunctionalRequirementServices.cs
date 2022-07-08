@@ -87,14 +87,14 @@ namespace Assignment.Services.Implementation
 
             dbFunctionalRequirement.RoleOffer = roleOffer;
             dbFunctionalRequirement.RoleOfferId = roleOffer.RoleOfferId;
-            dbFunctionalRequirement.RoleOffer.LevelOfConfidence = dto.LevelOfConfidence;
-            dbFunctionalRequirement.RoleOffer.WaitlistDemand = dto.WaitlistDemand;
-            dbFunctionalRequirement.RoleOffer.TotalDemand = dto.TotalDemand;
+            roleOffer.LevelOfConfidence = dto.LevelOfConfidence;
+            roleOffer.WaitlistDemand = dto.WaitlistDemand;
+            roleOffer.TotalDemand = dto.TotalDemand;
             roleOffer.FunctionalRequirement = dbFunctionalRequirement;  
             dbFunctionalRequirement.RoleOffer.FunctionalRequirement 
                 = dbFunctionalRequirement;
 
-            dbFunctionalRequirement.RoleOffer.AssigneeDemand
+            roleOffer.AssigneeDemand
                 = DemandCalculator.CalculateRoleOfferDemand
                 (dto.LevelOfConfidence, (int)dto.TotalDemand);
 
@@ -132,6 +132,7 @@ namespace Assignment.Services.Implementation
                 .Map<ICollection<Requirement>>(updatedDtos);
 
             _unitOfWork.FunctionalRequirementRepository.Update(dbFunctionalRequirement);
+            _unitOfWork.RoleOfferRepository.Update(roleOffer);
             await _unitOfWork.CompleteAsync();
             return _jsonFactory.CreateJson(StatusCodes.Status200OK);
         }
