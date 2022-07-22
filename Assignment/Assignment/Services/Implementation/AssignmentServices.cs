@@ -79,7 +79,7 @@ namespace Assignment.Services.Implementation
             _unitOfWork.VolunteerRepository.UpdateRange(volunteers);
 
             await _unitOfWork.CompleteAsync();
-            return _jsonFactory.CreateJson(StatusCodes.Status200OK); 
+            return _jsonFactory.CreateJson(StatusCodes.Status200OK); ;
         }
         
         public async Task<ObjectResult> ChangeToAnyStatusAsync
